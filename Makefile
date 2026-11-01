@@ -1,4 +1,4 @@
-.PHONY: sync test lint format typecheck smoke build
+.PHONY: sync test lint format typecheck smoke build wheel-check
 
 sync:
 	uv sync
@@ -16,6 +16,7 @@ format:
 
 typecheck:
 	uv run mypy
+	uv run pyright
 
 # Calls the free endpoints only. Needs a real token: KLARACASE_API_TOKEN. Not part of CI.
 smoke:
@@ -23,3 +24,7 @@ smoke:
 
 build:
 	uv build
+
+# Builds the wheel and checks that py.typed and the package ship.
+wheel-check: build
+	uv run python scripts/check_wheel.py dist/*.whl
