@@ -11,7 +11,7 @@ is not a claim that the citation is fabricated.
 - Sync client `Klaracase` and async client `AsyncKlaracase`.
 - One runtime dependency: `httpx2`. Python 3.11 or newer.
 - Typed requests and typed responses (frozen dataclasses). Unknown response keys are kept.
-- API reference: https://klaracase.de/docs/api. This client targets API release 0.95.0.
+- API reference: https://klaracase.de/docs/api. This client targets API release 0.96.0.
 
 ## Install
 
@@ -208,12 +208,15 @@ from klaracase import (
     InsufficientCreditsError,
     KlaracaseError,
     RateLimitError,
+    TokenLimitReachedError,
 )
 
 try:
     run = client.citation_checks.create(text=text)
+except TokenLimitReachedError as error:
+    print(f"This API token reached its limit of {error.cap} credits. It resets {error.resets_at}.")
 except InsufficientCreditsError as error:
-    print(f"Needs {error.cost} credits, balance {error.balance}.")
+    print(f"Needs {error.cost} credits, balance {error.balance}, reason {error.reason}.")
 except ForbiddenError as error:
     print(f"The token lacks the {error.required_ability!r} ability.")
 except RateLimitError as error:
@@ -225,7 +228,8 @@ except KlaracaseError as error:
 | Class | When |
 |---|---|
 | `AuthenticationError` | 401 |
-| `InsufficientCreditsError` | 402, with `cost` and `balance` |
+| `InsufficientCreditsError` | 402, with `cost`, `balance`, and a `reason` and `top_up_url` when the API sends them |
+| `TokenLimitReachedError` | 402 `token_limit_reached`, with `unit`, `cap`, `spent`, `resets_at` and `settings_url`; a subclass of `InsufficientCreditsError`, so put it first in a chain of `except` clauses |
 | `ForbiddenError` | 403, with `required_ability` |
 | `NotFoundError` | 404 |
 | `ConflictError` | 409 |
@@ -318,7 +322,9 @@ INFO lines hold the method, the path, the status, the attempt and, on a retry, t
 deprecation is a WARNING. The token, request bodies and query values are never logged. In your own
 logging setup, use the logger name `klaracase`.
 
-## Credits
+## Credits, API budget and limits
+
+### Plan credits
 
 Search, `decisions.get` and `norms.get` cost 1 credit each. `decisions.citations` costs 2. A data
 package costs 5. A citation check costs from 2 credits, by length. Corpus calls, uploads and reads
@@ -327,6 +333,75 @@ of a stored run are free. Every answer has `credits` with `metered`, `cost` and
 fields are `None` when the account is not metered.
 
 Credits renew per credit period: the UTC calendar month for free organizations, the paid billing period for subscribers. Unused credits do not roll over.
+
+`credits.cost` counts the plan credits and the API budget together. `credits.credits_remaining`
+is the plan credits left in the credit period. It never counts the API budget.
+
+### The API budget
+
+Organizations on the Professional and Enterprise plans can load an optional prepaid API budget.
+It pays for calls on the API and on the MCP server once the plan credits are used up. The web
+app never draws on it. It does not expire. A call is paid in whole from the budget, never in
+part. For plans and prices, see [klaracase.de/preise](https://klaracase.de/preise).
+
+`credits.api_budget` shows the budget after the call. The key is absent when the organization
+has no budget and may not load one. In that case `credits.api_budget` is `None`. When the key is
+present, it is never `None`.
+
+```python
+result = client.decisions.search("Untreue")
+budget = result.credits.api_budget
+if budget is not None:
+    print(budget.cents, budget.rate_cents_per_credit, budget.credits_at_rate)
+```
+
+- `cents`: the budget in euro cents. It can be negative after a payment was lost.
+- `rate_cents_per_credit`: what one credit costs from the budget, in whole euro cents.
+- `credits_at_rate`: how many further credits the budget pays for at that rate. It is 0 when the
+  budget is empty or on hold.
+
+### Limits per API token
+
+An organization admin can set a credit limit for each API token. The limit counts the plan
+credits and the API budget together. When a token reaches its limit, its calls are refused until
+the limit resets or an admin changes it.
+
+### Refusals and what a program should do
+
+Every refusal below is an HTTP 402. Nothing ran and nothing was charged. The client never retries
+a 402, and a program should not retry one either, because the same call fails again until
+someone changes something. **Stop and report the refusal to your user.**
+
+| What you get | Meaning | What to do |
+|---|---|---|
+| `InsufficientCreditsError`, `reason == "api_budget_empty"` | The plan credits are used up. The organization may load an API budget, and what it holds does not cover this call. | Stop. Tell your user that an organization admin can top up the API budget. |
+| `InsufficientCreditsError`, `reason == "api_budget_not_available"` | The plan credits are used up and the organization has no API budget to draw on, or the budget is on hold. | Stop. Tell your user that the plan credits are used up. |
+| `InsufficientCreditsError`, `reason` is `None` | The plan credits are too few for the call. | Stop. Tell your user. |
+| `TokenLimitReachedError` | This API token reached its own credit limit. It has no `cost` and no `balance`; both read `None`. | Stop. Tell your user. The count starts again at `resets_at`, or an admin changes the limit. |
+
+`reason` is an open set. A value this client does not know can come later. Treat it like
+`api_budget_not_available`. The value `plan_credits_exhausted` is reserved and is not served
+today.
+
+```python
+from klaracase import InsufficientCreditsError, TokenLimitReachedError
+
+try:
+    result = client.decisions.search("Untreue")
+except TokenLimitReachedError as error:
+    # error.resets_at is a datetime (or None). error.resets_at_raw is the string the API sent.
+    print(f"Stop. The API token used {error.spent} of {error.cap} {error.unit}.")
+except InsufficientCreditsError as error:
+    print(f"Stop. Reason: {error.reason}. The call would cost {error.cost}.")
+```
+
+`error.top_up_url` and `error.settings_url` are pages for a human organization admin. This client
+never opens them. **A program or an AI agent must never open or follow these URLs.** Show them to
+your user, who can pass them to an admin. The tool layer in `klaracase.agents` does not put
+either URL into its output.
+
+A 429 is a different refusal: `rate_limited` is a short wait, and `volume_cap` is the daily cap.
+See [Retries](#retries).
 
 ## Response objects
 
@@ -413,6 +488,10 @@ offsets. A `KlaracaseError` does not raise. It comes back as text the model can 
 {"error":{"code":"insufficient_credits","detail":"...","retry_after_seconds":null}}
 ```
 
+A 402 adds the members a model needs to decide, and no URL. `insufficient_credits` adds `reason`
+when the API sends one. `token_limit_reached` adds `unit`, `cap`, `spent` and `resets_at`. Neither
+is retried. The model should stop and tell its user.
+
 `adispatch(async_client, name, args)` does the same for the async client. The schemas are built
 from the same types as the methods, and a test keeps every schema equal to the keyword arguments
 of the method it calls. An agent should cite only what a tool returned.
@@ -471,7 +550,7 @@ The `repr` of a client never shows the token.
 This SDK follows semantic versioning, with the 0.x rule: until 1.0, a minor version (0.2.0) may
 change the public surface, and a patch version (0.1.1) only fixes bugs. Every change is listed in
 [CHANGELOG.md](CHANGELOG.md). All Klaracase SDKs bump together when the API contract changes. This
-version targets API release 0.95.0. The API itself only adds keys in v1, so a key that is new on
+version targets API release 0.96.0. The API itself only adds keys in v1, so a key that is new on
 the wire shows up in `extra` first and becomes a field in a later minor version.
 
 ## Stability and privacy
