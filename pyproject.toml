@@ -29,7 +29,8 @@ dependencies = ["httpx>=0.27"]
 [project.urls]
 Homepage = "https://klaracase.de"
 Documentation = "https://klaracase.de/docs/api"
-# TODO org: add Repository and Issues once the GitHub organization is named.
+Repository = "https://github.com/klaracase/klaracase-python"
+Issues = "https://github.com/klaracase/klaracase-python/issues"
 
 [dependency-groups]
 dev = [
