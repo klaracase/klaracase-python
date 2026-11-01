@@ -7,7 +7,7 @@ All notable changes to this project go in this file. The format follows
 
 ### Added
 
-- `Klaracase` and `AsyncKlaracase` clients for the Klaracase REST API v1 (API release 0.95.0).
+- `Klaracase` and `AsyncKlaracase` clients for the Klaracase REST API v1 (API release 0.96.0).
 - Resource groups for decisions, cross-type search, norms, data packages, citation checks,
   citation check documents and corpus.
 - Typed responses that keep unknown keys, and a `ResponseMeta` with the HTTP status, the API
@@ -72,7 +72,22 @@ All notable changes to this project go in this file. The format follows
 - Correction: paging the same query within a credit period costs no extra credits (the API leaves
   `page` and `limit` out of the charge). A changed query, filter or mode is a new charge. The
   iterator docstrings and the README now say so. `max_pages` stays required as a runaway guard.
+- API release 0.96.0 (additive): `Credits.api_budget`, an `ApiBudget` with `cents`,
+  `rate_cents_per_credit` and `credits_at_rate`. It is `None` when the body has no `api_budget`
+  key, and unknown keys stay in `extra`.
+- `InsufficientCreditsError.reason` (`api_budget_empty`, `api_budget_not_available`, or a value the
+  API adds later) and `InsufficientCreditsError.top_up_url`. The client never opens the URL. A
+  program or an AI agent must not either.
+- `TokenLimitReachedError` for a 402 `token_limit_reached`, a subclass of
+  `InsufficientCreditsError`, with `unit`, `cap`, `spent`, `resets_at` (a `datetime`),
+  `resets_at_raw` and `settings_url`. `cost` and `balance` read `None`. It is never retried.
+- `klaracase.agents`: the error object of a 402 adds `reason`, or `unit`, `cap`, `spent` and
+  `resets_at`. It never carries `top_up_url` or `settings_url`.
+- The conformance pack is 106 cases (four new), and the drift guards cover the new body.
 
 ### Docs
+
+- README section "Credits, API budget and limits": plan credits, the optional prepaid API budget
+  for Professional and Enterprise, limits per API token, and what a program does on each refusal.
 
 - Docs: credit period wording. Credits renew per credit period: the UTC calendar month for free organizations, the paid billing period for subscribers. Unused credits do not roll over. The docs said "calendar month" for every organization.
