@@ -47,3 +47,7 @@ All notable changes to this project go in this file. The format follows
 - `UnprocessableEntityError` is another name for `ValidationError`.
 - `ErrorCode` and `KnownErrorCode`: `error.code` is typed from the closed vocabulary, plus `str`.
 - `repr` of the clients never shows the token. Public classes present as `klaracase.Name`.
+- Logging on `logging.getLogger("klaracase")` with a `NullHandler`. `KLARACASE_LOG=info|debug`
+  adds a stderr handler when the first client is built. INFO logs method, path, status, attempt
+  and the wait on a retry. A deprecation is a WARNING. The token, bodies and query values are
+  never logged.

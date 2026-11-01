@@ -274,12 +274,13 @@ class Klaracase:
             operation = replace_options(operation, options)
         retries = 0
         while True:
+            self._core.log_attempt(operation, retries)
             request = self._http.build_request(**self._core.request_kwargs(operation))
             started = self._core.monotonic()
             try:
                 response = self._http.send(request)
             except transport.RequestError as exc:
-                wait = self._core.transport_wait(operation, retries)
+                wait = self._core.transport_wait(operation, retries, exc)
                 if wait is None:
                     raise self._core.transport_error(exc) from exc
                 self._sleep(wait)

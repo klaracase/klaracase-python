@@ -6,6 +6,7 @@ policy and problem parsing. ``Klaracase`` and ``AsyncKlaracase`` only move bytes
 
 from __future__ import annotations
 
+import logging
 import os
 import platform
 import random
@@ -18,6 +19,7 @@ from typing import Any, Generic, TypeVar
 from urllib.parse import quote, urlsplit
 
 from . import _transport as transport
+from ._logging import LOGGER, setup_env_logging
 from ._version import __version__
 from .errors import (
     ApiError,
@@ -226,6 +228,7 @@ class Core:
         on_deprecation: DeprecationHook | None,
         monotonic: Callable[[], float] | None,
     ) -> Core:
+        setup_env_logging()
         resolved = token if token is not None else os.environ.get(TOKEN_ENV_VAR)
         if resolved is None or not resolved.strip():
             raise ConfigurationError(
@@ -285,14 +288,45 @@ class Core:
         ceiling = min(BACKOFF_CAP_SECONDS, BACKOFF_BASE_SECONDS * (2**retries_so_far))
         return self.uniform(0.0, ceiling)
 
-    def transport_wait(self, operation: Operation[Any], retries_so_far: int) -> float | None:
+    def transport_wait(
+        self, operation: Operation[Any], retries_so_far: int, exc: BaseException
+    ) -> float | None:
         """Seconds to wait before retrying after a transport error, or ``None`` to give up.
 
         Only GET is retried: a POST whose connection dropped may have run.
         """
+        attempt = retries_so_far + 1
         if operation.method != "GET" or retries_so_far >= self.max_retries:
+            LOGGER.info(
+                "%s %s -> %s, attempt %d, giving up",
+                operation.method,
+                operation.path,
+                type(exc).__name__,
+                attempt,
+            )
             return None
-        return self.backoff(retries_so_far)
+        wait = self.backoff(retries_so_far)
+        LOGGER.info(
+            "%s %s -> %s, attempt %d, retry in %.2f s",
+            operation.method,
+            operation.path,
+            type(exc).__name__,
+            attempt,
+            wait,
+        )
+        return wait
+
+    def log_attempt(self, operation: Operation[Any], retries_so_far: int) -> None:
+        """Log the start of an attempt at DEBUG: the query parameter names, never the values."""
+        if LOGGER.isEnabledFor(logging.DEBUG):
+            names = sorted({name for name, _ in operation.query})
+            LOGGER.debug(
+                "%s %s attempt %d query=%s",
+                operation.method,
+                operation.path,
+                retries_so_far + 1,
+                names,
+            )
 
     def transport_error(self, exc: transport.RequestError) -> TransportError:
         cls = (
@@ -310,13 +344,39 @@ class Core:
     ) -> T | Retry:
         """Turn an answer into a response object, a retry request, or a raised error."""
         duration = max(0.0, self.monotonic() - started)
+        attempt = retries_so_far + 1
         self._surface_deprecation(operation, response)
         if response.is_success:
+            LOGGER.info(
+                "%s %s -> %d, attempt %d, %.3f s",
+                operation.method,
+                operation.path,
+                response.status_code,
+                attempt,
+                duration,
+            )
             return self._parse_success(operation, response, duration)
         error = self.error_from_response(response)
         wait = self._retry_wait(response, error, retries_so_far)
         if wait is None:
+            LOGGER.info(
+                "%s %s -> %d (%s), attempt %d, giving up",
+                operation.method,
+                operation.path,
+                response.status_code,
+                error.code,
+                attempt,
+            )
             raise error
+        LOGGER.info(
+            "%s %s -> %d (%s), attempt %d, retry in %.2f s",
+            operation.method,
+            operation.path,
+            response.status_code,
+            error.code,
+            attempt,
+            wait,
+        )
         return Retry(wait)
 
     def _parse_success(
@@ -417,6 +477,13 @@ class Core:
             return
         if not _claim_deprecation_slot():
             return
+        LOGGER.warning(
+            "Deprecated endpoint %s %s (Deprecation: %s, Sunset: %s)",
+            operation.method,
+            operation.path,
+            deprecation,
+            sunset,
+        )
         self.on_deprecation(
             DeprecationNotice(
                 deprecation=deprecation,
