@@ -57,3 +57,15 @@ All notable changes to this project go in this file. The format follows
 - `klaracase.agents`: `tool_definitions()` for Anthropic, OpenAI or plain JSON Schema, and
   `dispatch` / `adispatch` that run a tool call and return compact JSON or an error object. No
   new dependency. A test keeps every schema equal to the method signature it calls.
+- `pyright` (strict) joins `mypy --strict` in the dev group and in CI. `tests/typing/consumer.py`
+  is a realistic user program that both checkers must accept. Its refusal lines carry
+  `type: ignore`, so a checker that stops refusing them fails the build.
+- The README code blocks are type-checked with mypy and pyright strict.
+- `__all__` lists the whole public surface. `AsyncKlaracase` is imported on first use.
+- The package version has a single source, `src/klaracase/_version.py`. Hatch reads it.
+- Tests: sync and async parity (methods, signatures, coroutines, `Args:` docs), a lowest-direct
+  dependency job in CI, and a wheel check (`scripts/check_wheel.py`) for `py.typed`.
+- `examples/`: `quickstart.py`, `citation_check.py` and `agent_loop.py`. They run against a local
+  mock and need no token. A test runs them.
+- README: token, async, uploads, pagination, errors, retries, request options, logging, agents,
+  credits, response objects, a pydantic `TypeAdapter` note, versioning and privacy.
