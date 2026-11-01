@@ -51,3 +51,6 @@ All notable changes to this project go in this file. The format follows
   adds a stderr handler when the first client is built. INFO logs method, path, status, attempt
   and the wait on a retry. A deprecation is a WARNING. The token, bodies and query values are
   never logged.
+- `decisions.iter_pages` and `decisions.iter_citation_pages` (generators; async generators on the
+  async client). `max_pages` is required and is capped at 10 and 20. They stop on an empty page.
+- `citation_checks.create_from_file` uploads, waits for the extraction and creates the check.

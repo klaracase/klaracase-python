@@ -50,6 +50,22 @@ def iso_date(name: str, value: str | datetime.date | None) -> str | None:
     raise client_validation_error(f"{name} must be a string (YYYY-MM-DD) or a date.")
 
 
+MAX_SEARCH_PAGES = 10
+MAX_CITATION_PAGES = 20
+
+
+def checked_max_pages(max_pages: int, cap: int) -> int:
+    """Validate ``max_pages`` and cap it at what the API serves (``cap`` pages)."""
+    if isinstance(max_pages, bool) or not isinstance(max_pages, int) or max_pages < 1:  # pyright: ignore[reportUnnecessaryIsInstance]
+        raise client_validation_error("max_pages must be an integer of 1 or more.")
+    return min(max_pages, cap)
+
+
+def checked_page_params(params: Mapping[str, Any]) -> None:
+    if "page" in params:
+        raise client_validation_error("Do not pass page to an iterator; it sets the page itself.")
+
+
 def _string_list(name: str, value: Sequence[str] | None) -> Sequence[str] | None:
     if isinstance(value, str):
         raise client_validation_error(f"{name} must be a list of strings, not one string.")

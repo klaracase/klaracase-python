@@ -18,12 +18,14 @@ duration), ``raw`` (the parsed body, as received), ``credits`` (always a :class:
 """
 
 import copy
-from collections.abc import Mapping
+import datetime
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from dataclasses import field as _field
-from typing import Any, Literal, Self
+from typing import Any, Literal, Self, TypedDict
 
 from ._model import Model, decode_model
+from ._transport import Timeout
 
 __all__ = [
     "AvailableRange",
@@ -51,9 +53,11 @@ __all__ = [
     "Datapackage",
     "DatapackageDecision",
     "Decision",
+    "DecisionCitationParams",
     "DecisionCitations",
     "DecisionMetadata",
     "DecisionSearch",
+    "DecisionSearchParams",
     "DeprecationNotice",
     "DocumentErrorCode",
     "DocumentStatus",
@@ -166,6 +170,36 @@ Lifecycle = Literal["current", "repealed", "unconfirmed"]
 Jurisdiction = Literal["DE", "EU", "XI"]
 
 DOCUMENT_TERMINAL_STATUSES = frozenset({"ready", "failed"})
+
+
+class DecisionSearchParams(TypedDict, total=False):
+    """The keyword arguments of ``decisions.iter_pages``, besides ``query`` and ``max_pages``."""
+
+    court: str
+    branch: Branch
+    document_type: DocumentType
+    cited_norm: str
+    cited_statutes: Sequence[CitedStatute | str]
+    date_from: str | datetime.date
+    date_to: str | datetime.date
+    mode: SearchMode
+    limit: int
+    bridge: bool
+    timeout: float | Timeout
+    extra_headers: Mapping[str, str]
+    extra_query: Mapping[str, str | int | bool]
+
+
+class DecisionCitationParams(TypedDict, total=False):
+    """The keyword arguments of ``decisions.iter_citation_pages`` besides ``id`` and ``page``."""
+
+    direction: CitationDirection
+    depth: CitationDepth
+    court: str
+    date: str | datetime.date
+    timeout: float | Timeout
+    extra_headers: Mapping[str, str]
+    extra_query: Mapping[str, str | int | bool]
 
 
 @dataclass(frozen=True, slots=True, kw_only=True)

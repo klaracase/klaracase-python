@@ -5,10 +5,10 @@ from __future__ import annotations
 import copy
 import datetime
 import time
-from collections.abc import Callable, Mapping, Sequence
+from collections.abc import Callable, Iterator, Mapping, Sequence
 from pathlib import Path
 from types import TracebackType
-from typing import Any, BinaryIO, Self, TypeVar, overload
+from typing import Any, BinaryIO, Self, TypeVar, Unpack, overload
 
 from . import _operations as ops
 from . import _transport as transport
@@ -39,8 +39,10 @@ from .types import (
     CrossTypeSearch,
     Datapackage,
     Decision,
+    DecisionCitationParams,
     DecisionCitations,
     DecisionSearch,
+    DecisionSearchParams,
     DocumentType,
     FacetField,
     FacetType,
@@ -451,6 +453,67 @@ class Decisions:
             request_options(timeout, extra_headers, extra_query),
         )
 
+    def iter_pages(
+        self, query: str, *, max_pages: int, **params: Unpack[DecisionSearchParams]
+    ) -> Iterator[DecisionSearch]:
+        """Yield the pages of one search, one request per page, until a page is empty.
+
+        Paging is free by the price list, but each page is one request. It counts against your
+        rate limit and your daily row cap. That is why ``max_pages`` has no default.
+
+        Args:
+            query: As in :meth:`search`.
+            max_pages: The most pages to fetch. At least 1. The API serves 10 pages at most, so a
+                larger number is cut to 10.
+            **params: The filters of :meth:`search`, and the call options, except ``page``.
+        """
+        pages = ops.checked_max_pages(max_pages, ops.MAX_SEARCH_PAGES)
+        ops.checked_page_params(params)
+        return self._search_pages(query, pages, params)
+
+    def _search_pages(
+        self, query: str, pages: int, params: DecisionSearchParams
+    ) -> Iterator[DecisionSearch]:
+        for page in range(1, pages + 1):
+            result = self.search(query, page=page, **params)
+            if not result.results:
+                return
+            yield result
+
+    def iter_citation_pages(
+        self, id: str, *, max_pages: int, **params: Unpack[DecisionCitationParams]
+    ) -> Iterator[DecisionCitations]:
+        """Yield the pages of the citation graph of one decision until a page is empty.
+
+        It also stops after a page whose ``pagination`` says there is nothing more. A page past
+        the first is refused with ``page_undefined_at_this_depth`` at depth 2.
+
+        Args:
+            id: As in :meth:`citations`.
+            max_pages: The most pages to fetch. At least 1. The API serves 20 pages at most, so a
+                larger number is cut to 20.
+            **params: The arguments of :meth:`citations` and the call options, except ``page``.
+        """
+        pages = ops.checked_max_pages(max_pages, ops.MAX_CITATION_PAGES)
+        ops.checked_page_params(params)
+        return self._citation_pages(id, pages, params)
+
+    def _citation_pages(
+        self, id: str, pages: int, params: DecisionCitationParams
+    ) -> Iterator[DecisionCitations]:
+        for page in range(1, pages + 1):
+            result = self.citations(id, page=page, **params)
+            if not result.references and not result.referenced_by:
+                return
+            yield result
+            paging = result.pagination
+            if (
+                paging is not None
+                and not paging.has_more_references
+                and not paging.has_more_referenced_by
+            ):
+                return
+
 
 class Norms:
     """Statute norms: ``client.norms``."""
@@ -606,6 +669,40 @@ class CitationChecks:
         return self._client._execute(
             ops.citation_check_get(run_id), request_options(timeout, extra_headers, extra_query)
         )
+
+    def create_from_file(
+        self,
+        path_or_file: Path | str | bytes | BinaryIO,
+        *,
+        reference_date: str | datetime.date | None = None,
+        wait_timeout: float = 120.0,
+        poll_interval: float = 1.0,
+        filename: str | None = None,
+        content_type: str | None = None,
+    ) -> CitationCheck:
+        """Upload a file, wait until it is ready and check its citations.
+
+        It calls ``citation_check_documents.upload``, then ``wait_until_ready``, then
+        :meth:`create` with the ``document_id``. Uploading is free; the check is priced by length.
+
+        Args:
+            path_or_file: As the ``file`` argument of ``citation_check_documents.upload``.
+            reference_date: Optional document date, as in :meth:`create`.
+            wait_timeout: Seconds to wait for the text extraction.
+            poll_interval: Seconds between two polls.
+            filename: The file name, required for bytes. Defaults to the name of the path.
+            content_type: The media type. Inferred from the file name when not given.
+
+        Raises:
+            DocumentFailedError: The extraction failed, for example ``encrypted_pdf``.
+            DocumentTimeoutError: The upload was not ready within ``wait_timeout``.
+        """
+        documents = self._client.citation_check_documents
+        receipt = documents.upload(path_or_file, filename=filename, content_type=content_type)
+        ready = documents.wait_until_ready(
+            receipt.id, poll_interval=poll_interval, timeout=wait_timeout
+        )
+        return self.create(document_id=ready.id, reference_date=reference_date)
 
 
 class CitationCheckDocuments:
