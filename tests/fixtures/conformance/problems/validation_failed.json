@@ -1,0 +1,12 @@
+{
+  "type": "https://klaracase.de/docs/api/errors#validation_failed",
+  "title": "Unprocessable Content",
+  "status": 422,
+  "detail": "The query field must be at least 2 characters.",
+  "code": "validation_failed",
+  "errors": {
+    "query": [
+      "The query field must be at least 2 characters."
+    ]
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "type": "https://klaracase.de/docs/api/errors#ambiguous_aktenzeichen",
+  "title": "Unprocessable Content",
+  "status": 422,
+  "detail": "Ambiguous Aktenzeichen \"5 U 123/19\": 2 decisions in the corpus carry it. Narrow with the `court` and/or `date` (YYYY-MM-DD) arguments, or call again with one of the ids in `candidates`.",
+  "code": "ambiguous_aktenzeichen",
+  "candidates": [
+    {
+      "id": "0193b0c7-1a2b-7c3d-8e4f-5a6b7c8d9e01",
+      "court": "OLG Hamm",
+      "date": "2019-06-12",
+      "aktenzeichen": "5 U 123/19"
+    },
+    {
+      "id": "0193b0c7-1a2b-7c3d-8e4f-5a6b7c8d9e02",
+      "court": "OLG Köln",
+      "date": "2019-09-03",
+      "aktenzeichen": "5 U 123/19"
+    }
+  ]
+}

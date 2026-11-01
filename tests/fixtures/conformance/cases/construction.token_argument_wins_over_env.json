@@ -1,0 +1,46 @@
+{
+  "name": "construction.token_argument_wins_over_env",
+  "description": "An explicit token beats the environment variable.",
+  "sdk": {
+    "group": "corpus",
+    "method": "coverage",
+    "args": {},
+    "options": {
+      "token": "test_token_123"
+    },
+    "env": {
+      "KLARACASE_API_TOKEN": "env_token_999"
+    }
+  },
+  "expect": {
+    "request": {
+      "method": "GET",
+      "path": "/corpus/coverage",
+      "query": {},
+      "headers": {
+        "authorization": "Bearer test_token_123",
+        "accept": "application/json",
+        "user-agent": "klaracase-"
+      }
+    },
+    "request_count": 1
+  },
+  "responses": [
+    {
+      "status": 200,
+      "headers": {
+        "content-type": "application/json",
+        "x-klaracase-api-release": "0.95.0"
+      },
+      "body_file": "../../examples/corpus.coverage.json"
+    }
+  ],
+  "expect_result": {
+    "kind": "success",
+    "assert": {
+      "meta.status": 200,
+      "meta.api_release": "0.95.0",
+      "courts_total": 400
+    }
+  }
+}

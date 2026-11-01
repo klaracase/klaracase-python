@@ -1,0 +1,14 @@
+{
+  "type": "https://klaracase.de/docs/api/errors#not_found",
+  "title": "Not Found",
+  "status": 404,
+  "detail": "No decision matches \"VIII ZR 999/99\" in the corpus. Check the Aktenzeichen, or search with GET /api/v1/decisions/search to find the decision and its id.",
+  "code": "not_found",
+  "future_member": {
+    "hint": "kept",
+    "values": [
+      1,
+      2
+    ]
+  }
+}

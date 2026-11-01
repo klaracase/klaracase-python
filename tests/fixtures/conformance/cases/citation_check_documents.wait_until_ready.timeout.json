@@ -1,0 +1,52 @@
+{
+  "name": "citation_check_documents.wait_until_ready.timeout",
+  "description": "Never ready within `timeout`: DocumentTimeoutError. Needs a real clock: the runner must not stub sleep or the clock.",
+  "sdk": {
+    "group": "citation_check_documents",
+    "method": "wait_until_ready",
+    "args": {
+      "document_id": "0193b0c6-3c4d-7e5f-8a60-7c8d9e0f1a2b",
+      "poll_interval": 0.05,
+      "timeout": 0.3
+    }
+  },
+  "expect": {
+    "request": {
+      "method": "GET",
+      "path": "/citation-check-documents/0193b0c6-3c4d-7e5f-8a60-7c8d9e0f1a2b",
+      "query": {},
+      "headers": {
+        "authorization": "Bearer test_token_123",
+        "accept": "application/json",
+        "user-agent": "klaracase-"
+      }
+    },
+    "request_count": {
+      "min": 2,
+      "max": 12
+    }
+  },
+  "responses": [
+    {
+      "status": 200,
+      "headers": {
+        "content-type": "application/json",
+        "x-klaracase-api-release": "0.95.0"
+      },
+      "body_file": "../bodies/documents.extracting.json"
+    }
+  ],
+  "expect_result": {
+    "kind": "error",
+    "class": "DocumentTimeoutError",
+    "code": "wait_timeout",
+    "status": null,
+    "fields": {
+      "document.status": "extracting"
+    }
+  },
+  "runner": {
+    "real_clock": true,
+    "repeat_last_response": true
+  }
+}

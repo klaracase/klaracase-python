@@ -1,0 +1,65 @@
+{
+  "name": "decisions.get.slice_arguments",
+  "description": "Every slice argument, with a non-ASCII value in the query (decoded comparison) and an Aktenzeichen in the path.",
+  "sdk": {
+    "group": "decisions",
+    "method": "get",
+    "args": {
+      "id": "1 StR 185/01",
+      "section": "Gründe",
+      "max_chars": 1000,
+      "rn_from": 21,
+      "rn_to": 23,
+      "court": "BGH",
+      "date": "2001-11-15"
+    }
+  },
+  "expect": {
+    "request": {
+      "method": "GET",
+      "path": "/decisions/1%20StR%20185%2F01",
+      "query": {
+        "section": "Gründe",
+        "max_chars": "1000",
+        "rn_from": "21",
+        "rn_to": "23",
+        "court": "BGH",
+        "date": "2001-11-15"
+      },
+      "headers": {
+        "authorization": "Bearer test_token_123",
+        "accept": "application/json",
+        "user-agent": "klaracase-"
+      }
+    },
+    "request_count": 1
+  },
+  "responses": [
+    {
+      "status": 200,
+      "headers": {
+        "content-type": "application/json",
+        "x-klaracase-api-release": "0.95.0"
+      },
+      "body_file": "../../examples/decisions.show.json"
+    }
+  ],
+  "expect_result": {
+    "kind": "success",
+    "assert": {
+      "meta.status": 200,
+      "meta.api_release": "0.95.0",
+      "aktenzeichen": "1 StR 185/01",
+      "court": "BGH",
+      "date": "2001-11-15",
+      "metadata.ecli": "ECLI:DE:BGH:2001:151101U1STR185.01.0",
+      "metadata.document_type": "Urteil",
+      "available_sections[1]": "Gründe",
+      "available_range.rn_to": 64,
+      "truncated": true,
+      "text_length": 48213,
+      "credits.cost": 1,
+      "credits.credits_remaining": 27
+    }
+  }
+}

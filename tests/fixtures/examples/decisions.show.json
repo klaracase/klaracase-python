@@ -1,0 +1,39 @@
+{
+  "id": "0193b0c4-5f1e-7a2b-9c3d-4e5f6a7b8c9d",
+  "aktenzeichen": "1 StR 185/01",
+  "court": "BGH",
+  "date": "2001-11-15",
+  "jurisdiction": "DE",
+  "metadata": {
+    "document_type": "Urteil",
+    "ecli": "ECLI:DE:BGH:2001:151101U1STR185.01.0",
+    "file_numbers": [
+      "1 StR 185/01"
+    ]
+  },
+  "fortgeltung_checked": false,
+  "fortgeltung_note": "Rechtskraft/Fortgeltung (whether a decision is still good law) is NOT checked. A decision returned here may have been quashed or superseded on appeal, and the ABSENCE of any such note is not evidence that it still stands.",
+  "full_text": "Tenor … Gründe: I. … 21 Die Revision ist unbegründet …",
+  "text_length": 48213,
+  "truncated": true,
+  "rn_source": "printed",
+  "rn_source_note": "The Randnummern are the court's own printed numbers.",
+  "available_sections": [
+    "Tenor",
+    "Gründe"
+  ],
+  "available_range": {
+    "rn_from": 1,
+    "rn_to": 64,
+    "rn_source": "printed"
+  },
+  "available_range_scope": "decision",
+  "has_rn_anchors": true,
+  "api_version": "1.0.0",
+  "changelog_url": "https://klaracase.de/docs/mcp/changelog",
+  "credits": {
+    "metered": true,
+    "cost": 1,
+    "credits_remaining": 27
+  }
+}

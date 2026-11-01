@@ -1,0 +1,46 @@
+{
+  "name": "errors.internal_error",
+  "description": "500 is ApiError and is NOT retried (only 429 and 503 are).",
+  "sdk": {
+    "group": "decisions",
+    "method": "search",
+    "args": {
+      "query": "Untreue"
+    },
+    "options": {
+      "max_retries": 2
+    }
+  },
+  "expect": {
+    "request": {
+      "method": "GET",
+      "path": "/decisions/search",
+      "query": {
+        "query": "Untreue"
+      },
+      "headers": {
+        "authorization": "Bearer test_token_123",
+        "accept": "application/json",
+        "user-agent": "klaracase-"
+      }
+    },
+    "request_count": 1,
+    "sleeps": []
+  },
+  "responses": [
+    {
+      "status": 500,
+      "headers": {
+        "content-type": "application/problem+json",
+        "x-klaracase-api-release": "0.95.0"
+      },
+      "body_file": "../problems/internal_error.json"
+    }
+  ],
+  "expect_result": {
+    "kind": "error",
+    "class": "ApiError",
+    "code": "internal_error",
+    "status": 500
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "name": "transport.post_not_retried",
+  "description": "A POST whose connection dropped after sending is NOT retried.",
+  "sdk": {
+    "group": "citation_checks",
+    "method": "create",
+    "args": {
+      "text": "Der Bundesgerichtshof hat im Urteil vom 15.11.2001 zum Az. 1 StR 185/01 entschieden, dass § 266 StGB eine Vermögensbetreuungspflicht voraussetzt."
+    },
+    "options": {
+      "max_retries": 2
+    }
+  },
+  "expect": {
+    "request": {
+      "method": "POST",
+      "path": "/citation-checks",
+      "query": {},
+      "headers": {
+        "authorization": "Bearer test_token_123",
+        "accept": "application/json",
+        "user-agent": "klaracase-",
+        "content-type": "application/json"
+      },
+      "json": {
+        "text": "Der Bundesgerichtshof hat im Urteil vom 15.11.2001 zum Az. 1 StR 185/01 entschieden, dass § 266 StGB eine Vermögensbetreuungspflicht voraussetzt."
+      }
+    },
+    "request_count": 1,
+    "sleeps": []
+  },
+  "responses": [
+    {
+      "drop_connection": true
+    }
+  ],
+  "expect_result": {
+    "kind": "error",
+    "class": "TransportError",
+    "code": null,
+    "status": null
+  }
+}

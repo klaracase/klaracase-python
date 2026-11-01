@@ -1,0 +1,63 @@
+{
+  "name": "decisions.search.basic",
+  "description": "Filters, an array parameter and an integer.",
+  "sdk": {
+    "group": "decisions",
+    "method": "search",
+    "args": {
+      "query": "Eigenbedarf Kündigung",
+      "court": "BGH",
+      "cited_statutes": [
+        "StGB",
+        "StPO"
+      ],
+      "limit": 5
+    }
+  },
+  "expect": {
+    "request": {
+      "method": "GET",
+      "path": "/decisions/search",
+      "query": {
+        "query": "Eigenbedarf Kündigung",
+        "court": "BGH",
+        "cited_statutes[]": [
+          "StGB",
+          "StPO"
+        ],
+        "limit": "5"
+      },
+      "headers": {
+        "authorization": "Bearer test_token_123",
+        "accept": "application/json",
+        "user-agent": "klaracase-"
+      }
+    },
+    "request_count": 1
+  },
+  "responses": [
+    {
+      "status": 200,
+      "headers": {
+        "content-type": "application/json",
+        "x-klaracase-api-release": "0.95.0"
+      },
+      "body_file": "../../examples/decisions.search.json"
+    }
+  ],
+  "expect_result": {
+    "kind": "success",
+    "assert": {
+      "results[0].aktenzeichen": "1 StR 185/01",
+      "results[0].snippets[0].rn": 21,
+      "total_available.value": 42,
+      "total_available.is_floor": false,
+      "query_expansion.status": "abstained",
+      "credits.metered": true,
+      "credits.cost": 1,
+      "credits.credits_remaining": 29,
+      "meta.api_release": "0.95.0",
+      "meta.status": 200
+    }
+  }
+}

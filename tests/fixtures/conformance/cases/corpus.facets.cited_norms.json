@@ -1,0 +1,49 @@
+{
+  "name": "corpus.facets.cited_norms",
+  "description": "`cited_norms` needs `norm`; the norm is encoded in the query (decoded comparison).",
+  "sdk": {
+    "group": "corpus",
+    "method": "facets",
+    "args": {
+      "field": "cited_norms",
+      "norm": "§ 543 BGB"
+    }
+  },
+  "expect": {
+    "request": {
+      "method": "GET",
+      "path": "/corpus/facets/cited_norms",
+      "query": {
+        "norm": "§ 543 BGB"
+      },
+      "headers": {
+        "authorization": "Bearer test_token_123",
+        "accept": "application/json",
+        "user-agent": "klaracase-"
+      }
+    },
+    "request_count": 1
+  },
+  "responses": [
+    {
+      "status": 200,
+      "headers": {
+        "content-type": "application/json",
+        "x-klaracase-api-release": "0.95.0"
+      },
+      "body_file": "../bodies/corpus.facets.cited_norms.json"
+    }
+  ],
+  "expect_result": {
+    "kind": "success",
+    "assert": {
+      "meta.status": 200,
+      "meta.api_release": "0.95.0",
+      "field": "cited_norms",
+      "norm": "§ 543 BGB",
+      "values[\"§ 543 Abs. 1 BGB\"].value": 120,
+      "total_values": 2,
+      "credits.cost": 0
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "type": "https://klaracase.de/docs/api/errors#rate_limited",
+  "title": "Too Many Requests",
+  "status": 429,
+  "detail": "Too many requests for this token. Wait `retry_after_seconds` and retry. Nothing was executed and nothing was charged.",
+  "code": "rate_limited",
+  "retry_after_seconds": 31
+}

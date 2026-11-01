@@ -1,0 +1,64 @@
+{
+  "name": "search.filters",
+  "description": "Cross-type filters including jurisdiction, an array and a false boolean.",
+  "sdk": {
+    "group": null,
+    "method": "search",
+    "args": {
+      "query": "Datenschutz Einwilligung",
+      "jurisdiction": "EU",
+      "court": "BGH",
+      "branch": "ordentlich",
+      "cited_statutes": [
+        "DSGVO",
+        "GDPR"
+      ],
+      "limit": 3,
+      "bridge": false,
+      "mode": "semantic"
+    }
+  },
+  "expect": {
+    "request": {
+      "method": "GET",
+      "path": "/search",
+      "query": {
+        "query": "Datenschutz Einwilligung",
+        "jurisdiction": "EU",
+        "court": "BGH",
+        "branch": "ordentlich",
+        "cited_statutes[]": [
+          "DSGVO",
+          "GDPR"
+        ],
+        "limit": "3",
+        "bridge": "false",
+        "mode": "semantic"
+      },
+      "headers": {
+        "authorization": "Bearer test_token_123",
+        "accept": "application/json",
+        "user-agent": "klaracase-"
+      }
+    },
+    "request_count": 1
+  },
+  "responses": [
+    {
+      "status": 200,
+      "headers": {
+        "content-type": "application/json",
+        "x-klaracase-api-release": "0.95.0"
+      },
+      "body_file": "../../examples/search.json"
+    }
+  ],
+  "expect_result": {
+    "kind": "success",
+    "assert": {
+      "meta.status": 200,
+      "meta.api_release": "0.95.0",
+      "mode": "hybrid"
+    }
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "name": "errors.personal_access_token_required",
+  "description": "401, a token type the API refuses.",
+  "sdk": {
+    "group": "decisions",
+    "method": "search",
+    "args": {
+      "query": "Untreue"
+    },
+    "options": {
+      "max_retries": 0
+    }
+  },
+  "expect": {
+    "request": {
+      "method": "GET",
+      "path": "/decisions/search",
+      "query": {
+        "query": "Untreue"
+      },
+      "headers": {
+        "authorization": "Bearer test_token_123",
+        "accept": "application/json",
+        "user-agent": "klaracase-"
+      }
+    },
+    "request_count": 1
+  },
+  "responses": [
+    {
+      "status": 401,
+      "headers": {
+        "content-type": "application/problem+json",
+        "x-klaracase-api-release": "0.95.0"
+      },
+      "body_file": "../problems/personal_access_token_required.json"
+    }
+  ],
+  "expect_result": {
+    "kind": "error",
+    "class": "AuthenticationError",
+    "code": "personal_access_token_required",
+    "status": 401
+  }
+}

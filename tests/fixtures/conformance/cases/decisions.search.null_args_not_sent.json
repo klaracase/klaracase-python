@@ -1,0 +1,48 @@
+{
+  "name": "decisions.search.null_args_not_sent",
+  "description": "An argument set to null (None, nil, undefined, unset Option) is not sent. A runner in a language without null leaves the argument unset.",
+  "sdk": {
+    "group": "decisions",
+    "method": "search",
+    "args": {
+      "query": "Vermögensbetreuungspflicht",
+      "court": null,
+      "limit": null,
+      "cited_statutes": null,
+      "bridge": null
+    }
+  },
+  "expect": {
+    "request": {
+      "method": "GET",
+      "path": "/decisions/search",
+      "query": {
+        "query": "Vermögensbetreuungspflicht"
+      },
+      "headers": {
+        "authorization": "Bearer test_token_123",
+        "accept": "application/json",
+        "user-agent": "klaracase-"
+      }
+    },
+    "request_count": 1
+  },
+  "responses": [
+    {
+      "status": 200,
+      "headers": {
+        "content-type": "application/json",
+        "x-klaracase-api-release": "0.95.0"
+      },
+      "body_file": "../../examples/decisions.search.json"
+    }
+  ],
+  "expect_result": {
+    "kind": "success",
+    "assert": {
+      "meta.status": 200,
+      "meta.api_release": "0.95.0",
+      "limit": 20
+    }
+  }
+}

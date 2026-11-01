@@ -1,0 +1,55 @@
+{
+  "name": "errors.validation_failed_multiple",
+  "description": "422 with several fields.",
+  "sdk": {
+    "group": "decisions",
+    "method": "search",
+    "args": {
+      "query": "Untreue",
+      "date_from": "2020-01-01",
+      "date_to": "2019-01-01",
+      "limit": 5
+    },
+    "options": {
+      "max_retries": 0
+    }
+  },
+  "expect": {
+    "request": {
+      "method": "GET",
+      "path": "/decisions/search",
+      "query": {
+        "query": "Untreue",
+        "date_from": "2020-01-01",
+        "date_to": "2019-01-01",
+        "limit": "5"
+      },
+      "headers": {
+        "authorization": "Bearer test_token_123",
+        "accept": "application/json",
+        "user-agent": "klaracase-"
+      }
+    },
+    "request_count": 1
+  },
+  "responses": [
+    {
+      "status": 422,
+      "headers": {
+        "content-type": "application/problem+json",
+        "x-klaracase-api-release": "0.95.0"
+      },
+      "body_file": "../problems/validation_failed.multiple.json"
+    }
+  ],
+  "expect_result": {
+    "kind": "error",
+    "class": "ValidationError",
+    "code": "validation_failed",
+    "status": 422,
+    "fields": {
+      "errors.date_to[0]": "The date to field must be a date after or equal to date from.",
+      "errors.limit[0]": "The limit field must be an integer."
+    }
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "name": "construction.user_agent_suffix",
+  "description": "A suffix is appended after the SDK part of the User-Agent.",
+  "sdk": {
+    "group": "corpus",
+    "method": "coverage",
+    "args": {},
+    "options": {
+      "user_agent_suffix": "acme-app/2.1"
+    }
+  },
+  "expect": {
+    "request": {
+      "method": "GET",
+      "path": "/corpus/coverage",
+      "query": {},
+      "headers": {
+        "authorization": "Bearer test_token_123",
+        "accept": "application/json",
+        "user-agent": "klaracase-"
+      },
+      "user_agent_suffix": "acme-app/2.1"
+    },
+    "request_count": 1
+  },
+  "responses": [
+    {
+      "status": 200,
+      "headers": {
+        "content-type": "application/json",
+        "x-klaracase-api-release": "0.95.0"
+      },
+      "body_file": "../../examples/corpus.coverage.json"
+    }
+  ],
+  "expect_result": {
+    "kind": "success",
+    "assert": {
+      "meta.status": 200,
+      "meta.api_release": "0.95.0"
+    }
+  }
+}

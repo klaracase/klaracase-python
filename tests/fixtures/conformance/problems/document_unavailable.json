@@ -1,0 +1,7 @@
+{
+  "type": "https://klaracase.de/docs/api/errors#document_unavailable",
+  "title": "Conflict",
+  "status": 409,
+  "detail": "This document cannot be checked: it is still being extracted, its extraction failed, it expired, or it was already checked. Poll GET /api/v1/citation-check-documents/{document} until `status` is `ready`, or upload it again.",
+  "code": "document_unavailable"
+}

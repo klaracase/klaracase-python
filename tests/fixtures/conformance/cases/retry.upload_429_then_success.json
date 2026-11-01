@@ -1,0 +1,72 @@
+{
+  "name": "retry.upload_429_then_success",
+  "description": "A multipart upload is retried on 429 and the retry carries the whole file again.",
+  "sdk": {
+    "group": "citation_check_documents",
+    "method": "upload",
+    "args": {
+      "file": {
+        "$file": "files/schriftsatz.pdf"
+      },
+      "filename": "schriftsatz.pdf",
+      "content_type": "application/pdf"
+    },
+    "options": {
+      "max_retries": 2
+    }
+  },
+  "expect": {
+    "request": {
+      "method": "POST",
+      "path": "/citation-check-documents",
+      "query": {},
+      "headers": {
+        "authorization": "Bearer test_token_123",
+        "accept": "application/json",
+        "user-agent": "klaracase-",
+        "content-type": "multipart/form-data"
+      },
+      "multipart": [
+        {
+          "name": "file",
+          "filename": "schriftsatz.pdf",
+          "content_type": "application/pdf"
+        }
+      ]
+    },
+    "request_count": 2,
+    "sleeps": [
+      {
+        "exact": 1
+      }
+    ]
+  },
+  "responses": [
+    {
+      "status": 429,
+      "headers": {
+        "content-type": "application/problem+json",
+        "x-klaracase-api-release": "0.95.0",
+        "retry-after": "1"
+      },
+      "body_file": "../problems/rate_limited.retry_1s.json"
+    },
+    {
+      "status": 202,
+      "headers": {
+        "content-type": "application/json",
+        "x-klaracase-api-release": "0.95.0"
+      },
+      "body_file": "../../examples/citation-check-documents.store.json"
+    }
+  ],
+  "expect_result": {
+    "kind": "success",
+    "assert": {
+      "meta.status": 202,
+      "meta.api_release": "0.95.0",
+      "status": "uploaded",
+      "id": "0193b0c6-3c4d-7e5f-8a60-7c8d9e0f1a2b"
+    }
+  }
+}

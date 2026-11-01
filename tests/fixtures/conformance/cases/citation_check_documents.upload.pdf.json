@@ -1,0 +1,63 @@
+{
+  "name": "citation_check_documents.upload.pdf",
+  "description": "Multipart upload, field `file`, 202 with the receipt. The runner compares field name, filename and content type only.",
+  "sdk": {
+    "group": "citation_check_documents",
+    "method": "upload",
+    "args": {
+      "file": {
+        "$file": "files/schriftsatz.pdf"
+      },
+      "filename": "schriftsatz.pdf",
+      "content_type": "application/pdf"
+    }
+  },
+  "expect": {
+    "request": {
+      "method": "POST",
+      "path": "/citation-check-documents",
+      "query": {},
+      "headers": {
+        "authorization": "Bearer test_token_123",
+        "accept": "application/json",
+        "user-agent": "klaracase-",
+        "content-type": "multipart/form-data"
+      },
+      "multipart": [
+        {
+          "name": "file",
+          "filename": "schriftsatz.pdf",
+          "content_type": "application/pdf"
+        }
+      ]
+    },
+    "request_count": 1
+  },
+  "responses": [
+    {
+      "status": 202,
+      "headers": {
+        "content-type": "application/json",
+        "x-klaracase-api-release": "0.95.0"
+      },
+      "body_file": "../../examples/citation-check-documents.store.json"
+    }
+  ],
+  "expect_result": {
+    "kind": "success",
+    "assert": {
+      "meta.status": 202,
+      "meta.api_release": "0.95.0",
+      "id": "0193b0c6-3c4d-7e5f-8a60-7c8d9e0f1a2b",
+      "filename": "schriftsatz.pdf",
+      "format": "pdf",
+      "status": "uploaded",
+      "char_count": null,
+      "check_max_chars": 20000,
+      "quoted_credits": null,
+      "error_code": null,
+      "credits.cost": 0,
+      "credits.credits_remaining": 18
+    }
+  }
+}

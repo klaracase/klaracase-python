@@ -1,0 +1,46 @@
+{
+  "name": "errors.statute_superseded",
+  "description": "404 with `successor`.",
+  "sdk": {
+    "group": "norms",
+    "method": "get",
+    "args": {
+      "reference": "§ 34 BBauG"
+    },
+    "options": {
+      "max_retries": 0
+    }
+  },
+  "expect": {
+    "request": {
+      "method": "GET",
+      "path": "/norms/%C2%A7%2034%20BBauG",
+      "query": {},
+      "headers": {
+        "authorization": "Bearer test_token_123",
+        "accept": "application/json",
+        "user-agent": "klaracase-"
+      }
+    },
+    "request_count": 1
+  },
+  "responses": [
+    {
+      "status": 404,
+      "headers": {
+        "content-type": "application/problem+json",
+        "x-klaracase-api-release": "0.95.0"
+      },
+      "body_file": "../problems/statute_superseded.json"
+    }
+  ],
+  "expect_result": {
+    "kind": "error",
+    "class": "NotFoundError",
+    "code": "statute_superseded",
+    "status": 404,
+    "fields": {
+      "successor": "BauGB"
+    }
+  }
+}

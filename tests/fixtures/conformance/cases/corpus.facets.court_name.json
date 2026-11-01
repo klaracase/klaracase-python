@@ -1,0 +1,56 @@
+{
+  "name": "corpus.facets.court_name",
+  "description": "Field in the path, `type` and `prefix` in the query.",
+  "sdk": {
+    "group": "corpus",
+    "method": "facets",
+    "args": {
+      "field": "court_name",
+      "type": "decision",
+      "prefix": "BG"
+    }
+  },
+  "expect": {
+    "request": {
+      "method": "GET",
+      "path": "/corpus/facets/court_name",
+      "query": {
+        "type": "decision",
+        "prefix": "BG"
+      },
+      "headers": {
+        "authorization": "Bearer test_token_123",
+        "accept": "application/json",
+        "user-agent": "klaracase-"
+      }
+    },
+    "request_count": 1
+  },
+  "responses": [
+    {
+      "status": 200,
+      "headers": {
+        "content-type": "application/json",
+        "x-klaracase-api-release": "0.95.0"
+      },
+      "body_file": "../../examples/corpus.facets.json"
+    }
+  ],
+  "expect_result": {
+    "kind": "success",
+    "assert": {
+      "meta.status": 200,
+      "meta.api_release": "0.95.0",
+      "field": "court_name",
+      "applies_to": "DECISION",
+      "values.BGH.value": 90000,
+      "values.BGH.is_floor": false,
+      "total_values": 3,
+      "truncated": false,
+      "value_limit": 500,
+      "count_basis": "indexed_passages",
+      "credits.cost": 0,
+      "credits.credits_remaining": 30
+    }
+  }
+}

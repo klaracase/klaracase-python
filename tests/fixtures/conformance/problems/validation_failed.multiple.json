@@ -1,0 +1,15 @@
+{
+  "type": "https://klaracase.de/docs/api/errors#validation_failed",
+  "title": "Unprocessable Content",
+  "status": 422,
+  "detail": "The date to field must be a date after or equal to date from. (and 1 more error)",
+  "code": "validation_failed",
+  "errors": {
+    "date_to": [
+      "The date to field must be a date after or equal to date from."
+    ],
+    "limit": [
+      "The limit field must be an integer."
+    ]
+  }
+}

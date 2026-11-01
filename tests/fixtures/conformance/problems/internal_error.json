@@ -1,0 +1,7 @@
+{
+  "type": "https://klaracase.de/docs/api/errors#internal_error",
+  "title": "Internal Server Error",
+  "status": 500,
+  "detail": "The request failed on our side. Retry later; if it persists, contact support.",
+  "code": "internal_error"
+}

@@ -1,0 +1,51 @@
+{
+  "name": "search.basic",
+  "description": "Top-level cross-type search (no resource group).",
+  "sdk": {
+    "group": null,
+    "method": "search",
+    "args": {
+      "query": "Untreue Vermögensbetreuungspflicht"
+    }
+  },
+  "expect": {
+    "request": {
+      "method": "GET",
+      "path": "/search",
+      "query": {
+        "query": "Untreue Vermögensbetreuungspflicht"
+      },
+      "headers": {
+        "authorization": "Bearer test_token_123",
+        "accept": "application/json",
+        "user-agent": "klaracase-"
+      }
+    },
+    "request_count": 1
+  },
+  "responses": [
+    {
+      "status": 200,
+      "headers": {
+        "content-type": "application/json",
+        "x-klaracase-api-release": "0.95.0"
+      },
+      "body_file": "../../examples/search.json"
+    }
+  ],
+  "expect_result": {
+    "kind": "success",
+    "assert": {
+      "meta.status": 200,
+      "meta.api_release": "0.95.0",
+      "sections.laws[0].abbreviation": "StGB",
+      "sections.laws[0].jurisdiction": "DE",
+      "sections.decisions[0].aktenzeichen": "1 StR 185/01",
+      "section_totals.decisions.total_available.value": 7,
+      "section_totals.laws.pool_exhaustive": true,
+      "limit": 5,
+      "credits.cost": 1,
+      "credits.credits_remaining": 28
+    }
+  }
+}

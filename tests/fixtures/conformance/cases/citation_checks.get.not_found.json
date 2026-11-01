@@ -1,0 +1,43 @@
+{
+  "name": "citation_checks.get.not_found",
+  "description": "404 on a run that is not the caller's organization's (generic framework wording).",
+  "sdk": {
+    "group": "citation_checks",
+    "method": "get",
+    "args": {
+      "run_id": "0193b0c5-1a2b-7c3d-8e4f-5a6b7c8d9e0f"
+    },
+    "options": {
+      "max_retries": 0
+    }
+  },
+  "expect": {
+    "request": {
+      "method": "GET",
+      "path": "/citation-checks/0193b0c5-1a2b-7c3d-8e4f-5a6b7c8d9e0f",
+      "query": {},
+      "headers": {
+        "authorization": "Bearer test_token_123",
+        "accept": "application/json",
+        "user-agent": "klaracase-"
+      }
+    },
+    "request_count": 1
+  },
+  "responses": [
+    {
+      "status": 404,
+      "headers": {
+        "content-type": "application/problem+json",
+        "x-klaracase-api-release": "0.95.0"
+      },
+      "body_file": "../problems/not_found.resource.json"
+    }
+  ],
+  "expect_result": {
+    "kind": "error",
+    "class": "NotFoundError",
+    "code": "not_found",
+    "status": 404
+  }
+}

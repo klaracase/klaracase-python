@@ -1,0 +1,66 @@
+{
+  "name": "datapackages.create.all_options",
+  "description": "Booleans are JSON booleans, false is sent, integers are JSON numbers.",
+  "sdk": {
+    "group": "datapackages",
+    "method": "create",
+    "args": {
+      "ids": [
+        "0193b0c4-5f1e-7a2b-9c3d-4e5f6a7b8c9d"
+      ],
+      "include_citations": false,
+      "full_text": true,
+      "max_chars": 5000
+    }
+  },
+  "expect": {
+    "request": {
+      "method": "POST",
+      "path": "/datapackages",
+      "query": {},
+      "headers": {
+        "authorization": "Bearer test_token_123",
+        "accept": "application/json",
+        "user-agent": "klaracase-",
+        "content-type": "application/json"
+      },
+      "json": {
+        "ids": [
+          "0193b0c4-5f1e-7a2b-9c3d-4e5f6a7b8c9d"
+        ],
+        "include_citations": false,
+        "full_text": true,
+        "max_chars": 5000
+      }
+    },
+    "request_count": 1
+  },
+  "responses": [
+    {
+      "status": 200,
+      "headers": {
+        "content-type": "application/json",
+        "x-klaracase-api-release": "0.95.0"
+      },
+      "body_file": "../../examples/datapackages.store.json"
+    }
+  ],
+  "expect_result": {
+    "kind": "success",
+    "assert": {
+      "meta.status": 200,
+      "meta.api_release": "0.95.0",
+      "decisions[0].aktenzeichen": "1 StR 185/01",
+      "decisions[0].excerpt_span": "document_start",
+      "citation_edges[0].reference_canonical": "BGH 1 StR 50/15",
+      "citation_edges[0].in_corpus": true,
+      "requested": 1,
+      "included": 1,
+      "deduped": 0,
+      "text_mode": "excerpt",
+      "max_chars": 700,
+      "credits.cost": 5,
+      "credits.credits_remaining": 20
+    }
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "type": "https://klaracase.de/docs/api/errors#text_too_long",
+  "title": "Unprocessable Content",
+  "status": 422,
+  "detail": "Text is 24310 characters, over the 20000-character limit for a synchronous check. Nothing was charged. Check longer documents in the Citation Check of the Klaracase web app, or split the text into parts.",
+  "code": "text_too_long"
+}

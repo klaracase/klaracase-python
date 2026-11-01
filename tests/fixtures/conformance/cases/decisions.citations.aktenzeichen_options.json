@@ -1,0 +1,61 @@
+{
+  "name": "decisions.citations.aktenzeichen_options",
+  "description": "An encoded Aktenzeichen in the MIDDLE of the path, plus every option.",
+  "sdk": {
+    "group": "decisions",
+    "method": "citations",
+    "args": {
+      "id": "VIII ZR 271/17",
+      "direction": "incoming",
+      "depth": 1,
+      "court": "BGH",
+      "date": "2019-03-27",
+      "page": 2
+    }
+  },
+  "expect": {
+    "request": {
+      "method": "GET",
+      "path": "/decisions/VIII%20ZR%20271%2F17/citations",
+      "query": {
+        "direction": "incoming",
+        "depth": "1",
+        "court": "BGH",
+        "date": "2019-03-27",
+        "page": "2"
+      },
+      "headers": {
+        "authorization": "Bearer test_token_123",
+        "accept": "application/json",
+        "user-agent": "klaracase-"
+      }
+    },
+    "request_count": 1
+  },
+  "responses": [
+    {
+      "status": 200,
+      "headers": {
+        "content-type": "application/json",
+        "x-klaracase-api-release": "0.95.0"
+      },
+      "body_file": "../../examples/decisions.citations.json"
+    }
+  ],
+  "expect_result": {
+    "kind": "success",
+    "assert": {
+      "meta.status": 200,
+      "meta.api_release": "0.95.0",
+      "source.aktenzeichen": "1 StR 185/01",
+      "references[0].reference_canonical": "BGH 1 StR 50/15",
+      "references[0].corpus.court": "BGH",
+      "references[0].hop": 1,
+      "served_direction": "both",
+      "pagination.page_size": 25,
+      "pagination.max_page": 20,
+      "credits.cost": 2,
+      "credits.credits_remaining": 25
+    }
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "type": "https://klaracase.de/docs/api/errors#unauthenticated",
+  "title": "Unauthorized",
+  "status": 401,
+  "detail": "Authentication is required. Send a Klaracase API token as a Bearer token.",
+  "code": "unauthenticated"
+}

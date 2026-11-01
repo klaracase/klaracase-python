@@ -1,0 +1,50 @@
+{
+  "name": "retry.402_not_retried",
+  "description": "402 is never retried.",
+  "sdk": {
+    "group": "decisions",
+    "method": "search",
+    "args": {
+      "query": "Untreue"
+    },
+    "options": {
+      "max_retries": 2
+    }
+  },
+  "expect": {
+    "request": {
+      "method": "GET",
+      "path": "/decisions/search",
+      "query": {
+        "query": "Untreue"
+      },
+      "headers": {
+        "authorization": "Bearer test_token_123",
+        "accept": "application/json",
+        "user-agent": "klaracase-"
+      }
+    },
+    "request_count": 1,
+    "sleeps": []
+  },
+  "responses": [
+    {
+      "status": 402,
+      "headers": {
+        "content-type": "application/problem+json",
+        "x-klaracase-api-release": "0.95.0"
+      },
+      "body_file": "../problems/insufficient_credits.json"
+    }
+  ],
+  "expect_result": {
+    "kind": "error",
+    "class": "InsufficientCreditsError",
+    "code": "insufficient_credits",
+    "status": 402,
+    "fields": {
+      "cost": 2,
+      "balance": 0
+    }
+  }
+}

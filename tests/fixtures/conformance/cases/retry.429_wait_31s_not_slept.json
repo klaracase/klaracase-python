@@ -1,0 +1,50 @@
+{
+  "name": "retry.429_wait_31s_not_slept",
+  "description": "31 seconds is above the limit: raised at once.",
+  "sdk": {
+    "group": "decisions",
+    "method": "search",
+    "args": {
+      "query": "Untreue"
+    },
+    "options": {
+      "max_retries": 2
+    }
+  },
+  "expect": {
+    "request": {
+      "method": "GET",
+      "path": "/decisions/search",
+      "query": {
+        "query": "Untreue"
+      },
+      "headers": {
+        "authorization": "Bearer test_token_123",
+        "accept": "application/json",
+        "user-agent": "klaracase-"
+      }
+    },
+    "request_count": 1,
+    "sleeps": []
+  },
+  "responses": [
+    {
+      "status": 429,
+      "headers": {
+        "content-type": "application/problem+json",
+        "x-klaracase-api-release": "0.95.0",
+        "retry-after": "31"
+      },
+      "body_file": "../problems/rate_limited.retry_31s.json"
+    }
+  ],
+  "expect_result": {
+    "kind": "error",
+    "class": "RateLimitError",
+    "code": "rate_limited",
+    "status": 429,
+    "fields": {
+      "retry_after_seconds": 31
+    }
+  }
+}

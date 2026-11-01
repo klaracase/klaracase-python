@@ -1,0 +1,7 @@
+{
+  "type": "https://klaracase.de/docs/api/errors#two_factor_required",
+  "title": "Forbidden",
+  "status": 403,
+  "detail": "Your organization requires two-factor sign-in, and this account has not set it up. Set up two-factor sign-in in Settings, then try again. Nothing was executed and nothing was charged.",
+  "code": "two_factor_required"
+}

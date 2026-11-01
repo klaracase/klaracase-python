@@ -1,0 +1,50 @@
+{
+  "name": "retry.429_long_wait_not_slept",
+  "description": "retry_after_seconds 120 is above 30: no sleep, RateLimitError at once with the value.",
+  "sdk": {
+    "group": "decisions",
+    "method": "search",
+    "args": {
+      "query": "Untreue"
+    },
+    "options": {
+      "max_retries": 2
+    }
+  },
+  "expect": {
+    "request": {
+      "method": "GET",
+      "path": "/decisions/search",
+      "query": {
+        "query": "Untreue"
+      },
+      "headers": {
+        "authorization": "Bearer test_token_123",
+        "accept": "application/json",
+        "user-agent": "klaracase-"
+      }
+    },
+    "request_count": 1,
+    "sleeps": []
+  },
+  "responses": [
+    {
+      "status": 429,
+      "headers": {
+        "content-type": "application/problem+json",
+        "x-klaracase-api-release": "0.95.0",
+        "retry-after": "120"
+      },
+      "body_file": "../problems/rate_limited.retry_120s.json"
+    }
+  ],
+  "expect_result": {
+    "kind": "error",
+    "class": "RateLimitError",
+    "code": "rate_limited",
+    "status": 429,
+    "fields": {
+      "retry_after_seconds": 120
+    }
+  }
+}

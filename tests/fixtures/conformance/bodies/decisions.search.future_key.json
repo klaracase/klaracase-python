@@ -1,0 +1,62 @@
+{
+  "results": [
+    {
+      "id": "0193b0c4-5f1e-7a2b-9c3d-4e5f6a7b8c9d",
+      "aktenzeichen": "1 StR 185/01",
+      "court": "BGH",
+      "date": "2001-11-15",
+      "document_type": "Urteil",
+      "title": "BGH, Urteil vom 15.11.2001",
+      "snippet": "… die <mark>Vermögensbetreuungspflicht</mark> des Geschäftsführers …",
+      "snippets": [
+        {
+          "text": "… die <mark>Vermögensbetreuungspflicht</mark> des Geschäftsführers …",
+          "rn": 21
+        }
+      ],
+      "chunk_title": "Gründe",
+      "rn_range": "21-23",
+      "fundstelle": null,
+      "fortgeltung_checked": false,
+      "fortgeltung_note": "Rechtskraft/Fortgeltung (whether a decision is still good law) is NOT checked. A decision returned here may have been quashed or superseded on appeal, and the ABSENCE of any such note is not evidence that it still stands.",
+      "confidence": "high",
+      "future_result_key": true
+    }
+  ],
+  "payload_truncated": false,
+  "total_available": {
+    "value": 42,
+    "is_floor": false
+  },
+  "total_available_basis": "matching_indexed_passages_lexical_arm",
+  "candidate_pool": 42,
+  "pool_exhaustive": false,
+  "truncated": true,
+  "page": 1,
+  "limit": 20,
+  "mode": "hybrid",
+  "frequently_cited_by_results": [],
+  "query_expansion": {
+    "status": "abstained",
+    "applied": false,
+    "reason": "no_lay_term",
+    "note": "Nothing was added to your query: it was retrieved exactly as you typed it. …"
+  },
+  "api_version": "1.0.0",
+  "changelog_url": "https://klaracase.de/docs/mcp/changelog",
+  "credits": {
+    "metered": true,
+    "cost": 1,
+    "credits_remaining": 29
+  },
+  "top_confidence": "high",
+  "future_key": {
+    "nested": [
+      1,
+      2,
+      3
+    ],
+    "label": "kept"
+  },
+  "another_future_key": "x"
+}

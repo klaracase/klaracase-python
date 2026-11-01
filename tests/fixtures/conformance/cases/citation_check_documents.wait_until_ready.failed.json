@@ -1,0 +1,60 @@
+{
+  "name": "citation_check_documents.wait_until_ready.failed",
+  "description": "A terminal `failed` receipt raises DocumentFailedError (a KlaracaseError). `code` mirrors `error_code`; there is no HTTP error, so `status` is null.",
+  "sdk": {
+    "group": "citation_check_documents",
+    "method": "wait_until_ready",
+    "args": {
+      "document_id": "0193b0c6-3c4d-7e5f-8a60-7c8d9e0f1a2b",
+      "poll_interval": 1,
+      "timeout": 60
+    }
+  },
+  "expect": {
+    "request": {
+      "method": "GET",
+      "path": "/citation-check-documents/0193b0c6-3c4d-7e5f-8a60-7c8d9e0f1a2b",
+      "query": {},
+      "headers": {
+        "authorization": "Bearer test_token_123",
+        "accept": "application/json",
+        "user-agent": "klaracase-"
+      }
+    },
+    "request_count": 2,
+    "sleeps": [
+      {
+        "exact": 1
+      }
+    ]
+  },
+  "responses": [
+    {
+      "status": 200,
+      "headers": {
+        "content-type": "application/json",
+        "x-klaracase-api-release": "0.95.0"
+      },
+      "body_file": "../bodies/documents.extracting.json"
+    },
+    {
+      "status": 200,
+      "headers": {
+        "content-type": "application/json",
+        "x-klaracase-api-release": "0.95.0"
+      },
+      "body_file": "../bodies/documents.failed.encrypted_pdf.json"
+    }
+  ],
+  "expect_result": {
+    "kind": "error",
+    "class": "DocumentFailedError",
+    "code": "encrypted_pdf",
+    "status": null,
+    "fields": {
+      "error_code": "encrypted_pdf",
+      "document.id": "0193b0c6-3c4d-7e5f-8a60-7c8d9e0f1a2b",
+      "document.status": "failed"
+    }
+  }
+}

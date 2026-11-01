@@ -1,0 +1,51 @@
+{
+  "name": "norms.get.article_with_jurisdiction",
+  "description": "The dot after `Art` stays; the spaces are %20; `jurisdiction` is a query parameter.",
+  "sdk": {
+    "group": "norms",
+    "method": "get",
+    "args": {
+      "reference": "Art. 6 DSGVO",
+      "jurisdiction": "EU"
+    }
+  },
+  "expect": {
+    "request": {
+      "method": "GET",
+      "path": "/norms/Art.%206%20DSGVO",
+      "query": {
+        "jurisdiction": "EU"
+      },
+      "headers": {
+        "authorization": "Bearer test_token_123",
+        "accept": "application/json",
+        "user-agent": "klaracase-"
+      }
+    },
+    "request_count": 1
+  },
+  "responses": [
+    {
+      "status": 200,
+      "headers": {
+        "content-type": "application/json",
+        "x-klaracase-api-release": "0.95.0"
+      },
+      "body_file": "../bodies/norms.show.dsgvo.json"
+    }
+  ],
+  "expect_result": {
+    "kind": "success",
+    "assert": {
+      "meta.status": 200,
+      "meta.api_release": "0.95.0",
+      "reference": "Art. 6 DSGVO",
+      "law.abbreviation": "DSGVO",
+      "law.jurisdiction": "EU",
+      "norm.number": "Art. 6",
+      "norm.title": "Rechtmäßigkeit der Verarbeitung",
+      "neighbours.next": "Art. 7 DSGVO",
+      "credits.cost": 1
+    }
+  }
+}

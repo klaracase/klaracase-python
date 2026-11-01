@@ -1,0 +1,47 @@
+{
+  "name": "errors.document_unavailable",
+  "description": "409. The registry lists an extra `status` member, but the server never serves it (see README).",
+  "sdk": {
+    "group": "citation_checks",
+    "method": "create",
+    "args": {
+      "document_id": "0193b0c6-3c4d-7e5f-8a60-7c8d9e0f1a2b"
+    },
+    "options": {
+      "max_retries": 0
+    }
+  },
+  "expect": {
+    "request": {
+      "method": "POST",
+      "path": "/citation-checks",
+      "query": {},
+      "headers": {
+        "authorization": "Bearer test_token_123",
+        "accept": "application/json",
+        "user-agent": "klaracase-",
+        "content-type": "application/json"
+      },
+      "json": {
+        "document_id": "0193b0c6-3c4d-7e5f-8a60-7c8d9e0f1a2b"
+      }
+    },
+    "request_count": 1
+  },
+  "responses": [
+    {
+      "status": 409,
+      "headers": {
+        "content-type": "application/problem+json",
+        "x-klaracase-api-release": "0.95.0"
+      },
+      "body_file": "../problems/document_unavailable.json"
+    }
+  ],
+  "expect_result": {
+    "kind": "error",
+    "class": "ConflictError",
+    "code": "document_unavailable",
+    "status": 409
+  }
+}

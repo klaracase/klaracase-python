@@ -1,0 +1,56 @@
+{
+  "name": "transport.get_retried_then_success",
+  "description": "The connection drops after the request is read, then 200: a GET is retried once.",
+  "sdk": {
+    "group": "decisions",
+    "method": "search",
+    "args": {
+      "query": "Untreue"
+    },
+    "options": {
+      "max_retries": 2
+    }
+  },
+  "expect": {
+    "request": {
+      "method": "GET",
+      "path": "/decisions/search",
+      "query": {
+        "query": "Untreue"
+      },
+      "headers": {
+        "authorization": "Bearer test_token_123",
+        "accept": "application/json",
+        "user-agent": "klaracase-"
+      }
+    },
+    "request_count": 2,
+    "sleeps": [
+      {
+        "min": 0,
+        "max": 0.5
+      }
+    ]
+  },
+  "responses": [
+    {
+      "drop_connection": true
+    },
+    {
+      "status": 200,
+      "headers": {
+        "content-type": "application/json",
+        "x-klaracase-api-release": "0.95.0"
+      },
+      "body_file": "../../examples/decisions.search.json"
+    }
+  ],
+  "expect_result": {
+    "kind": "success",
+    "assert": {
+      "meta.status": 200,
+      "meta.api_release": "0.95.0",
+      "results[0].aktenzeichen": "1 StR 185/01"
+    }
+  }
+}

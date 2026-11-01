@@ -1,0 +1,48 @@
+{
+  "name": "meta.unknown_keys_preserved",
+  "description": "Unknown keys survive, at the top level and inside a result. `extra.<key>` is the logical path of the unknown-key bag. `body_roundtrip` requires the SDK's lossless view to equal the body.",
+  "sdk": {
+    "group": "decisions",
+    "method": "search",
+    "args": {
+      "query": "Untreue"
+    }
+  },
+  "expect": {
+    "request": {
+      "method": "GET",
+      "path": "/decisions/search",
+      "query": {
+        "query": "Untreue"
+      },
+      "headers": {
+        "authorization": "Bearer test_token_123",
+        "accept": "application/json",
+        "user-agent": "klaracase-"
+      }
+    },
+    "request_count": 1
+  },
+  "responses": [
+    {
+      "status": 200,
+      "headers": {
+        "content-type": "application/json",
+        "x-klaracase-api-release": "0.95.0"
+      },
+      "body_file": "../bodies/decisions.search.future_key.json"
+    }
+  ],
+  "expect_result": {
+    "kind": "success",
+    "assert": {
+      "meta.api_release": "0.95.0",
+      "results[0].aktenzeichen": "1 StR 185/01",
+      "extra.future_key.nested[1]": 2,
+      "extra.future_key.label": "kept",
+      "extra.another_future_key": "x",
+      "credits.cost": 1
+    },
+    "body_roundtrip": true
+  }
+}

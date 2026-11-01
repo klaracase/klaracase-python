@@ -1,0 +1,27 @@
+{
+  "name": "construction.missing_token",
+  "description": "No token and no environment variable: ConfigurationError at construction, no request. ConfigurationError is NOT a KlaracaseError.",
+  "sdk": {
+    "group": "corpus",
+    "method": "coverage",
+    "args": {},
+    "options": {
+      "token": null
+    },
+    "env": {}
+  },
+  "expect": {
+    "request": null,
+    "request_count": 0
+  },
+  "responses": [],
+  "expect_result": {
+    "kind": "error",
+    "class": "ConfigurationError",
+    "fields": {
+      "message": {
+        "$contains": "KLARACASE_API_TOKEN"
+      }
+    }
+  }
+}

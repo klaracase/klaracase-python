@@ -1,0 +1,66 @@
+{
+  "name": "deprecation.warns_once",
+  "description": "Two answers with the same headers on the same client: two requests, ONE hook call.",
+  "sdk": {
+    "group": "decisions",
+    "method": "search",
+    "args": {
+      "query": "Untreue"
+    },
+    "repeat": 2
+  },
+  "expect": {
+    "request": {
+      "method": "GET",
+      "path": "/decisions/search",
+      "query": {
+        "query": "Untreue"
+      },
+      "headers": {
+        "authorization": "Bearer test_token_123",
+        "accept": "application/json",
+        "user-agent": "klaracase-"
+      }
+    },
+    "request_count": 2
+  },
+  "responses": [
+    {
+      "status": 200,
+      "headers": {
+        "content-type": "application/json",
+        "x-klaracase-api-release": "0.95.0",
+        "deprecation": "@1767225600",
+        "sunset": "Sat, 01 Aug 2026 00:00:00 GMT",
+        "link": "<https://klaracase.de/docs/api#deprecations>; rel=\"deprecation\""
+      },
+      "body_file": "../../examples/decisions.search.json"
+    },
+    {
+      "status": 200,
+      "headers": {
+        "content-type": "application/json",
+        "x-klaracase-api-release": "0.95.0",
+        "deprecation": "@1767225600",
+        "sunset": "Sat, 01 Aug 2026 00:00:00 GMT",
+        "link": "<https://klaracase.de/docs/api#deprecations>; rel=\"deprecation\""
+      },
+      "body_file": "../../examples/decisions.search.json"
+    }
+  ],
+  "expect_result": {
+    "kind": "success",
+    "assert": {
+      "meta.status": 200,
+      "meta.api_release": "0.95.0",
+      "results[0].aktenzeichen": "1 StR 185/01"
+    },
+    "deprecation_warning": true,
+    "deprecation": {
+      "deprecation": "@1767225600",
+      "sunset": "Sat, 01 Aug 2026 00:00:00 GMT",
+      "link": "<https://klaracase.de/docs/api#deprecations>; rel=\"deprecation\""
+    },
+    "deprecation_warning_count": 1
+  }
+}

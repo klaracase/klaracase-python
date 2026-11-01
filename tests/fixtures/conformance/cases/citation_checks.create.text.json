@@ -1,0 +1,61 @@
+{
+  "name": "citation_checks.create.text",
+  "description": "JSON body with `text` only. UTF-8 is sent as is or as \\u escapes (the runner compares the decoded body).",
+  "sdk": {
+    "group": "citation_checks",
+    "method": "create",
+    "args": {
+      "text": "Der Bundesgerichtshof hat im Urteil vom 15.11.2001 zum Az. 1 StR 185/01 entschieden, dass § 266 StGB eine Vermögensbetreuungspflicht voraussetzt."
+    }
+  },
+  "expect": {
+    "request": {
+      "method": "POST",
+      "path": "/citation-checks",
+      "query": {},
+      "headers": {
+        "authorization": "Bearer test_token_123",
+        "accept": "application/json",
+        "user-agent": "klaracase-",
+        "content-type": "application/json"
+      },
+      "json": {
+        "text": "Der Bundesgerichtshof hat im Urteil vom 15.11.2001 zum Az. 1 StR 185/01 entschieden, dass § 266 StGB eine Vermögensbetreuungspflicht voraussetzt."
+      }
+    },
+    "request_count": 1
+  },
+  "responses": [
+    {
+      "status": 200,
+      "headers": {
+        "content-type": "application/json",
+        "x-klaracase-api-release": "0.95.0"
+      },
+      "body_file": "../../examples/citation-checks.store.json"
+    }
+  ],
+  "expect_result": {
+    "kind": "success",
+    "assert": {
+      "meta.status": 200,
+      "meta.api_release": "0.95.0",
+      "id": "0193b0c5-1a2b-7c3d-8e4f-5a6b7c8d9e0f",
+      "status": "complete",
+      "source": "api_v1",
+      "verdict_counts.verified_corpus": 1,
+      "verdict_counts.not_found": 1,
+      "unique_citations[1].canonical": "§ 266a Abs. 9 StGB",
+      "unique_citations[1].verdict": "not_found",
+      "findings[0].verdict": "verified_corpus",
+      "findings[0].start_offset": 118,
+      "findings[0].end_offset": 157,
+      "findings[0].matched_decision.ecli": "ECLI:DE:BGH:2001:151101U1STR185.01.0",
+      "partial": false,
+      "payload_truncated": false,
+      "credits.metered": true,
+      "credits.cost": 2,
+      "credits.credits_remaining": 18
+    }
+  }
+}

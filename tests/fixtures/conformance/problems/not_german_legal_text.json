@@ -1,0 +1,7 @@
+{
+  "type": "https://klaracase.de/docs/api/errors#not_german_legal_text",
+  "title": "Unprocessable Content",
+  "status": 422,
+  "detail": "The text does not look like German legal text: it shows fewer than two of the five legal signals a check needs. Nothing was charged. Send the text of a German brief, judgment or opinion.",
+  "code": "not_german_legal_text"
+}

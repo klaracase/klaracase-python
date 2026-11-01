@@ -1,0 +1,45 @@
+{
+  "name": "citation_check_documents.wait_until_ready.already_ready",
+  "description": "Ready on the first poll: one GET and no sleep.",
+  "sdk": {
+    "group": "citation_check_documents",
+    "method": "wait_until_ready",
+    "args": {
+      "document_id": "0193b0c6-3c4d-7e5f-8a60-7c8d9e0f1a2b",
+      "poll_interval": 1,
+      "timeout": 60
+    }
+  },
+  "expect": {
+    "request": {
+      "method": "GET",
+      "path": "/citation-check-documents/0193b0c6-3c4d-7e5f-8a60-7c8d9e0f1a2b",
+      "query": {},
+      "headers": {
+        "authorization": "Bearer test_token_123",
+        "accept": "application/json",
+        "user-agent": "klaracase-"
+      }
+    },
+    "request_count": 1,
+    "sleeps": []
+  },
+  "responses": [
+    {
+      "status": 200,
+      "headers": {
+        "content-type": "application/json",
+        "x-klaracase-api-release": "0.95.0"
+      },
+      "body_file": "../bodies/documents.ready.json"
+    }
+  ],
+  "expect_result": {
+    "kind": "success",
+    "assert": {
+      "meta.status": 200,
+      "meta.api_release": "0.95.0",
+      "status": "ready"
+    }
+  }
+}

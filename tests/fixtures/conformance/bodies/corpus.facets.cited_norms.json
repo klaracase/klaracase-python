@@ -1,0 +1,27 @@
+{
+  "field": "cited_norms",
+  "applies_to": "DECISION",
+  "values": {
+    "§ 543 Abs. 1 BGB": {
+      "value": 120,
+      "is_floor": false
+    },
+    "§ 543 Abs. 2 BGB": {
+      "value": 80,
+      "is_floor": false
+    }
+  },
+  "total_values": 2,
+  "truncated": false,
+  "value_limit": 500,
+  "count_basis": "indexed_passages",
+  "as_of": "2026-10-01T09:40:00+00:00",
+  "api_version": "1.0.0",
+  "changelog_url": "https://klaracase.de/docs/mcp/changelog",
+  "credits": {
+    "metered": true,
+    "cost": 0,
+    "credits_remaining": 30
+  },
+  "norm": "§ 543 BGB"
+}

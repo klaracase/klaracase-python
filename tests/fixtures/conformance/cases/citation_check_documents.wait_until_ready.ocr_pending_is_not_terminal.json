@@ -1,0 +1,58 @@
+{
+  "name": "citation_check_documents.wait_until_ready.ocr_pending_is_not_terminal",
+  "description": "ocr_pending keeps polling.",
+  "sdk": {
+    "group": "citation_check_documents",
+    "method": "wait_until_ready",
+    "args": {
+      "document_id": "0193b0c6-3c4d-7e5f-8a60-7c8d9e0f1a2b",
+      "poll_interval": 1,
+      "timeout": 60
+    }
+  },
+  "expect": {
+    "request": {
+      "method": "GET",
+      "path": "/citation-check-documents/0193b0c6-3c4d-7e5f-8a60-7c8d9e0f1a2b",
+      "query": {},
+      "headers": {
+        "authorization": "Bearer test_token_123",
+        "accept": "application/json",
+        "user-agent": "klaracase-"
+      }
+    },
+    "request_count": 2,
+    "sleeps": [
+      {
+        "exact": 1
+      }
+    ]
+  },
+  "responses": [
+    {
+      "status": 200,
+      "headers": {
+        "content-type": "application/json",
+        "x-klaracase-api-release": "0.95.0"
+      },
+      "body_file": "../bodies/documents.ocr_pending.json"
+    },
+    {
+      "status": 200,
+      "headers": {
+        "content-type": "application/json",
+        "x-klaracase-api-release": "0.95.0"
+      },
+      "body_file": "../bodies/documents.ready.json"
+    }
+  ],
+  "expect_result": {
+    "kind": "success",
+    "assert": {
+      "meta.status": 200,
+      "meta.api_release": "0.95.0",
+      "status": "ready",
+      "char_count": 14830
+    }
+  }
+}

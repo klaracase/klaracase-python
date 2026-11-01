@@ -1,0 +1,42 @@
+{
+  "name": "errors.empty_body_503",
+  "description": "A bare 503 with no body is still ServiceUnavailableError (status decides the class); code is `unknown`.",
+  "sdk": {
+    "group": "decisions",
+    "method": "search",
+    "args": {
+      "query": "Untreue"
+    },
+    "options": {
+      "max_retries": 0
+    }
+  },
+  "expect": {
+    "request": {
+      "method": "GET",
+      "path": "/decisions/search",
+      "query": {
+        "query": "Untreue"
+      },
+      "headers": {
+        "authorization": "Bearer test_token_123",
+        "accept": "application/json",
+        "user-agent": "klaracase-"
+      }
+    },
+    "request_count": 1
+  },
+  "responses": [
+    {
+      "status": 503,
+      "headers": {},
+      "body_text": ""
+    }
+  ],
+  "expect_result": {
+    "kind": "error",
+    "class": "ServiceUnavailableError",
+    "code": "unknown",
+    "status": 503
+  }
+}

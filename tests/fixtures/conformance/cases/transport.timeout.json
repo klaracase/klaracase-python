@@ -1,0 +1,48 @@
+{
+  "name": "transport.timeout",
+  "description": "The answer takes longer than `timeout`: TransportError. The mock waits `delay_seconds` before it answers.",
+  "sdk": {
+    "group": "decisions",
+    "method": "search",
+    "args": {
+      "query": "Untreue"
+    },
+    "options": {
+      "max_retries": 0,
+      "timeout": 0.3
+    }
+  },
+  "expect": {
+    "request": {
+      "method": "GET",
+      "path": "/decisions/search",
+      "query": {
+        "query": "Untreue"
+      },
+      "headers": {
+        "authorization": "Bearer test_token_123",
+        "accept": "application/json",
+        "user-agent": "klaracase-"
+      }
+    },
+    "request_count": 1,
+    "sleeps": []
+  },
+  "responses": [
+    {
+      "status": 200,
+      "headers": {
+        "content-type": "application/json",
+        "x-klaracase-api-release": "0.95.0"
+      },
+      "body_file": "../../examples/decisions.search.json",
+      "delay_seconds": 2
+    }
+  ],
+  "expect_result": {
+    "kind": "error",
+    "class": "TransportError",
+    "code": null,
+    "status": null
+  }
+}

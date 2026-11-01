@@ -1,0 +1,42 @@
+{
+  "name": "decisions.get.path_reserved_characters",
+  "description": "Encoding rule stress test: everything outside A-Z a-z 0-9 - . _ ~ is encoded, including ! * ' ( ) that JavaScript encodeURIComponent leaves alone and : @ , ; $ & = + that some Go and Rust helpers leave alone.",
+  "sdk": {
+    "group": "decisions",
+    "method": "get",
+    "args": {
+      "id": "a-b_c.d~e f/g?h#i%j+k&l=m:n@o,p;q!r*s'(t)$u"
+    }
+  },
+  "expect": {
+    "request": {
+      "method": "GET",
+      "path": "/decisions/a-b_c.d~e%20f%2Fg%3Fh%23i%25j%2Bk%26l%3Dm%3An%40o%2Cp%3Bq%21r%2As%27%28t%29%24u",
+      "query": {},
+      "headers": {
+        "authorization": "Bearer test_token_123",
+        "accept": "application/json",
+        "user-agent": "klaracase-"
+      }
+    },
+    "request_count": 1
+  },
+  "responses": [
+    {
+      "status": 200,
+      "headers": {
+        "content-type": "application/json",
+        "x-klaracase-api-release": "0.95.0"
+      },
+      "body_file": "../../examples/decisions.show.json"
+    }
+  ],
+  "expect_result": {
+    "kind": "success",
+    "assert": {
+      "meta.status": 200,
+      "meta.api_release": "0.95.0",
+      "aktenzeichen": "1 StR 185/01"
+    }
+  }
+}

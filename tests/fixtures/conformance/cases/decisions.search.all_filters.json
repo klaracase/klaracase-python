@@ -1,0 +1,74 @@
+{
+  "name": "decisions.search.all_filters",
+  "description": "Every documented filter once. Booleans as true/false, integers as decimal strings.",
+  "sdk": {
+    "group": "decisions",
+    "method": "search",
+    "args": {
+      "query": "Schadensersatz Verkehrsunfall",
+      "court": "BGH",
+      "branch": "ordentlich",
+      "document_type": "Urteil",
+      "cited_norm": "§ 823 BGB",
+      "cited_statutes": [
+        "StVG",
+        "StVO",
+        "BDSG"
+      ],
+      "date_from": "2015-01-01",
+      "date_to": "2020-12-31",
+      "mode": "keyword",
+      "limit": 10,
+      "page": 2,
+      "bridge": true
+    }
+  },
+  "expect": {
+    "request": {
+      "method": "GET",
+      "path": "/decisions/search",
+      "query": {
+        "query": "Schadensersatz Verkehrsunfall",
+        "court": "BGH",
+        "branch": "ordentlich",
+        "document_type": "Urteil",
+        "cited_norm": "§ 823 BGB",
+        "cited_statutes[]": [
+          "StVG",
+          "StVO",
+          "BDSG"
+        ],
+        "date_from": "2015-01-01",
+        "date_to": "2020-12-31",
+        "mode": "keyword",
+        "limit": "10",
+        "page": "2",
+        "bridge": "true"
+      },
+      "headers": {
+        "authorization": "Bearer test_token_123",
+        "accept": "application/json",
+        "user-agent": "klaracase-"
+      }
+    },
+    "request_count": 1
+  },
+  "responses": [
+    {
+      "status": 200,
+      "headers": {
+        "content-type": "application/json",
+        "x-klaracase-api-release": "0.95.0"
+      },
+      "body_file": "../../examples/decisions.search.json"
+    }
+  ],
+  "expect_result": {
+    "kind": "success",
+    "assert": {
+      "meta.status": 200,
+      "meta.api_release": "0.95.0",
+      "page": 1
+    }
+  }
+}

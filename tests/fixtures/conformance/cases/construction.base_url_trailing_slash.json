@@ -1,0 +1,42 @@
+{
+  "name": "construction.base_url_trailing_slash",
+  "description": "A base URL ending in `/` never produces `//` in the request path.",
+  "sdk": {
+    "group": "corpus",
+    "method": "coverage",
+    "args": {},
+    "options": {
+      "base_url_trailing_slash": true
+    }
+  },
+  "expect": {
+    "request": {
+      "method": "GET",
+      "path": "/corpus/coverage",
+      "query": {},
+      "headers": {
+        "authorization": "Bearer test_token_123",
+        "accept": "application/json",
+        "user-agent": "klaracase-"
+      }
+    },
+    "request_count": 1
+  },
+  "responses": [
+    {
+      "status": 200,
+      "headers": {
+        "content-type": "application/json",
+        "x-klaracase-api-release": "0.95.0"
+      },
+      "body_file": "../../examples/corpus.coverage.json"
+    }
+  ],
+  "expect_result": {
+    "kind": "success",
+    "assert": {
+      "meta.status": 200,
+      "meta.api_release": "0.95.0"
+    }
+  }
+}

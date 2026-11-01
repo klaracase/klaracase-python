@@ -1,0 +1,27 @@
+{
+  "name": "construction.empty_token",
+  "description": "An empty token string counts as missing.",
+  "sdk": {
+    "group": "corpus",
+    "method": "coverage",
+    "args": {},
+    "options": {
+      "token": ""
+    },
+    "env": {}
+  },
+  "expect": {
+    "request": null,
+    "request_count": 0
+  },
+  "responses": [],
+  "expect_result": {
+    "kind": "error",
+    "class": "ConfigurationError",
+    "fields": {
+      "message": {
+        "$contains": "KLARACASE_API_TOKEN"
+      }
+    }
+  }
+}

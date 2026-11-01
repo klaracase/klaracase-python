@@ -1,0 +1,8 @@
+{
+  "type": "https://klaracase.de/docs/api/errors#token_ability_missing",
+  "title": "Forbidden",
+  "status": 403,
+  "detail": "This API token does not carry the `citation-check` ability this endpoint needs. Nothing was executed and nothing was charged. Create a token with that ability in Settings, API tokens.",
+  "code": "token_ability_missing",
+  "required_ability": "citation-check"
+}

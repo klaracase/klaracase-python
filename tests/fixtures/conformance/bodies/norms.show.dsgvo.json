@@ -1,0 +1,55 @@
+{
+  "reference": "Art. 6 DSGVO",
+  "requested_reference": "Art. 6 DSGVO",
+  "law": {
+    "id": "0193b0c4-5f1e-7a2b-9c3d-4e5f6a7b8c9d",
+    "abbreviation": "DSGVO",
+    "source_abbreviation": "DSGVO",
+    "official_name": "Datenschutz-Grundverordnung",
+    "law_level": "EU",
+    "jurisdiction": "EU",
+    "source_url": "https://eur-lex.europa.eu/eli/reg/2016/679/oj",
+    "upstream_status": "confirmed",
+    "upstream_last_seen_at": "2026-10-05T04:17:00Z",
+    "upstream_missing_since": null
+  },
+  "norm": {
+    "number": "Art. 6",
+    "title": "Rechtmäßigkeit der Verarbeitung",
+    "lifecycle": "current",
+    "text": "(1) Die Verarbeitung ist nur rechtmäßig, wenn mindestens eine der nachstehenden Bedingungen erfüllt ist: …",
+    "absatz_identifiers": [
+      "1"
+    ],
+    "chars": 112
+  },
+  "requested_qualifiers": [],
+  "version": {
+    "id": "0193b0c4-aaaa-7a2b-9c3d-4e5f6a7b8c9d",
+    "last_amendment_date": "2024-12-20",
+    "last_amendment_date_basis": "source_stand",
+    "source_fetched_at": "2026-10-05T04:17:00Z",
+    "source_last_seen_at": "2026-10-05T04:17:00Z"
+  },
+  "neighbours": {
+    "previous": "Art. 5 DSGVO",
+    "next": "Art. 7 DSGVO"
+  },
+  "links": {
+    "decisions_citing": {
+      "tool": "search_decisions",
+      "arguments": {
+        "cited_norm": "Art. 6 DSGVO"
+      }
+    },
+    "decisions_citing_url": "/api/v1/decisions/search?cited_norm=Art.%206%20DSGVO",
+    "self_url": "/api/v1/norms/Art.%206%20DSGVO"
+  },
+  "api_version": "1.0.0",
+  "changelog_url": "https://klaracase.de/docs/mcp/changelog",
+  "credits": {
+    "metered": true,
+    "cost": 1,
+    "credits_remaining": 27
+  }
+}

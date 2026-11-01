@@ -1,0 +1,53 @@
+{
+  "name": "errors.volume_cap",
+  "description": "429 volume_cap: the wait is hours, so the SDK raises at once even with retries allowed.",
+  "sdk": {
+    "group": "decisions",
+    "method": "search",
+    "args": {
+      "query": "Untreue"
+    },
+    "options": {
+      "max_retries": 2
+    }
+  },
+  "expect": {
+    "request": {
+      "method": "GET",
+      "path": "/decisions/search",
+      "query": {
+        "query": "Untreue"
+      },
+      "headers": {
+        "authorization": "Bearer test_token_123",
+        "accept": "application/json",
+        "user-agent": "klaracase-"
+      }
+    },
+    "request_count": 1,
+    "sleeps": []
+  },
+  "responses": [
+    {
+      "status": 429,
+      "headers": {
+        "content-type": "application/problem+json",
+        "x-klaracase-api-release": "0.95.0",
+        "retry-after": "41230"
+      },
+      "body_file": "../problems/volume_cap.json"
+    }
+  ],
+  "expect_result": {
+    "kind": "error",
+    "class": "RateLimitError",
+    "code": "volume_cap",
+    "status": 429,
+    "fields": {
+      "unit": "rows",
+      "cap": 1000,
+      "resets_at": "2026-11-02T00:00:00+01:00",
+      "retry_after_seconds": 41230
+    }
+  }
+}

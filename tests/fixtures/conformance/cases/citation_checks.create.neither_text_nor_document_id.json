@@ -1,0 +1,22 @@
+{
+  "name": "citation_checks.create.neither_text_nor_document_id",
+  "description": "Neither given: refused on the client BEFORE any request.",
+  "sdk": {
+    "group": "citation_checks",
+    "method": "create",
+    "args": {
+      "reference_date": "2024-05-01"
+    }
+  },
+  "expect": {
+    "request": null,
+    "request_count": 0
+  },
+  "responses": [],
+  "expect_result": {
+    "kind": "error",
+    "class": "ValidationError",
+    "code": "client_validation",
+    "status": null
+  }
+}

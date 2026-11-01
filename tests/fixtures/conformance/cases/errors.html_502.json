@@ -1,0 +1,51 @@
+{
+  "name": "errors.html_502",
+  "description": "A non-JSON 502 from nginx: ApiError, code `unknown`, raw body in detail. 502 is not retried.",
+  "sdk": {
+    "group": "decisions",
+    "method": "search",
+    "args": {
+      "query": "Untreue"
+    },
+    "options": {
+      "max_retries": 2
+    }
+  },
+  "expect": {
+    "request": {
+      "method": "GET",
+      "path": "/decisions/search",
+      "query": {
+        "query": "Untreue"
+      },
+      "headers": {
+        "authorization": "Bearer test_token_123",
+        "accept": "application/json",
+        "user-agent": "klaracase-"
+      }
+    },
+    "request_count": 1,
+    "sleeps": []
+  },
+  "responses": [
+    {
+      "status": 502,
+      "headers": {
+        "content-type": "text/html"
+      },
+      "body_text": "<html>502 Bad Gateway</html>"
+    }
+  ],
+  "expect_result": {
+    "kind": "error",
+    "class": "ApiError",
+    "code": "unknown",
+    "status": 502,
+    "fields": {
+      "detail": {
+        "$contains": "<html>502 Bad Gateway</html>"
+      },
+      "api_release": null
+    }
+  }
+}

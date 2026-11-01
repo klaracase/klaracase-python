@@ -1,0 +1,50 @@
+{
+  "name": "errors.token_ability_missing",
+  "description": "403 with required_ability.",
+  "sdk": {
+    "group": "citation_checks",
+    "method": "create",
+    "args": {
+      "text": "Der Bundesgerichtshof hat im Urteil vom 15.11.2001 zum Az. 1 StR 185/01 entschieden, dass § 266 StGB eine Vermögensbetreuungspflicht voraussetzt."
+    },
+    "options": {
+      "max_retries": 0
+    }
+  },
+  "expect": {
+    "request": {
+      "method": "POST",
+      "path": "/citation-checks",
+      "query": {},
+      "headers": {
+        "authorization": "Bearer test_token_123",
+        "accept": "application/json",
+        "user-agent": "klaracase-",
+        "content-type": "application/json"
+      },
+      "json": {
+        "text": "Der Bundesgerichtshof hat im Urteil vom 15.11.2001 zum Az. 1 StR 185/01 entschieden, dass § 266 StGB eine Vermögensbetreuungspflicht voraussetzt."
+      }
+    },
+    "request_count": 1
+  },
+  "responses": [
+    {
+      "status": 403,
+      "headers": {
+        "content-type": "application/problem+json",
+        "x-klaracase-api-release": "0.95.0"
+      },
+      "body_file": "../problems/token_ability_missing.json"
+    }
+  ],
+  "expect_result": {
+    "kind": "error",
+    "class": "PermissionError",
+    "code": "token_ability_missing",
+    "status": 403,
+    "fields": {
+      "required_ability": "citation-check"
+    }
+  }
+}

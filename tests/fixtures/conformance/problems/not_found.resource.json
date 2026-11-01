@@ -1,0 +1,7 @@
+{
+  "type": "https://klaracase.de/docs/api/errors#not_found",
+  "title": "Not Found",
+  "status": 404,
+  "detail": "The requested resource does not exist, or it belongs to another organization.",
+  "code": "not_found"
+}

@@ -1,0 +1,7 @@
+{
+  "type": "https://klaracase.de/docs/api/errors#backend_unavailable",
+  "title": "Service Unavailable",
+  "status": 503,
+  "detail": "The backend could not complete this call, so nothing was charged. Retry in a few seconds.",
+  "code": "backend_unavailable"
+}

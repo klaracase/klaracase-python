@@ -1,0 +1,63 @@
+{
+  "reference": "§ 535 BGB",
+  "requested_reference": "§ 535 Abs. 1 BGB",
+  "law": {
+    "id": "0193b0c4-5f1e-7a2b-9c3d-4e5f6a7b8c9d",
+    "abbreviation": "BGB",
+    "source_abbreviation": "BGB",
+    "official_name": "Bürgerliches Gesetzbuch",
+    "law_level": "BUND",
+    "jurisdiction": "DE",
+    "source_url": "https://www.gesetze-im-internet.de/bgb/",
+    "upstream_status": "confirmed",
+    "upstream_last_seen_at": "2026-10-05T04:17:00Z",
+    "upstream_missing_since": null
+  },
+  "norm": {
+    "number": "§ 535",
+    "title": "Inhalt und Hauptpflichten des Mietvertrags",
+    "lifecycle": "current",
+    "text": "(1) Durch den Mietvertrag wird der Vermieter verpflichtet, dem Mieter den Gebrauch der Mietsache während der Mietzeit zu gewähren. …\n(2) Der Mieter ist verpflichtet, dem Vermieter die vereinbarte Miete zu entrichten.",
+    "absatz_identifiers": [
+      "1",
+      "2"
+    ],
+    "chars": 612
+  },
+  "requested_qualifiers": [
+    {
+      "type": "Abs.",
+      "value": "1",
+      "checked": true,
+      "present": true
+    }
+  ],
+  "version": {
+    "id": "0193b0c4-aaaa-7a2b-9c3d-4e5f6a7b8c9d",
+    "last_amendment_date": "2024-12-20",
+    "last_amendment_date_basis": "source_stand",
+    "source_fetched_at": "2026-10-05T04:17:00Z",
+    "source_last_seen_at": "2026-10-05T04:17:00Z"
+  },
+  "neighbours": {
+    "previous": "§ 534 BGB",
+    "next": "§ 536 BGB"
+  },
+  "links": {
+    "decisions_citing": {
+      "tool": "search_decisions",
+      "arguments": {
+        "cited_norm": "§ 535 BGB"
+      }
+    },
+    "decisions_citing_url": "/api/v1/decisions/search?cited_norm=%C2%A7%20535%20BGB",
+    "self_url": "/api/v1/norms/%C2%A7%20535%20BGB"
+  },
+  "api_version": "1.0.0",
+  "changelog_url": "https://klaracase.de/docs/mcp/changelog",
+  "credits": {
+    "metered": true,
+    "cost": 1,
+    "credits_remaining": 27
+  }
+}

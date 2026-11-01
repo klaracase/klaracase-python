@@ -1,0 +1,44 @@
+{
+  "name": "retry.404_not_retried",
+  "description": "Any other 4xx is never retried.",
+  "sdk": {
+    "group": "decisions",
+    "method": "get",
+    "args": {
+      "id": "VIII ZR 999/99"
+    },
+    "options": {
+      "max_retries": 2
+    }
+  },
+  "expect": {
+    "request": {
+      "method": "GET",
+      "path": "/decisions/VIII%20ZR%20999%2F99",
+      "query": {},
+      "headers": {
+        "authorization": "Bearer test_token_123",
+        "accept": "application/json",
+        "user-agent": "klaracase-"
+      }
+    },
+    "request_count": 1,
+    "sleeps": []
+  },
+  "responses": [
+    {
+      "status": 404,
+      "headers": {
+        "content-type": "application/problem+json",
+        "x-klaracase-api-release": "0.95.0"
+      },
+      "body_file": "../problems/not_found.json"
+    }
+  ],
+  "expect_result": {
+    "kind": "error",
+    "class": "NotFoundError",
+    "code": "not_found",
+    "status": 404
+  }
+}

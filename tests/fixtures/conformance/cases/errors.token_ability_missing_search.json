@@ -1,0 +1,48 @@
+{
+  "name": "errors.token_ability_missing_search",
+  "description": "403 with a different ability.",
+  "sdk": {
+    "group": "decisions",
+    "method": "search",
+    "args": {
+      "query": "Untreue"
+    },
+    "options": {
+      "max_retries": 0
+    }
+  },
+  "expect": {
+    "request": {
+      "method": "GET",
+      "path": "/decisions/search",
+      "query": {
+        "query": "Untreue"
+      },
+      "headers": {
+        "authorization": "Bearer test_token_123",
+        "accept": "application/json",
+        "user-agent": "klaracase-"
+      }
+    },
+    "request_count": 1
+  },
+  "responses": [
+    {
+      "status": 403,
+      "headers": {
+        "content-type": "application/problem+json",
+        "x-klaracase-api-release": "0.95.0"
+      },
+      "body_file": "../problems/token_ability_missing.search.json"
+    }
+  ],
+  "expect_result": {
+    "kind": "error",
+    "class": "PermissionError",
+    "code": "token_ability_missing",
+    "status": 403,
+    "fields": {
+      "required_ability": "search"
+    }
+  }
+}

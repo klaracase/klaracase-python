@@ -1,0 +1,108 @@
+{
+  "total_decisions": {
+    "value": 100000,
+    "is_floor": false
+  },
+  "branches": [
+    {
+      "branch": "ordentlich",
+      "count": {
+        "value": 60000,
+        "is_floor": false
+      },
+      "earliest": "1950-10",
+      "latest": "2026-09",
+      "court_founding_year": 1950,
+      "court_founding_basis": "branch_wide_weakest_court_floor",
+      "has_dates_below_floor": false,
+      "instance_mix": {
+        "federal": {
+          "value": 25000,
+          "is_floor": false
+        },
+        "appellate": {
+          "value": 20000,
+          "is_floor": false
+        },
+        "first_instance_and_regional": {
+          "value": 15000,
+          "is_floor": false
+        },
+        "other": {
+          "value": 0,
+          "is_floor": false
+        },
+        "note": "Instanzmix: 42% Bundesgerichte, 33% Obergerichte, 25% Eingangs- und Landgerichte. …"
+      },
+      "top_courts": [
+        {
+          "court": "BGH",
+          "count": {
+            "value": 25000,
+            "is_floor": false
+          },
+          "earliest": "1950-10",
+          "latest": "2026-09"
+        }
+      ]
+    }
+  ],
+  "courts": [
+    {
+      "court": "BGH",
+      "branch": "ordentlich",
+      "count": {
+        "value": 25000,
+        "is_floor": false
+      },
+      "earliest": "1950-10",
+      "latest": "2026-09",
+      "court_founding_year": 1950,
+      "court_founding_basis": "court_floor",
+      "has_dates_below_floor": false
+    }
+  ],
+  "courts_returned": 20,
+  "courts_total": 400,
+  "corpus_floors": "Earliest decision we hold per Gerichtsbarkeit … ordentlich 1950+. …",
+  "coverage_ranges": {
+    "note": "The ingestion boundary every `out_of_coverage` verdict is decided against. …",
+    "scope": "all",
+    "verified_at": "2026-08-13",
+    "ranges": [
+      {
+        "bucket": "BGH_STRAFRECHT",
+        "court": "BGH",
+        "label": "BGH Strafsachen",
+        "from": "1950-10-02",
+        "until": null,
+        "sources": [
+          "ris"
+        ],
+        "exhaustive": true,
+        "ocr": true,
+        "note": "Strafsenate ab 1950.",
+        "holdings_earliest": null
+      }
+    ]
+  },
+  "as_of": "2026-10-01T09:58:12+00:00",
+  "filter_coverage_caveats": "Three known blind spots, all on scanned decisions. …",
+  "law_coverage": {
+    "note": "The law texts behind the citation check are German federal statutes, plus the EU and international instruments listed beside this note. …",
+    "eu": [
+      "AEUV",
+      "DSGVO"
+    ],
+    "international": [
+      "EMRK"
+    ]
+  },
+  "api_version": "1.0.0",
+  "changelog_url": "https://klaracase.de/docs/mcp/changelog",
+  "credits": {
+    "metered": true,
+    "cost": 0,
+    "credits_remaining": 30
+  }
+}

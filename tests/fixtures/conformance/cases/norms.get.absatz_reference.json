@@ -1,0 +1,42 @@
+{
+  "name": "norms.get.absatz_reference",
+  "description": "A reference with a subdivision: `§ 626 Abs. 2 BGB`.",
+  "sdk": {
+    "group": "norms",
+    "method": "get",
+    "args": {
+      "reference": "§ 626 Abs. 2 BGB"
+    }
+  },
+  "expect": {
+    "request": {
+      "method": "GET",
+      "path": "/norms/%C2%A7%20626%20Abs.%202%20BGB",
+      "query": {},
+      "headers": {
+        "authorization": "Bearer test_token_123",
+        "accept": "application/json",
+        "user-agent": "klaracase-"
+      }
+    },
+    "request_count": 1
+  },
+  "responses": [
+    {
+      "status": 200,
+      "headers": {
+        "content-type": "application/json",
+        "x-klaracase-api-release": "0.95.0"
+      },
+      "body_file": "../../examples/norms.show.json"
+    }
+  ],
+  "expect_result": {
+    "kind": "success",
+    "assert": {
+      "meta.status": 200,
+      "meta.api_release": "0.95.0",
+      "credits.cost": 1
+    }
+  }
+}

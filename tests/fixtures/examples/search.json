@@ -1,0 +1,100 @@
+{
+  "sections": {
+    "laws": [
+      {
+        "id": "0193b0c4-8c4f-7e60-ab32-4d5e6f7a8b92",
+        "artifact_type": "LAW",
+        "aktenzeichen": null,
+        "court": null,
+        "date": null,
+        "document_type": null,
+        "title": "§ 266 StGB Untreue",
+        "snippet": "… <mark>Vermögensbetreuungspflicht</mark> …",
+        "snippets": [
+          {
+            "text": "… <mark>Vermögensbetreuungspflicht</mark> …"
+          }
+        ],
+        "chunk_title": null,
+        "rn_range": null,
+        "fundstelle": null,
+        "breadcrumb": null,
+        "abbreviation": "StGB",
+        "law_type": "Gesetz",
+        "jurisdiction": "DE",
+        "confidence": "high"
+      }
+    ],
+    "decisions": [
+      {
+        "id": "0193b0c4-5f1e-7a2b-9c3d-4e5f6a7b8c9d",
+        "artifact_type": "DECISION",
+        "aktenzeichen": "1 StR 185/01",
+        "court": "BGH",
+        "date": "2001-11-15",
+        "document_type": "Urteil",
+        "title": "BGH, Urteil vom 15.11.2001",
+        "snippet": "… <mark>Vermögensbetreuungspflicht</mark> …",
+        "snippets": [
+          {
+            "text": "… <mark>Vermögensbetreuungspflicht</mark> …",
+            "rn": 21
+          }
+        ],
+        "chunk_title": "Gründe",
+        "rn_range": "21-23",
+        "fundstelle": null,
+        "fortgeltung_checked": false,
+        "fortgeltung_note": "Rechtskraft/Fortgeltung (whether a decision is still good law) is NOT checked. A decision returned here may have been quashed or superseded on appeal, and the ABSENCE of any such note is not evidence that it still stands.",
+        "confidence": "medium"
+      }
+    ]
+  },
+  "section_totals": {
+    "laws": {
+      "total_available": {
+        "value": 3,
+        "is_floor": false
+      },
+      "total_available_basis": "matching_indexed_passages_lexical_arm",
+      "candidate_pool": 3,
+      "pool_exhaustive": true,
+      "truncated": false
+    },
+    "decisions": {
+      "total_available": {
+        "value": 7,
+        "is_floor": false
+      },
+      "total_available_basis": "matching_indexed_passages_lexical_arm",
+      "candidate_pool": 7,
+      "pool_exhaustive": true,
+      "truncated": true
+    }
+  },
+  "limit": 5,
+  "total_available": {
+    "value": 10,
+    "is_floor": false
+  },
+  "total_available_basis": "matching_indexed_passages_lexical_arm",
+  "pool_exhaustive": true,
+  "truncated": true,
+  "mode": "hybrid",
+  "query_expansion": {
+    "status": "abstained",
+    "applied": false,
+    "reason": "no_lay_term",
+    "note": "Nothing was added to your query: it was retrieved exactly as you typed it. …"
+  },
+  "frequently_cited_by_results": [],
+  "norms_cited_by_decision_results": [],
+  "api_version": "1.0.0",
+  "changelog_url": "https://klaracase.de/docs/mcp/changelog",
+  "credits": {
+    "metered": true,
+    "cost": 1,
+    "credits_remaining": 28
+  },
+  "top_confidence": "high"
+}

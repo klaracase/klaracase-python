@@ -1,0 +1,121 @@
+{
+  "name": "retry.503_backoff_is_capped_at_8s",
+  "description": "Six 503 answers then 200 with max_retries 6: the upper bounds are 0.5, 1, 2, 4, 8, 8.",
+  "sdk": {
+    "group": "decisions",
+    "method": "search",
+    "args": {
+      "query": "Untreue"
+    },
+    "options": {
+      "max_retries": 6
+    }
+  },
+  "expect": {
+    "request": {
+      "method": "GET",
+      "path": "/decisions/search",
+      "query": {
+        "query": "Untreue"
+      },
+      "headers": {
+        "authorization": "Bearer test_token_123",
+        "accept": "application/json",
+        "user-agent": "klaracase-"
+      }
+    },
+    "request_count": 7,
+    "sleeps": [
+      {
+        "min": 0,
+        "max": 0.5
+      },
+      {
+        "min": 0,
+        "max": 1
+      },
+      {
+        "min": 0,
+        "max": 2
+      },
+      {
+        "min": 0,
+        "max": 4
+      },
+      {
+        "min": 0,
+        "max": 8
+      },
+      {
+        "min": 0,
+        "max": 8
+      }
+    ]
+  },
+  "responses": [
+    {
+      "status": 503,
+      "headers": {
+        "content-type": "application/problem+json",
+        "x-klaracase-api-release": "0.95.0"
+      },
+      "body_file": "../problems/backend_unavailable.json"
+    },
+    {
+      "status": 503,
+      "headers": {
+        "content-type": "application/problem+json",
+        "x-klaracase-api-release": "0.95.0"
+      },
+      "body_file": "../problems/backend_unavailable.json"
+    },
+    {
+      "status": 503,
+      "headers": {
+        "content-type": "application/problem+json",
+        "x-klaracase-api-release": "0.95.0"
+      },
+      "body_file": "../problems/backend_unavailable.json"
+    },
+    {
+      "status": 503,
+      "headers": {
+        "content-type": "application/problem+json",
+        "x-klaracase-api-release": "0.95.0"
+      },
+      "body_file": "../problems/backend_unavailable.json"
+    },
+    {
+      "status": 503,
+      "headers": {
+        "content-type": "application/problem+json",
+        "x-klaracase-api-release": "0.95.0"
+      },
+      "body_file": "../problems/backend_unavailable.json"
+    },
+    {
+      "status": 503,
+      "headers": {
+        "content-type": "application/problem+json",
+        "x-klaracase-api-release": "0.95.0"
+      },
+      "body_file": "../problems/backend_unavailable.json"
+    },
+    {
+      "status": 200,
+      "headers": {
+        "content-type": "application/json",
+        "x-klaracase-api-release": "0.95.0"
+      },
+      "body_file": "../../examples/decisions.search.json"
+    }
+  ],
+  "expect_result": {
+    "kind": "success",
+    "assert": {
+      "meta.status": 200,
+      "meta.api_release": "0.95.0",
+      "results[0].aktenzeichen": "1 StR 185/01"
+    }
+  }
+}

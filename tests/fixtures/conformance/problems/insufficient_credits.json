@@ -1,0 +1,9 @@
+{
+  "type": "https://klaracase.de/docs/api/errors#insufficient_credits",
+  "title": "Payment Required",
+  "status": 402,
+  "detail": "Insufficient credits: this call costs 2 credit(s), but organization \"Kanzlei Beispiel\" has 0 remaining this month. Credits renew automatically at the start of each calendar month (UTC). Ask your organization admin to raise the allotment, or retry next month.",
+  "code": "insufficient_credits",
+  "cost": 2,
+  "balance": 0
+}

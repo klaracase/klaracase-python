@@ -1,0 +1,81 @@
+{
+  "source": {
+    "id": "0193b0c4-5f1e-7a2b-9c3d-4e5f6a7b8c9d",
+    "aktenzeichen": "1 StR 185/01",
+    "court": "BGH",
+    "date": "2001-11-15"
+  },
+  "references": [
+    {
+      "reference_canonical": "BGH 1 StR 50/15",
+      "reference_role": "leitentscheidung",
+      "resolution_status": "resolved",
+      "in_corpus": true,
+      "corpus": {
+        "artifact_id": "0193b0c4-6a2d-7c4e-8f10-2b3c4d5e6f70",
+        "court": "BGH",
+        "date": "2015-03-12",
+        "az": "1 StR 50/15",
+        "document_type": "Urteil",
+        "ecli": null,
+        "corpus_url": "https://klaracase.de/decisions/0193b0c4-6a2d-7c4e-8f10-2b3c4d5e6f70"
+      },
+      "from_artifact_id": "0193b0c4-5f1e-7a2b-9c3d-4e5f6a7b8c9d",
+      "hop": 1
+    }
+  ],
+  "referenced_by": [
+    {
+      "reference_canonical": "BGH 1 StR 185/01",
+      "reference_role": null,
+      "resolution_status": "resolved",
+      "in_corpus": true,
+      "corpus": {
+        "artifact_id": "0193b0c4-7b3e-7d5f-9a21-3c4d5e6f7a81",
+        "court": "BGH",
+        "date": "2022-06-08",
+        "az": "4 StR 200/22",
+        "document_type": "Beschluss",
+        "ecli": null,
+        "corpus_url": "https://klaracase.de/decisions/0193b0c4-7b3e-7d5f-9a21-3c4d5e6f7a81"
+      },
+      "from_artifact_id": "0193b0c4-7b3e-7d5f-9a21-3c4d5e6f7a81",
+      "hop": 1
+    }
+  ],
+  "served_direction": "both",
+  "served_references_total": 1,
+  "served_referenced_by_total": 1,
+  "references_total": 1,
+  "references_resolved_total": 1,
+  "referenced_by_total": 1,
+  "references_unresolved_total": 0,
+  "references_withheld_reasons": [],
+  "totals_scope": "source_decision_hop_1",
+  "per_direction_cap": 25,
+  "unresolved_cap": 25,
+  "node_cap": 50,
+  "truncated": false,
+  "nodes_omitted": 0,
+  "payload_truncated": false,
+  "pagination": {
+    "page": 1,
+    "page_size": 25,
+    "max_page": 20,
+    "reachable_distinct_max": 500,
+    "references_pages": 1,
+    "referenced_by_pages": 1,
+    "has_more_references": false,
+    "has_more_referenced_by": false,
+    "applies_at_depth": 1
+  },
+  "fortgeltung_checked": false,
+  "fortgeltung_note": "Rechtskraft/Fortgeltung (whether a decision is still good law) is NOT checked. A decision returned here may have been quashed or superseded on appeal, and the ABSENCE of any such note is not evidence that it still stands.",
+  "api_version": "1.0.0",
+  "changelog_url": "https://klaracase.de/docs/mcp/changelog",
+  "credits": {
+    "metered": true,
+    "cost": 2,
+    "credits_remaining": 25
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "name": "errors.ambiguous_aktenzeichen",
+  "description": "422 with `candidates`.",
+  "sdk": {
+    "group": "decisions",
+    "method": "get",
+    "args": {
+      "id": "5 U 123/19"
+    },
+    "options": {
+      "max_retries": 0
+    }
+  },
+  "expect": {
+    "request": {
+      "method": "GET",
+      "path": "/decisions/5%20U%20123%2F19",
+      "query": {},
+      "headers": {
+        "authorization": "Bearer test_token_123",
+        "accept": "application/json",
+        "user-agent": "klaracase-"
+      }
+    },
+    "request_count": 1
+  },
+  "responses": [
+    {
+      "status": 422,
+      "headers": {
+        "content-type": "application/problem+json",
+        "x-klaracase-api-release": "0.95.0"
+      },
+      "body_file": "../problems/ambiguous_aktenzeichen.json"
+    }
+  ],
+  "expect_result": {
+    "kind": "error",
+    "class": "ValidationError",
+    "code": "ambiguous_aktenzeichen",
+    "status": 422,
+    "fields": {
+      "candidates": [
+        {
+          "id": "0193b0c7-1a2b-7c3d-8e4f-5a6b7c8d9e01",
+          "court": "OLG Hamm",
+          "date": "2019-06-12",
+          "aktenzeichen": "5 U 123/19"
+        },
+        {
+          "id": "0193b0c7-1a2b-7c3d-8e4f-5a6b7c8d9e02",
+          "court": "OLG Köln",
+          "date": "2019-09-03",
+          "aktenzeichen": "5 U 123/19"
+        }
+      ],
+      "candidates[1].court": "OLG Köln"
+    }
+  }
+}

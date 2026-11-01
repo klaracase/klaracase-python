@@ -1,0 +1,7 @@
+{
+  "type": "https://klaracase.de/docs/api/errors#personal_access_token_required",
+  "title": "Unauthorized",
+  "status": 401,
+  "detail": "This endpoint accepts only a personal API token. An OAuth token or a browser session is not accepted on the REST API. Create a token in Settings, API tokens.",
+  "code": "personal_access_token_required"
+}

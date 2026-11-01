@@ -1,0 +1,54 @@
+{
+  "name": "corpus.coverage.branch_top",
+  "description": "Both options.",
+  "sdk": {
+    "group": "corpus",
+    "method": "coverage",
+    "args": {
+      "branch": "ordentlich",
+      "top": 5
+    }
+  },
+  "expect": {
+    "request": {
+      "method": "GET",
+      "path": "/corpus/coverage",
+      "query": {
+        "branch": "ordentlich",
+        "top": "5"
+      },
+      "headers": {
+        "authorization": "Bearer test_token_123",
+        "accept": "application/json",
+        "user-agent": "klaracase-"
+      }
+    },
+    "request_count": 1
+  },
+  "responses": [
+    {
+      "status": 200,
+      "headers": {
+        "content-type": "application/json",
+        "x-klaracase-api-release": "0.95.0"
+      },
+      "body_file": "../../examples/corpus.coverage.json"
+    }
+  ],
+  "expect_result": {
+    "kind": "success",
+    "assert": {
+      "meta.status": 200,
+      "meta.api_release": "0.95.0",
+      "total_decisions.value": 100000,
+      "total_decisions.is_floor": false,
+      "branches[0].branch": "ordentlich",
+      "courts[0].court": "BGH",
+      "courts_returned": 20,
+      "courts_total": 400,
+      "credits.metered": true,
+      "credits.cost": 0,
+      "credits.credits_remaining": 30
+    }
+  }
+}

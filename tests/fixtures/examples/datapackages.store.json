@@ -1,0 +1,68 @@
+{
+  "decisions": [
+    {
+      "id": "0193b0c4-5f1e-7a2b-9c3d-4e5f6a7b8c9d",
+      "aktenzeichen": "1 StR 185/01",
+      "court": "BGH",
+      "date": "2001-11-15",
+      "document_type": "Urteil",
+      "ecli": "ECLI:DE:BGH:2001:151101U1STR185.01.0",
+      "jurisdiction": "DE",
+      "excerpt": "Tenor … Gründe: I. Der Angeklagte war Geschäftsführer …",
+      "excerpt_span": "document_start",
+      "text_length": 48213,
+      "truncated": true,
+      "fortgeltung_checked": false,
+      "fortgeltung_note": "Rechtskraft/Fortgeltung (whether a decision is still good law) is NOT checked. A decision returned here may have been quashed or superseded on appeal, and the ABSENCE of any such note is not evidence that it still stands."
+    }
+  ],
+  "citation_edges": [
+    {
+      "reference_canonical": "BGH 1 StR 50/15",
+      "reference_role": "leitentscheidung",
+      "resolution_status": "resolved",
+      "in_corpus": true,
+      "corpus": {
+        "artifact_id": "0193b0c4-6a2d-7c4e-8f10-2b3c4d5e6f70",
+        "court": "BGH",
+        "date": "2015-03-12",
+        "az": "1 StR 50/15",
+        "document_type": "Urteil",
+        "ecli": null,
+        "corpus_url": "https://klaracase.de/decisions/0193b0c4-6a2d-7c4e-8f10-2b3c4d5e6f70"
+      },
+      "from_artifact_id": "0193b0c4-5f1e-7a2b-9c3d-4e5f6a7b8c9d"
+    }
+  ],
+  "edge_accounting": [
+    {
+      "from_artifact_id": "0193b0c4-5f1e-7a2b-9c3d-4e5f6a7b8c9d",
+      "unit": "edge_rows",
+      "edges_total": 1,
+      "edges_included": 1,
+      "edges_resolved_included": 1,
+      "edges_unresolved_included": 0,
+      "edges_resolved_total": 1,
+      "edges_unresolved_total": 0,
+      "targets_resolved_included": 1,
+      "targets_resolved_total": 1
+    }
+  ],
+  "per_source_resolved_target_cap": 25,
+  "per_source_unresolved_edge_row_cap": 25,
+  "requested": 1,
+  "included": 1,
+  "deduped": 0,
+  "text_mode": "excerpt",
+  "max_chars": 700,
+  "truncated": false,
+  "payload_truncated": false,
+  "assembled_at": "2026-10-01T10:00:00+00:00",
+  "api_version": "1.0.0",
+  "changelog_url": "https://klaracase.de/docs/mcp/changelog",
+  "credits": {
+    "metered": true,
+    "cost": 5,
+    "credits_remaining": 20
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "name": "decisions.search.query_special_characters",
+  "description": "Reserved characters in a query value must survive a decode: `&`, `=`, `+`, `#`, `%`, umlauts and `§`. The runner compares DECODED values.",
+  "sdk": {
+    "group": "decisions",
+    "method": "search",
+    "args": {
+      "query": "Kündigung & Räumung § 573 BGB + a=b #1 100%"
+    }
+  },
+  "expect": {
+    "request": {
+      "method": "GET",
+      "path": "/decisions/search",
+      "query": {
+        "query": "Kündigung & Räumung § 573 BGB + a=b #1 100%"
+      },
+      "headers": {
+        "authorization": "Bearer test_token_123",
+        "accept": "application/json",
+        "user-agent": "klaracase-"
+      }
+    },
+    "request_count": 1
+  },
+  "responses": [
+    {
+      "status": 200,
+      "headers": {
+        "content-type": "application/json",
+        "x-klaracase-api-release": "0.95.0"
+      },
+      "body_file": "../../examples/decisions.search.json"
+    }
+  ],
+  "expect_result": {
+    "kind": "success",
+    "assert": {
+      "meta.status": 200,
+      "meta.api_release": "0.95.0"
+    }
+  }
+}

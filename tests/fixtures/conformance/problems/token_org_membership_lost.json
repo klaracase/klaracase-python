@@ -1,0 +1,7 @@
+{
+  "type": "https://klaracase.de/docs/api/errors#token_org_membership_lost",
+  "title": "Forbidden",
+  "status": 403,
+  "detail": "The user who created this API token is no longer a member of the organization it acts for, so the token no longer works. Nothing was executed and nothing was charged. Create a new token in Settings, API tokens, while the organization you want is open.",
+  "code": "token_org_membership_lost"
+}

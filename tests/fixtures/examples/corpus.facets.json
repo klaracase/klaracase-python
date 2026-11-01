@@ -1,0 +1,30 @@
+{
+  "field": "court_name",
+  "applies_to": "DECISION",
+  "values": {
+    "BGH": {
+      "value": 90000,
+      "is_floor": false
+    },
+    "BVerfG": {
+      "value": 20000,
+      "is_floor": false
+    },
+    "BVerwG": {
+      "value": 15000,
+      "is_floor": false
+    }
+  },
+  "total_values": 3,
+  "truncated": false,
+  "value_limit": 500,
+  "count_basis": "indexed_passages",
+  "as_of": "2026-10-01T09:40:00+00:00",
+  "api_version": "1.0.0",
+  "changelog_url": "https://klaracase.de/docs/mcp/changelog",
+  "credits": {
+    "metered": true,
+    "cost": 0,
+    "credits_remaining": 30
+  }
+}

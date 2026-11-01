@@ -1,0 +1,54 @@
+{
+  "name": "norms.get.paragraph",
+  "description": "`§` is the UTF-8 bytes C2 A7: path `/norms/%C2%A7%20535%20BGB`.",
+  "sdk": {
+    "group": "norms",
+    "method": "get",
+    "args": {
+      "reference": "§ 535 BGB"
+    }
+  },
+  "expect": {
+    "request": {
+      "method": "GET",
+      "path": "/norms/%C2%A7%20535%20BGB",
+      "query": {},
+      "headers": {
+        "authorization": "Bearer test_token_123",
+        "accept": "application/json",
+        "user-agent": "klaracase-"
+      }
+    },
+    "request_count": 1
+  },
+  "responses": [
+    {
+      "status": 200,
+      "headers": {
+        "content-type": "application/json",
+        "x-klaracase-api-release": "0.95.0"
+      },
+      "body_file": "../../examples/norms.show.json"
+    }
+  ],
+  "expect_result": {
+    "kind": "success",
+    "assert": {
+      "meta.status": 200,
+      "meta.api_release": "0.95.0",
+      "reference": "§ 535 BGB",
+      "requested_reference": "§ 535 Abs. 1 BGB",
+      "law.abbreviation": "BGB",
+      "law.jurisdiction": "DE",
+      "norm.number": "§ 535",
+      "norm.title": "Inhalt und Hauptpflichten des Mietvertrags",
+      "norm.absatz_identifiers[1]": "2",
+      "version.last_amendment_date": "2024-12-20",
+      "neighbours.previous": "§ 534 BGB",
+      "neighbours.next": "§ 536 BGB",
+      "links.self_url": "/api/v1/norms/%C2%A7%20535%20BGB",
+      "credits.cost": 1,
+      "credits.credits_remaining": 27
+    }
+  }
+}

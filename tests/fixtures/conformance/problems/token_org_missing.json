@@ -1,0 +1,7 @@
+{
+  "type": "https://klaracase.de/docs/api/errors#token_org_missing",
+  "title": "Conflict",
+  "status": 409,
+  "detail": "This API token was created before tokens named an organization, so the API cannot tell which organization it acts for. Create a new token in Settings, API tokens; it acts for the organization you have open.",
+  "code": "token_org_missing"
+}

@@ -1,0 +1,11 @@
+{
+  "type": "https://klaracase.de/docs/api/errors#volume_cap",
+  "title": "Too Many Requests",
+  "status": 429,
+  "detail": "Daily volume limit reached: organization \"Kanzlei Beispiel\" has been served 1000 of its 1000 daily rows, so this call was not executed and nothing was charged. The limit resets at midnight Europe/Berlin (2026-11-02T00:00:00+01:00), in 41230 seconds. Retry after that, or ask your organization admin to move to a plan with a higher cap.",
+  "code": "volume_cap",
+  "unit": "rows",
+  "cap": 1000,
+  "resets_at": "2026-11-02T00:00:00+01:00",
+  "retry_after_seconds": 41230
+}

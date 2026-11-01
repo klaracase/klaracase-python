@@ -1,0 +1,7 @@
+{
+  "type": "https://klaracase.de/docs/api/errors#payload_too_large",
+  "title": "Content Too Large",
+  "status": 413,
+  "detail": "Content Too Large",
+  "code": "payload_too_large"
+}

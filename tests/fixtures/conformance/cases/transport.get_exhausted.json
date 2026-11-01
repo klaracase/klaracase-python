@@ -1,0 +1,56 @@
+{
+  "name": "transport.get_exhausted",
+  "description": "Every attempt drops: three requests, then TransportError (no HTTP status).",
+  "sdk": {
+    "group": "decisions",
+    "method": "search",
+    "args": {
+      "query": "Untreue"
+    },
+    "options": {
+      "max_retries": 2
+    }
+  },
+  "expect": {
+    "request": {
+      "method": "GET",
+      "path": "/decisions/search",
+      "query": {
+        "query": "Untreue"
+      },
+      "headers": {
+        "authorization": "Bearer test_token_123",
+        "accept": "application/json",
+        "user-agent": "klaracase-"
+      }
+    },
+    "request_count": 3,
+    "sleeps": [
+      {
+        "min": 0,
+        "max": 0.5
+      },
+      {
+        "min": 0,
+        "max": 1
+      }
+    ]
+  },
+  "responses": [
+    {
+      "drop_connection": true
+    },
+    {
+      "drop_connection": true
+    },
+    {
+      "drop_connection": true
+    }
+  ],
+  "expect_result": {
+    "kind": "error",
+    "class": "TransportError",
+    "code": null,
+    "status": null
+  }
+}

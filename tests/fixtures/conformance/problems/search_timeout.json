@@ -1,0 +1,7 @@
+{
+  "type": "https://klaracase.de/docs/api/errors#search_timeout",
+  "title": "Service Unavailable",
+  "status": 503,
+  "detail": "The search did not finish in time, so nothing was charged. Retry in a few seconds, or narrow the query with a court or date filter.",
+  "code": "search_timeout"
+}

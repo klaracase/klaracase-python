@@ -1,0 +1,7 @@
+{
+  "type": "https://klaracase.de/docs/api/errors#not_found",
+  "title": "Not Found",
+  "status": 404,
+  "detail": "No uploaded document \"0193b0c6-3c4d-7e5f-8a60-7c8d9e0f1a2b\" in this organization. Upload it with POST /api/v1/citation-check-documents.",
+  "code": "not_found"
+}

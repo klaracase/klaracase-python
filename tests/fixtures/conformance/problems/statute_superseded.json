@@ -1,0 +1,8 @@
+{
+  "type": "https://klaracase.de/docs/api/errors#statute_superseded",
+  "title": "Not Found",
+  "status": 404,
+  "detail": "The Bundesbaugesetz (BBauG) was replaced by the Baugesetzbuch (BauGB) on 1987-07-01, so a citation of it no longer names law in force. Read the norm in BauGB instead.",
+  "code": "statute_superseded",
+  "successor": "BauGB"
+}

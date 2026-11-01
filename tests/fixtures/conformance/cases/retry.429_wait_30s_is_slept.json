@@ -1,0 +1,61 @@
+{
+  "name": "retry.429_wait_30s_is_slept",
+  "description": "Exactly 30 seconds is still slept (the limit is 'above 30').",
+  "sdk": {
+    "group": "decisions",
+    "method": "search",
+    "args": {
+      "query": "Untreue"
+    },
+    "options": {
+      "max_retries": 2
+    }
+  },
+  "expect": {
+    "request": {
+      "method": "GET",
+      "path": "/decisions/search",
+      "query": {
+        "query": "Untreue"
+      },
+      "headers": {
+        "authorization": "Bearer test_token_123",
+        "accept": "application/json",
+        "user-agent": "klaracase-"
+      }
+    },
+    "request_count": 2,
+    "sleeps": [
+      {
+        "exact": 30
+      }
+    ]
+  },
+  "responses": [
+    {
+      "status": 429,
+      "headers": {
+        "content-type": "application/problem+json",
+        "x-klaracase-api-release": "0.95.0",
+        "retry-after": "30"
+      },
+      "body_file": "../problems/rate_limited.retry_30s.json"
+    },
+    {
+      "status": 200,
+      "headers": {
+        "content-type": "application/json",
+        "x-klaracase-api-release": "0.95.0"
+      },
+      "body_file": "../../examples/decisions.search.json"
+    }
+  ],
+  "expect_result": {
+    "kind": "success",
+    "assert": {
+      "meta.status": 200,
+      "meta.api_release": "0.95.0",
+      "results[0].aktenzeichen": "1 StR 185/01"
+    }
+  }
+}

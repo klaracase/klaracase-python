@@ -1,0 +1,23 @@
+{
+  "name": "citation_checks.create.text_and_document_id",
+  "description": "Both given: refused on the client BEFORE any request.",
+  "sdk": {
+    "group": "citation_checks",
+    "method": "create",
+    "args": {
+      "text": "Der Bundesgerichtshof hat im Urteil vom 15.11.2001 zum Az. 1 StR 185/01 entschieden, dass § 266 StGB eine Vermögensbetreuungspflicht voraussetzt.",
+      "document_id": "0193b0c6-3c4d-7e5f-8a60-7c8d9e0f1a2b"
+    }
+  },
+  "expect": {
+    "request": null,
+    "request_count": 0
+  },
+  "responses": [],
+  "expect_result": {
+    "kind": "error",
+    "class": "ValidationError",
+    "code": "client_validation",
+    "status": null
+  }
+}

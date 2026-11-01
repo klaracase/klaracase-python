@@ -1,0 +1,54 @@
+{
+  "name": "deprecation.headers_surface_warning",
+  "description": "Deprecation, Sunset and Link headers: the call succeeds and the on_deprecation hook receives the RAW header values once.",
+  "sdk": {
+    "group": "decisions",
+    "method": "search",
+    "args": {
+      "query": "Untreue"
+    }
+  },
+  "expect": {
+    "request": {
+      "method": "GET",
+      "path": "/decisions/search",
+      "query": {
+        "query": "Untreue"
+      },
+      "headers": {
+        "authorization": "Bearer test_token_123",
+        "accept": "application/json",
+        "user-agent": "klaracase-"
+      }
+    },
+    "request_count": 1
+  },
+  "responses": [
+    {
+      "status": 200,
+      "headers": {
+        "content-type": "application/json",
+        "x-klaracase-api-release": "0.95.0",
+        "deprecation": "@1767225600",
+        "sunset": "Sat, 01 Aug 2026 00:00:00 GMT",
+        "link": "<https://klaracase.de/docs/api#deprecations>; rel=\"deprecation\""
+      },
+      "body_file": "../../examples/decisions.search.json"
+    }
+  ],
+  "expect_result": {
+    "kind": "success",
+    "assert": {
+      "meta.status": 200,
+      "meta.api_release": "0.95.0",
+      "results[0].aktenzeichen": "1 StR 185/01"
+    },
+    "deprecation_warning": true,
+    "deprecation": {
+      "deprecation": "@1767225600",
+      "sunset": "Sat, 01 Aug 2026 00:00:00 GMT",
+      "link": "<https://klaracase.de/docs/api#deprecations>; rel=\"deprecation\""
+    },
+    "deprecation_warning_count": 1
+  }
+}

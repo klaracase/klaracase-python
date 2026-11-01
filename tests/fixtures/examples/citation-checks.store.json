@@ -1,0 +1,114 @@
+{
+  "id": "0193b0c5-1a2b-7c3d-8e4f-5a6b7c8d9e0f",
+  "status": "complete",
+  "source": "api_v1",
+  "progress": {
+    "citations_total": 2,
+    "citations_checked": 2,
+    "unique_citations_total": 2
+  },
+  "verdict_counts": {
+    "verified_corpus": 1,
+    "not_found": 1
+  },
+  "partial": false,
+  "unverified_count": 0,
+  "reason_counts": [
+    {
+      "category": "statute_unknown",
+      "count": 1
+    }
+  ],
+  "unique_citations": [
+    {
+      "key_basis": "matched_decision",
+      "target_artifact_id": "0193b0c4-5f1e-7a2b-9c3d-4e5f6a7b8c9d",
+      "canonical": "BGH 1 StR 185/01",
+      "spellings": [
+        "BGH, Urt. v. 15.11.2001 – 1 StR 185/01"
+      ],
+      "occurrences": 1,
+      "verdict": "verified_corpus",
+      "reference_type": "case"
+    },
+    {
+      "key_basis": "canonical",
+      "target_artifact_id": null,
+      "canonical": "§ 266a Abs. 9 StGB",
+      "spellings": [
+        "§ 266a Abs. 9 StGB"
+      ],
+      "occurrences": 1,
+      "verdict": "not_found",
+      "reference_type": "statute"
+    }
+  ],
+  "extraction": {
+    "detected": 2,
+    "dropped": 0,
+    "dropped_unreadable": 0,
+    "dropped_truncation": 0,
+    "dropped_trailing_noun": 0,
+    "dropped_stacked_subdivision": 0,
+    "dropped_refused_collision": 0,
+    "dropped_by_token": [],
+    "dropped_unreadable_texts": [],
+    "refused_contract_collision": [],
+    "not_verifiable": 0,
+    "not_verifiable_by_type": [],
+    "possible_citations_unparsed": 0,
+    "possible_citations_unparsed_texts": []
+  },
+  "notes": [],
+  "findings_unavailable_reason": null,
+  "findings_purged_at": null,
+  "findings": [
+    {
+      "id": "0193b0c5-2b3c-7d4e-9f50-6b7c8d9e0f1a",
+      "raw_text": "BGH, Urt. v. 15.11.2001 – 1 StR 185/01",
+      "canonical": "BGH 1 StR 185/01",
+      "type": "case",
+      "role": null,
+      "verdict": "verified_corpus",
+      "external_status": "skipped",
+      "start_offset": 118,
+      "end_offset": 157,
+      "occurrence_index": 0,
+      "confidence": null,
+      "matched_decision": {
+        "artifact_id": "0193b0c4-5f1e-7a2b-9c3d-4e5f6a7b8c9d",
+        "ecli": "ECLI:DE:BGH:2001:151101U1STR185.01.0",
+        "court": "BGH",
+        "date": "2001-11-15"
+      },
+      "subdivision_check": "not_checked",
+      "subdivision_advisory": null,
+      "check_scope": {
+        "subdivision": "not_applicable",
+        "article_text_available": null,
+        "article_text_read": false,
+        "court": "checked"
+      },
+      "ambiguity_advisory": null,
+      "coverage": null,
+      "coverage_boundary": null,
+      "coverage_advisory": null,
+      "evidence": {
+        "reason": "exact_match",
+        "match_strength": "exact"
+      },
+      "disputed_at": null
+    }
+  ],
+  "submitted_at": "2026-10-01T10:00:00+00:00",
+  "completed_at": "2026-10-01T10:00:00+00:00",
+  "created_at": "2026-10-01T10:00:00+00:00",
+  "payload_truncated": false,
+  "api_version": "1.0.0",
+  "changelog_url": "https://klaracase.de/docs/mcp/changelog",
+  "credits": {
+    "metered": true,
+    "cost": 2,
+    "credits_remaining": 18
+  }
+}
