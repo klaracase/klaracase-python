@@ -11,7 +11,19 @@ requires-python = ">=3.11"
 license = "MIT"
 license-files = ["LICENSE"]
 authors = [{ name = "SPARQ VENTURES UG", email = "support@klaracase.de" }]
-keywords = ["klaracase", "german law", "court decisions", "citation check", "api client"]
+keywords = [
+  "klaracase",
+  "german law",
+  "german case law",
+  "rechtsprechung",
+  "gesetze",
+  "statutes",
+  "legal research",
+  "citation check",
+  "mcp",
+  "court decisions",
+  "api client",
+]
 classifiers = [
   "Development Status :: 4 - Beta",
   "Intended Audience :: Developers",
@@ -27,7 +39,7 @@ classifiers = [
 dependencies = ["httpx>=0.27"]
 
 [project.urls]
-Homepage = "https://klaracase.de"
+Homepage = "https://klaracase.de/developers?ref=pypi"
 Documentation = "https://klaracase.de/docs/api"
 Repository = "https://github.com/klaracase/klaracase-python"
 Issues = "https://github.com/klaracase/klaracase-python/issues"
