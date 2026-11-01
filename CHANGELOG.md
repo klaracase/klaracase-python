@@ -54,3 +54,6 @@ All notable changes to this project go in this file. The format follows
 - `decisions.iter_pages` and `decisions.iter_citation_pages` (generators; async generators on the
   async client). `max_pages` is required and is capped at 10 and 20. They stop on an empty page.
 - `citation_checks.create_from_file` uploads, waits for the extraction and creates the check.
+- `klaracase.agents`: `tool_definitions()` for Anthropic, OpenAI or plain JSON Schema, and
+  `dispatch` / `adispatch` that run a tool call and return compact JSON or an error object. No
+  new dependency. A test keeps every schema equal to the method signature it calls.
