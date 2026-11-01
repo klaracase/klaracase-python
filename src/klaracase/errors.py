@@ -14,7 +14,7 @@ client.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Literal
+from typing import TYPE_CHECKING, Any, Literal, cast
 
 if TYPE_CHECKING:
     from .types import CitationCheckDocument
@@ -226,7 +226,7 @@ class ValidationError(KlaracaseError):
     @property
     def errors(self) -> dict[str, list[str]]:
         value = self.extra.get("errors")
-        return value if isinstance(value, dict) else {}
+        return cast("dict[str, list[str]]", value) if isinstance(value, dict) else {}
 
 
 class InsufficientCreditsError(KlaracaseError):

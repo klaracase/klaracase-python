@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "klaracase"
-version = "0.1.0"
+dynamic = ["version"]
 description = "Official Python client for the Klaracase REST API (German court decisions, statutes and citation checks)."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -47,20 +47,33 @@ Issues = "https://github.com/klaracase/klaracase-python/issues"
 [dependency-groups]
 dev = [
   "mypy>=1.13",
+  "pyright>=1.1.390",
   "pytest>=8",
   "ruff>=0.8",
 ]
+
+[tool.hatch.version]
+path = "src/klaracase/_version.py"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/klaracase"]
 
 [tool.hatch.build.targets.sdist]
-include = ["src/klaracase", "tests", "README.md", "CHANGELOG.md", "LICENSE", "pyproject.toml"]
+include = [
+  "src/klaracase",
+  "tests",
+  "examples",
+  "scripts",
+  "README.md",
+  "CHANGELOG.md",
+  "LICENSE",
+  "pyproject.toml",
+]
 
 [tool.ruff]
 line-length = 100
 target-version = "py311"
-src = ["src", "tests"]
+src = ["src", "tests", "examples"]
 extend-exclude = ["tests/fixtures"]
 
 [tool.ruff.lint]
@@ -70,11 +83,20 @@ ignore = ["PLR0913", "PLR2004", "PLR0911", "PLR0912", "PLR0915", "RUF012"]
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["ARG", "T20"]
 "scripts/**" = ["T20"]
+"examples/**" = ["T20"]
 
 [tool.mypy]
 strict = true
 python_version = "3.11"
-files = ["src/klaracase"]
+files = ["src/klaracase", "tests/typing"]
+
+[tool.pyright]
+include = ["src/klaracase", "tests/typing"]
+typeCheckingMode = "strict"
+pythonVersion = "3.11"
+# The package imports its own underscore modules and the client internals across files.
+reportPrivateUsage = false
+reportUnnecessaryTypeIgnoreComment = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

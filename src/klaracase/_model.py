@@ -18,7 +18,7 @@ import types
 import typing
 from collections.abc import Mapping
 from dataclasses import MISSING, dataclass, field, fields
-from typing import Any, Self, TypeVar, get_args, get_origin, get_type_hints
+from typing import Any, Self, TypeVar, cast, get_args, get_origin, get_type_hints
 
 from .errors import ResponseShapeError
 
@@ -35,7 +35,7 @@ _NON_WIRE = {"wire": False}
 class Model:
     """Base of every response object: a frozen dataclass that keeps unknown keys in ``extra``."""
 
-    extra: dict[str, Any] = field(default_factory=dict, repr=False)
+    extra: dict[str, Any] = field(default_factory=dict[str, Any], repr=False)
 
     @classmethod
     def from_dict(cls, body: Mapping[str, Any]) -> Self:
@@ -114,7 +114,11 @@ def _decode(hint: Any, value: Any, path: str) -> Any:
     if hint is str:
         return value if isinstance(value, str) else _DROP
     if isinstance(hint, type) and issubclass(hint, Model):
-        return decode_model(hint, value, path) if isinstance(value, dict) else _DROP
+        return (
+            decode_model(hint, cast("dict[str, Any]", value), path)
+            if isinstance(value, dict)
+            else _DROP
+        )
     raise TypeError(f"Unsupported field type {hint!r}")
 
 
@@ -133,7 +137,8 @@ def _decode_union(options: tuple[Any, ...], value: Any, path: str) -> Any:
 def _decode_list(item_hint: Any, value: Any, path: str) -> Any:
     if not isinstance(value, list):
         return _DROP
-    decoded = (_decode(item_hint, item, f"{path}[{index}]") for index, item in enumerate(value))
+    items: list[Any] = value  # pyright: ignore[reportUnknownVariableType]
+    decoded = (_decode(item_hint, item, f"{path}[{index}]") for index, item in enumerate(items))
     return [item for item in decoded if item is not _DROP]
 
 
@@ -141,7 +146,8 @@ def _decode_dict(item_hint: Any, value: Any, path: str) -> Any:
     if not isinstance(value, dict):
         return _DROP
     result: dict[str, Any] = {}
-    for key, item in value.items():
+    mapping: dict[str, Any] = value  # pyright: ignore[reportUnknownVariableType]
+    for key, item in mapping.items():
         decoded = _decode(item_hint, item, f"{path}[{key!r}]")
         if decoded is not _DROP:
             result[key] = decoded

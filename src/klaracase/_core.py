@@ -15,7 +15,7 @@ import time
 import warnings
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass, field, replace
-from typing import Any, Generic, TypeVar
+from typing import Any, Generic, TypeVar, cast
 from urllib.parse import quote, urlsplit
 
 from . import _transport as transport
@@ -115,7 +115,7 @@ def query_pairs(params: Mapping[str, Any]) -> list[tuple[str, str]]:
         if value is None:
             continue
         if isinstance(value, (list, tuple)):
-            pairs.extend((f"{name}[]", _scalar(item)) for item in value)
+            pairs.extend((f"{name}[]", _scalar(item)) for item in cast("Sequence[Any]", value))
             continue
         pairs.append((name, _scalar(value)))
     return pairs
@@ -383,11 +383,8 @@ class Core:
         self, operation: Operation[T], response: transport.HttpResponse, duration: float
     ) -> T:
         release = response.headers.get("x-klaracase-api-release")
-        try:
-            body = response.json()
-        except ValueError:
-            body = None
-        if not isinstance(body, dict):
+        body = json_object(response)
+        if body is None:
             raise ApiError(
                 "The API answered with a body that is not a JSON object.",
                 status=response.status_code,
@@ -414,12 +411,9 @@ class Core:
         release = response.headers.get("x-klaracase-api-release")
         cls = error_class_for_status(status)
         text = response.text
-        try:
-            body = response.json()
-        except ValueError:
-            body = None
+        body = json_object(response)
         header_wait = _header_seconds(response.headers.get("retry-after"))
-        if isinstance(body, dict) and isinstance(body.get("code"), str):
+        if body is not None and isinstance(body.get("code"), str):
             standard = {"type", "title", "detail", "status", "code"}
             kwargs: dict[str, Any] = {
                 "type": _optional_str(body.get("type")),
@@ -443,7 +437,7 @@ class Core:
             "code": UNKNOWN_CODE,
             "status": status,
             "api_release": release,
-            "body": body if isinstance(body, dict) else None,
+            "body": body,
             "response_headers": lower_headers(response),
         }
         if cls is RateLimitError:
@@ -493,6 +487,15 @@ class Core:
                 url=self.base_url + operation.path,
             )
         )
+
+
+def json_object(response: transport.HttpResponse) -> dict[str, Any] | None:
+    """The body as a dict, or ``None`` when it is not JSON or not a JSON object."""
+    try:
+        body: Any = response.json()
+    except ValueError:
+        return None
+    return cast("dict[str, Any]", body) if isinstance(body, dict) else None
 
 
 def lower_headers(response: transport.HttpResponse) -> dict[str, str]:

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import importlib.metadata
 import re
 import tomllib
 from pathlib import Path
@@ -104,9 +105,13 @@ def test_base_url_trailing_slash_is_stripped() -> None:
     )
 
 
-def test_version_matches_pyproject() -> None:
+def test_version_comes_from_the_version_module() -> None:
     pyproject = tomllib.loads((Path(__file__).parent.parent / "pyproject.toml").read_text())
-    assert pyproject["project"]["version"] == klaracase.__version__ == "0.1.0"
+    assert "version" not in pyproject["project"]
+    assert pyproject["project"]["dynamic"] == ["version"]
+    assert pyproject["tool"]["hatch"]["version"]["path"] == "src/klaracase/_version.py"
+    assert klaracase.__version__ == "0.1.0"
+    assert importlib.metadata.version("klaracase") == klaracase.__version__
 
 
 def test_default_http_client_is_built_and_closed() -> None:

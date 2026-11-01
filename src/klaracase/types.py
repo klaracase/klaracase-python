@@ -265,7 +265,7 @@ class Response(Model):
 
     meta: ResponseMeta = _field(default_factory=ResponseMeta, metadata={"wire": False})
     raw: dict[str, Any] = _field(
-        default_factory=dict, repr=False, compare=False, metadata={"wire": False}
+        default_factory=dict[str, Any], repr=False, compare=False, metadata={"wire": False}
     )
     api_version: str | None = None
     changelog_url: str | None = None

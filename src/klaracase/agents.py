@@ -24,13 +24,15 @@ import json
 import typing
 from collections.abc import Awaitable, Callable, Mapping, Sequence
 from dataclasses import dataclass
-from typing import Any, Literal
+from typing import TYPE_CHECKING, Any, Literal, cast
 
-from ._async import AsyncKlaracase
-from ._sync import Klaracase
 from .errors import ConfigurationError, KlaracaseError, RateLimitError
 from .types import Branch, CitedStatute, DocumentType, NormJurisdiction, SearchMode
 from .types import SearchJurisdiction as _SearchJurisdiction
+
+if TYPE_CHECKING:
+    from ._async import AsyncKlaracase
+    from ._sync import Klaracase
 
 __all__ = ["TOOL_NAMES", "adispatch", "dispatch", "tool_definitions"]
 
@@ -286,14 +288,14 @@ def _resolve(client: Klaracase, target: str) -> Callable[..., Any]:
     obj: Any = client
     for part in target.split("."):
         obj = getattr(obj, part)
-    return obj  # type: ignore[no-any-return]
+    return cast("Callable[..., Any]", obj)
 
 
 def _resolve_async(client: AsyncKlaracase, target: str) -> Callable[..., Awaitable[Any]]:
     obj: Any = client
     for part in target.split("."):
         obj = getattr(obj, part)
-    return obj  # type: ignore[no-any-return]
+    return cast("Callable[..., Awaitable[Any]]", obj)
 
 
 def _prepare(name: str, args: Mapping[str, Any] | str | None) -> tuple[_Tool, dict[str, Any]] | str:
@@ -343,7 +345,7 @@ def _render(tool: _Tool, result: Any) -> str:
             "verdict_counts": body.get("verdict_counts"),
             "unique_citations": body.get("unique_citations"),
             "findings": [
-                {key: finding.get(key) for key in _FINDING_KEYS}
+                {key: cast("dict[str, Any]", finding).get(key) for key in _FINDING_KEYS}
                 for finding in findings
                 if isinstance(finding, dict)
             ],

@@ -318,7 +318,7 @@ def read_file(file: UploadSource) -> bytes:
     if isinstance(file, (str, os.PathLike)):
         return Path(file).read_bytes()
     data = file.read()
-    if not isinstance(data, bytes):
+    if not isinstance(data, bytes):  # pyright: ignore[reportUnnecessaryIsInstance]
         raise client_validation_error("file must be a path, bytes or a binary file object.")
     return data
 
