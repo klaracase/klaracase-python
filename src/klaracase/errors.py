@@ -176,7 +176,7 @@ class ApiError(KlaracaseError):
 class TransportError(KlaracaseError):
     """No answer arrived: connection refused, DNS, TLS, a dropped connection or a timeout.
 
-    The original ``httpx`` exception is ``__cause__``.
+    The original ``httpx2`` exception is ``__cause__``.
     """
 
 

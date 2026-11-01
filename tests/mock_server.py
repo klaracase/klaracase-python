@@ -1,4 +1,4 @@
-"""An in-process mock of the Klaracase API, built on ``httpx.MockTransport``.
+"""An in-process mock of the Klaracase API, built on ``httpx2.MockTransport``.
 
 It serves a conformance case's ``responses`` in order and records every request, so a test can
 compare method, raw path, query, headers and body. No socket is opened.
@@ -14,7 +14,7 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import parse_qsl
 
-import httpx
+import httpx2
 
 API_PREFIX = "/api/v1"
 
@@ -24,7 +24,7 @@ class RecordedRequest:
     method: str
     path: str
     query: list[tuple[str, str]]
-    headers: httpx.Headers
+    headers: httpx2.Headers
     body: bytes
 
     def query_map(self) -> dict[str, str | list[str]]:
@@ -68,10 +68,10 @@ class MockServer:
     repeat_last: bool = False
     requests: list[RecordedRequest] = field(default_factory=list)
 
-    def transport(self) -> httpx.MockTransport:
-        return httpx.MockTransport(self.handle)
+    def transport(self) -> httpx2.MockTransport:
+        return httpx2.MockTransport(self.handle)
 
-    def handle(self, request: httpx.Request) -> httpx.Response:
+    def handle(self, request: httpx2.Request) -> httpx2.Response:
         raw_target = request.url.raw_path.decode("ascii")
         raw_path, _, raw_query = raw_target.partition("?")
         assert raw_path.startswith(API_PREFIX), raw_path
@@ -87,18 +87,18 @@ class MockServer:
         index = len(self.requests) - 1
         if index >= len(self.responses):
             if not (self.repeat_last and self.responses):
-                return httpx.Response(599, text="mock: no response left")
+                return httpx2.Response(599, text="mock: no response left")
             index = len(self.responses) - 1
         spec = self.responses[index]
         if spec.get("drop_connection"):
-            raise httpx.RemoteProtocolError("server closed the connection", request=request)
+            raise httpx2.RemoteProtocolError("server closed the connection", request=request)
         delay = spec.get("delay_seconds")
         read_timeout = request.extensions.get("timeout", {}).get("read")
         if delay and read_timeout is not None and delay > read_timeout:
-            raise httpx.ReadTimeout("timed out", request=request)
+            raise httpx2.ReadTimeout("timed out", request=request)
         return self._build(spec)
 
-    def _build(self, spec: dict[str, Any]) -> httpx.Response:
+    def _build(self, spec: dict[str, Any]) -> httpx2.Response:
         headers = {name.lower(): value for name, value in spec.get("headers", {}).items()}
         if "body_file" in spec:
             path = (self.base_dir / spec["body_file"]).resolve()
@@ -114,4 +114,4 @@ class MockServer:
             headers.setdefault("content-type", "application/json")
         else:
             content = b""
-        return httpx.Response(spec["status"], headers=headers, content=content)
+        return httpx2.Response(spec["status"], headers=headers, content=content)

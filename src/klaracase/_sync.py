@@ -7,9 +7,8 @@ from collections.abc import Callable, Sequence
 from types import TracebackType
 from typing import BinaryIO, Self, TypeVar
 
-import httpx
-
 from . import _operations as ops
+from . import _transport as transport
 from ._core import (
     DEFAULT_BASE_URL,
     DEFAULT_MAX_RETRIES,
@@ -55,10 +54,11 @@ class Klaracase:
         token: A Klaracase API token. Falls back to the ``KLARACASE_API_TOKEN`` environment
             variable. A missing token raises :class:`~klaracase.ConfigurationError`.
         base_url: The API base URL.
-        timeout: Seconds for one HTTP attempt.
+        timeout: Seconds for one HTTP attempt, or a ``Timeout`` for a finer split. The default is
+            30 seconds with 5 seconds to connect.
         max_retries: How many times to retry a 429, a 503 or (GET only) a transport error.
         user_agent_suffix: Text appended to the ``User-Agent`` header.
-        http_client: Your own ``httpx.Client``. The SDK then does not close it.
+        http_client: Your own ``httpx2.Client``. The SDK then does not close it.
         on_deprecation: Called once per process when an answer carries a ``Deprecation`` or
             ``Sunset`` header. The default emits a ``DeprecationWarning``.
         sleep: Replaces ``time.sleep`` for retry waits and polling. For tests.
@@ -70,10 +70,10 @@ class Klaracase:
         token: str | None = None,
         *,
         base_url: str = DEFAULT_BASE_URL,
-        timeout: float = DEFAULT_TIMEOUT,
+        timeout: float | transport.Timeout = DEFAULT_TIMEOUT,
         max_retries: int = DEFAULT_MAX_RETRIES,
         user_agent_suffix: str | None = None,
-        http_client: httpx.Client | None = None,
+        http_client: transport.Client | None = None,
         on_deprecation: DeprecationHook | None = None,
         sleep: Callable[[float], None] | None = None,
         monotonic: Callable[[], float] | None = None,
@@ -88,7 +88,7 @@ class Klaracase:
             monotonic=monotonic,
         )
         self._owns_http = http_client is None
-        self._http = http_client if http_client is not None else httpx.Client()
+        self._http = http_client if http_client is not None else transport.Client()
         self._sleep = sleep if sleep is not None else time.sleep
         self.decisions = Decisions(self)
         self.norms = Norms(self)
@@ -154,7 +154,7 @@ class Klaracase:
             started = self._core.monotonic()
             try:
                 response = self._http.send(request)
-            except httpx.RequestError as exc:
+            except transport.RequestError as exc:
                 wait = self._core.transport_wait(operation, retries)
                 if wait is None:
                     raise self._core.transport_error(exc) from exc

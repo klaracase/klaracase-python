@@ -12,7 +12,7 @@ import warnings
 from pathlib import Path
 from typing import Any
 
-import httpx
+import httpx2
 import pytest
 
 import klaracase
@@ -54,7 +54,7 @@ def ok(example: str, **headers: str) -> dict[str, Any]:
 def client_for(server: MockServer, **kwargs: Any) -> Klaracase:
     kwargs.setdefault("sleep", lambda _s: None)
     return Klaracase(
-        TOKEN, base_url=BASE, http_client=httpx.Client(transport=server.transport()), **kwargs
+        TOKEN, base_url=BASE, http_client=httpx2.Client(transport=server.transport()), **kwargs
     )
 
 
@@ -218,7 +218,7 @@ def test_transport_error_chains_the_httpx_exception() -> None:
     server = serve({"drop_connection": True})
     with pytest.raises(TransportError) as caught:
         client_for(server, max_retries=0).corpus.coverage()
-    assert isinstance(caught.value.__cause__, httpx.RemoteProtocolError)
+    assert isinstance(caught.value.__cause__, httpx2.RemoteProtocolError)
     assert caught.value.status is None
 
 

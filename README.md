@@ -9,7 +9,7 @@ replace a lawyer's review. A `not_found` verdict means the citation was not foun
 is not a claim that the citation is fabricated.
 
 - Sync client `Klaracase` and async client `AsyncKlaracase`.
-- One runtime dependency: `httpx`. Python 3.11 or newer.
+- One runtime dependency: `httpx2`. Python 3.11 or newer.
 - Typed requests and responses. Unknown response keys are kept.
 - API reference: https://klaracase.de/docs/api. This client targets API release 0.95.0.
 
@@ -243,14 +243,14 @@ Klaracase(
     timeout=30.0,  # seconds, per attempt
     max_retries=2,
     user_agent_suffix=None,  # appended to "klaracase-python/0.1.0 python/3.x.y"
-    http_client=None,  # your own httpx.Client / httpx.AsyncClient (proxy, mTLS, transport)
+    http_client=None,  # your own httpx2.Client / httpx2.AsyncClient (proxy, mTLS, transport)
     on_deprecation=None,
     sleep=None,  # replace time.sleep / asyncio.sleep, for tests
     monotonic=None,  # replace time.monotonic, for tests
 )
 ```
 
-To test your code without the network, pass an `httpx.Client` built on `httpx.MockTransport`.
+To test your code without the network, pass an `httpx2.Client` built on `httpx2.MockTransport`.
 This repository tests itself that way.
 
 ## Agents

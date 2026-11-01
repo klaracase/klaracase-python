@@ -9,7 +9,7 @@ from dataclasses import is_dataclass
 from pathlib import Path
 from typing import Any
 
-import httpx
+import httpx2
 
 import klaracase
 from klaracase import AsyncKlaracase, Klaracase
@@ -259,7 +259,7 @@ def run_case(case: dict[str, Any], mode: str, monkeypatch: Any) -> None:
         if not real_clock:
             kwargs["sleep"] = slept.append
         try:
-            with Klaracase(http_client=httpx.Client(transport=server.transport()), **kwargs) as c:
+            with Klaracase(http_client=httpx2.Client(transport=server.transport()), **kwargs) as c:
                 target = c if sdk["group"] is None else getattr(c, sdk["group"])
                 method = c.search if sdk["group"] is None else getattr(target, sdk["method"])
                 for _ in range(repeat):
@@ -277,7 +277,7 @@ def run_case(case: dict[str, Any], mode: str, monkeypatch: Any) -> None:
         async def go() -> None:
             try:
                 async with AsyncKlaracase(
-                    http_client=httpx.AsyncClient(transport=server.transport()), **kwargs
+                    http_client=httpx2.AsyncClient(transport=server.transport()), **kwargs
                 ) as c:
                     target = c if sdk["group"] is None else getattr(c, sdk["group"])
                     method = c.search if sdk["group"] is None else getattr(target, sdk["method"])

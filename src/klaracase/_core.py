@@ -17,8 +17,7 @@ from dataclasses import dataclass, field
 from typing import Any, Generic, TypeVar
 from urllib.parse import quote, urlsplit
 
-import httpx
-
+from . import _transport as transport
 from ._version import __version__
 from .errors import (
     ApiError,
@@ -34,7 +33,7 @@ from .types import DeprecationNotice, Response, ResponseMeta
 
 DEFAULT_BASE_URL = "https://klaracase.de/api/v1"
 TOKEN_ENV_VAR = "KLARACASE_API_TOKEN"
-DEFAULT_TIMEOUT = 30.0
+DEFAULT_TIMEOUT = transport.DEFAULT_TIMEOUT
 DEFAULT_MAX_RETRIES = 2
 
 BACKOFF_BASE_SECONDS = 0.5
@@ -144,7 +143,7 @@ class Core:
 
     token: str
     base_url: str
-    timeout: float
+    timeout: float | transport.Timeout
     max_retries: int
     user_agent: str
     on_deprecation: DeprecationHook
@@ -157,7 +156,7 @@ class Core:
         *,
         token: str | None,
         base_url: str,
-        timeout: float,
+        timeout: float | transport.Timeout,
         max_retries: int,
         user_agent_suffix: str | None,
         on_deprecation: DeprecationHook | None,
@@ -176,15 +175,17 @@ class Core:
             )
         if isinstance(max_retries, bool) or not isinstance(max_retries, int) or max_retries < 0:
             raise ConfigurationError("max_retries must be an integer of 0 or more.")
-        if isinstance(timeout, bool) or not isinstance(timeout, (int, float)) or timeout <= 0:
-            raise ConfigurationError("timeout must be a number of seconds above 0.")
+        if not isinstance(timeout, transport.Timeout) and (
+            isinstance(timeout, bool) or not isinstance(timeout, (int, float)) or timeout <= 0
+        ):
+            raise ConfigurationError("timeout must be a number of seconds above 0 or a Timeout.")
         user_agent = f"klaracase-python/{__version__} python/{platform.python_version()}"
         if user_agent_suffix:
             user_agent = f"{user_agent} {user_agent_suffix}"
         return cls(
             token=resolved.strip(),
             base_url=base_url.rstrip("/"),
-            timeout=float(timeout),
+            timeout=timeout if isinstance(timeout, transport.Timeout) else float(timeout),
             max_retries=max_retries,
             user_agent=user_agent,
             on_deprecation=on_deprecation or default_deprecation_hook,
@@ -192,7 +193,7 @@ class Core:
         )
 
     def request_kwargs(self, operation: Operation[Any]) -> dict[str, Any]:
-        """Arguments for ``httpx.Client.build_request`` / ``AsyncClient.build_request``."""
+        """Arguments for the ``build_request`` method of the HTTP client."""
         headers = {
             "Authorization": f"Bearer {self.token}",
             "Accept": "application/json",
@@ -226,15 +227,17 @@ class Core:
             return None
         return self.backoff(retries_so_far)
 
-    def transport_error(self, exc: httpx.RequestError) -> TransportError:
-        cls = KlaracaseTimeoutError if isinstance(exc, httpx.TimeoutException) else TransportError
+    def transport_error(self, exc: transport.RequestError) -> TransportError:
+        cls = (
+            KlaracaseTimeoutError if isinstance(exc, transport.TimeoutException) else TransportError
+        )
         text = str(exc) or type(exc).__name__
         return cls(f"No answer from the Klaracase API: {text}", detail=text)
 
     def evaluate(
         self,
         operation: Operation[T],
-        response: httpx.Response,
+        response: transport.HttpResponse,
         retries_so_far: int,
         started: float,
     ) -> T | Retry:
@@ -250,7 +253,7 @@ class Core:
         return Retry(wait)
 
     def _parse_success(
-        self, operation: Operation[T], response: httpx.Response, duration: float
+        self, operation: Operation[T], response: transport.HttpResponse, duration: float
     ) -> T:
         release = response.headers.get("x-klaracase-api-release")
         try:
@@ -270,7 +273,7 @@ class Core:
         )
         return operation.response_cls.from_body(body, meta)
 
-    def error_from_response(self, response: httpx.Response) -> KlaracaseError:
+    def error_from_response(self, response: transport.HttpResponse) -> KlaracaseError:
         """Build the error class that the HTTP status decides."""
         status = response.status_code
         release = response.headers.get("x-klaracase-api-release")
@@ -310,7 +313,7 @@ class Core:
         return cls(message, **kwargs)
 
     def _retry_wait(
-        self, response: httpx.Response, error: KlaracaseError, retries_so_far: int
+        self, response: transport.HttpResponse, error: KlaracaseError, retries_so_far: int
     ) -> float | None:
         """Seconds to sleep before the next attempt, or ``None`` to raise the error now."""
         if response.status_code not in RETRY_STATUSES or retries_so_far >= self.max_retries:
@@ -326,7 +329,9 @@ class Core:
             return None
         return max(0.0, stated)
 
-    def _surface_deprecation(self, operation: Operation[Any], response: httpx.Response) -> None:
+    def _surface_deprecation(
+        self, operation: Operation[Any], response: transport.HttpResponse
+    ) -> None:
         deprecation = response.headers.get("deprecation")
         sunset = response.headers.get("sunset")
         if deprecation is None and sunset is None:

@@ -2,10 +2,11 @@
 
 from __future__ import annotations
 
+import re
 import tomllib
 from pathlib import Path
 
-import httpx
+import httpx2
 import pytest
 
 import klaracase
@@ -116,8 +117,53 @@ def test_default_http_client_is_built_and_closed() -> None:
 
 
 def test_injected_http_client_is_not_closed() -> None:
-    http = httpx.Client(transport=httpx.MockTransport(lambda r: httpx.Response(200)))
+    http = httpx2.Client(transport=httpx2.MockTransport(lambda r: httpx2.Response(200)))
     with klaracase.Klaracase("klc_your_token_here", http_client=http):
         pass
     assert not http.is_closed
     http.close()
+
+
+def test_default_timeout_is_30_seconds_with_a_5_second_connect() -> None:
+    core = make_core(timeout=klaracase.DEFAULT_TIMEOUT)
+    assert core.timeout == httpx2.Timeout(30.0, connect=5.0)
+    client = klaracase.Klaracase("klc_your_token_here")
+    assert client._core.timeout == httpx2.Timeout(30.0, connect=5.0)
+    client.close()
+
+
+def test_timeout_accepts_a_timeout_object_and_rejects_nonsense() -> None:
+    timeout = httpx2.Timeout(10.0, read=60.0)
+    assert make_core(timeout=timeout).timeout is timeout
+    with pytest.raises(ConfigurationError):
+        make_core(timeout=True)
+
+
+def test_the_per_request_timeout_reaches_the_http_client() -> None:
+    seen: list[dict[str, float | None]] = []
+
+    def handler(request: httpx2.Request) -> httpx2.Response:
+        seen.append(request.extensions["timeout"])
+        return httpx2.Response(200, json={})
+
+    http = klaracase.DefaultHttpClient(transport=httpx2.MockTransport(handler), timeout=999.0)
+    with klaracase.Klaracase("klc_your_token_here", http_client=http, timeout=7.0) as client:
+        client.corpus.coverage()
+    assert seen[0]["read"] == 7.0
+    http.close()
+
+
+def test_default_http_clients_carry_the_sdk_timeout() -> None:
+    assert klaracase.DefaultHttpClient().timeout == httpx2.Timeout(30.0, connect=5.0)
+    assert klaracase.DefaultAsyncHttpClient().timeout == httpx2.Timeout(30.0, connect=5.0)
+
+
+def test_only_the_transport_module_imports_the_http_library() -> None:
+    source = Path(klaracase.__file__).parent
+    offenders = [
+        path.name
+        for path in source.glob("*.py")
+        if path.name != "_transport.py"
+        and re.search(r"^\s*(import|from)\s+httpx", path.read_text(encoding="utf-8"), re.M)
+    ]
+    assert offenders == []

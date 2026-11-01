@@ -10,6 +10,12 @@ from __future__ import annotations
 from ._async import AsyncKlaracase
 from ._core import reset_deprecation_warnings
 from ._sync import Klaracase
+from ._transport import (
+    DEFAULT_TIMEOUT,
+    DefaultAsyncHttpClient,
+    DefaultHttpClient,
+    Timeout,
+)
 from ._version import __version__
 from .errors import (
     ApiError,
@@ -45,6 +51,7 @@ from .types import (
 )
 
 __all__ = [
+    "DEFAULT_TIMEOUT",
     "ApiError",
     "AsyncKlaracase",
     "AuthenticationError",
@@ -60,6 +67,8 @@ __all__ = [
     "Decision",
     "DecisionCitations",
     "DecisionSearch",
+    "DefaultAsyncHttpClient",
+    "DefaultHttpClient",
     "DeprecationNotice",
     "DocumentFailedError",
     "DocumentTimeoutError",
@@ -73,6 +82,7 @@ __all__ = [
     "RateLimitError",
     "ResponseMeta",
     "ServiceUnavailableError",
+    "Timeout",
     "TransportError",
     "ValidationError",
     "__version__",
