@@ -29,3 +29,5 @@ All notable changes to this project go in this file. The format follows
 - Open enums are `Literal[...] | str`: `Verdict`, `RunStatus`, `DocumentStatus`,
   `DocumentErrorCode`, `DocumentType`, `Confidence`, `Lifecycle`, `Jurisdiction`, `SearchMode`,
   `Branch`.
+- Drift guards in the tests: a walker fails when any `extra` is non-empty at any depth for every
+  example, conformance body and contract example, and a seen-to-fail test proves the walker works.
