@@ -214,7 +214,7 @@ of a stored run are free. Every answer has `credits` with `metered`, `cost` and
 Every method returns a frozen dataclass.
 
 - One attribute for each documented top-level key, with the value exactly as the API sent it.
-  Nested items are plain `dict` and `list` values. A documented key the server leaves out is `None`.
+  Nested items are plain `dict` and `list` values. A documented key that the server did not send reads as `None`.
 - `extra`: every top-level key this version does not model. The API only adds keys, so a new API
   release does not break your code.
 - `meta`: `status`, `api_release` and `request_duration` (seconds).
@@ -260,23 +260,9 @@ the agent to the Klaracase MCP server at `https://klaracase.de/mcp` (streamable 
 the same API token as a Bearer token. This is the way for the OpenAI Agents SDK, for LangChain
 with `langchain-mcp-adapters`, and for CrewAI.
 
-LangChain:
-
-```python
-import os
-from langchain_mcp_adapters.client import MultiServerMCPClient
-
-mcp = MultiServerMCPClient(
-    {
-        "klaracase": {
-            "transport": "streamable_http",
-            "url": "https://klaracase.de/mcp",
-            "headers": {"Authorization": f"Bearer {os.environ['KLARACASE_API_TOKEN']}"},
-        }
-    }
-)
-tools = await mcp.get_tools()
-```
+The transport is streamable HTTP. Put the same API token in the header
+`Authorization: Bearer <token>`. See the documentation of `langchain-mcp-adapters`, the OpenAI
+Agents SDK or CrewAI for how to register a remote MCP server.
 
 If you prefer a plain function tool, wrap the client. Register the function with the function-tool
 decorator of your framework. The docstring becomes the tool description.

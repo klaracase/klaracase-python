@@ -11,7 +11,7 @@ Every response class has the same shape:
 * ``meta``: a :class:`ResponseMeta` with the HTTP status, the API release and the duration;
 * ``to_dict()``: the parsed body, unchanged. Nothing is renamed, reordered, cleaned or translated.
 
-A documented key that the server leaves out is ``None``.
+A documented key that the server did not send reads as ``None``.
 """
 
 from __future__ import annotations
