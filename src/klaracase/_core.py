@@ -44,6 +44,8 @@ BACKOFF_CAP_SECONDS = 8.0
 MAX_SLEEP_SECONDS = 30.0
 DETAIL_LIMIT = 1000
 RETRY_STATUSES = frozenset({429, 503})
+NEVER_RETRY_CODES = frozenset({"volume_cap", "token_limit_reached"})
+"""Codes the client raises at once, whatever the status. A wait does not help for these."""
 UNKNOWN_CODE = "unknown"
 
 T = TypeVar("T", bound=Response)
@@ -452,7 +454,7 @@ class Core:
         """Seconds to sleep before the next attempt, or ``None`` to raise the error now."""
         if response.status_code not in RETRY_STATUSES or retries_so_far >= self.max_retries:
             return None
-        if error.code == "volume_cap":
+        if error.code in NEVER_RETRY_CODES:
             return None
         stated = _number(error.extra.get("retry_after_seconds"), None)
         if stated is None:

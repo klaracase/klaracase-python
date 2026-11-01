@@ -170,10 +170,11 @@ class KlaracaseError(Exception):
     def retryable(self) -> bool:
         """Whether sending the same request again later can succeed.
 
-        True for a 429 (except the daily ``volume_cap``), a 503 and a transport error. The client
-        already retried up to ``max_retries`` times before it raised.
+        True for a 429 (except the daily ``volume_cap``), a 503 and a transport error. A 402,
+        including ``token_limit_reached``, is never retryable. The client already retried up to
+        ``max_retries`` times before it raised.
         """
-        if self.code == "volume_cap":
+        if self.code in {"volume_cap", "token_limit_reached"}:
             return False
         return self.status in {429, 503} or isinstance(self, TransportError)
 

@@ -204,6 +204,36 @@ def test_an_api_error_becomes_an_error_object() -> None:
     assert error["detail"]
 
 
+def refusal_text(problem: str) -> tuple[str, MockServer]:
+    server = serve({"status": 402, "headers": {}, "body_file": f"../problems/{problem}.json"})
+    server.repeat_last = True
+    client = client_for(server)
+    return dispatch(client, "get_norm", {"reference": "§ 1 BGB"}), server
+
+
+def test_a_402_with_a_reason_carries_the_reason_and_no_url() -> None:
+    text, server = refusal_text("insufficient_credits.api_budget_empty")
+    body = json.loads(text)["error"]
+    assert list(body) == ["code", "detail", "retry_after_seconds", "reason"]
+    assert body["code"] == "insufficient_credits"
+    assert body["reason"] == "api_budget_empty"
+    assert "top_up_url" not in body
+    assert len(server.requests) == 1
+
+
+def test_token_limit_reached_is_surfaced_slim_and_never_retried() -> None:
+    text, server = refusal_text("token_limit_reached")
+    body = json.loads(text)["error"]
+    assert body["code"] == "token_limit_reached"
+    assert body["retry_after_seconds"] is None
+    assert (body["unit"], body["cap"], body["spent"]) == ("credits", 500, 500)
+    assert body["resets_at"] == "2026-12-01T00:00:00+00:00"
+    assert "settings_url" not in body
+    assert "cost" not in body
+    assert "balance" not in body
+    assert len(server.requests) == 1
+
+
 def test_a_rate_limit_error_carries_the_wait() -> None:
     server = serve(
         {"status": 429, "headers": {}, "body_file": "../problems/rate_limited.retry_120s.json"}

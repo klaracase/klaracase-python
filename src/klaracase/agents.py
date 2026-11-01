@@ -26,7 +26,13 @@ from collections.abc import Awaitable, Callable, Mapping, Sequence
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any, Literal, cast
 
-from .errors import ConfigurationError, KlaracaseError, RateLimitError
+from .errors import (
+    ConfigurationError,
+    InsufficientCreditsError,
+    KlaracaseError,
+    RateLimitError,
+    TokenLimitReachedError,
+)
 from .types import Branch, CitedStatute, DocumentType, NormJurisdiction, SearchMode
 from .types import SearchJurisdiction as _SearchJurisdiction
 
@@ -252,8 +258,11 @@ def dispatch(client: Klaracase, name: str, args: Mapping[str, Any] | str | None)
 
     A :class:`~klaracase.KlaracaseError` comes back as
     ``{"error": {"code", "detail", "retry_after_seconds"}}``. So does a call with an unknown
-    tool name or bad arguments. ``get_decision`` cuts the text to 4000 characters unless the
-    call sets ``max_chars``.
+    tool name or bad arguments. A 402 adds what a model needs to decide: ``reason`` for
+    ``insufficient_credits``, and ``unit``, ``cap``, ``spent`` and ``resets_at`` for
+    ``token_limit_reached``. Neither refusal is retried. The model should stop and tell its user.
+    No URL is added: ``top_up_url`` and ``settings_url`` are for a human admin.
+    ``get_decision`` cuts the text to 4000 characters unless the call sets ``max_chars``.
 
     Args:
         client: A :class:`~klaracase.Klaracase`.
@@ -358,11 +367,38 @@ def _render(tool: _Tool, result: Any) -> str:
 
 def _error_text(error: KlaracaseError) -> str:
     wait = error.retry_after_seconds if isinstance(error, RateLimitError) else None
-    return _error(error.code, error.detail or error.message, wait)
+    return _error(error.code, error.detail or error.message, wait, _refusal_members(error))
 
 
-def _error(code: str | None, detail: str, retry_after_seconds: float | None = None) -> str:
-    payload = {"code": code, "detail": detail, "retry_after_seconds": retry_after_seconds}
+def _refusal_members(error: KlaracaseError) -> dict[str, Any]:
+    """The extra members of a 402 that a model needs to decide, and no URL.
+
+    ``top_up_url`` and ``settings_url`` are for a human organization admin. They never go into
+    the output, so a model has nothing to open. The ``detail`` is the server's own text.
+    """
+    members: dict[str, Any] = {}
+    if isinstance(error, TokenLimitReachedError):
+        members["unit"] = error.unit
+        members["cap"] = error.cap
+        members["spent"] = error.spent
+        members["resets_at"] = error.resets_at_raw
+    elif isinstance(error, InsufficientCreditsError):
+        members["reason"] = error.reason
+    return {key: value for key, value in members.items() if value is not None}
+
+
+def _error(
+    code: str | None,
+    detail: str,
+    retry_after_seconds: float | None = None,
+    members: Mapping[str, Any] | None = None,
+) -> str:
+    payload = {
+        "code": code,
+        "detail": detail,
+        "retry_after_seconds": retry_after_seconds,
+        **(members or {}),
+    }
     return _compact({"error": payload})
 
 
