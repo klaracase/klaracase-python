@@ -20,3 +20,12 @@ All notable changes to this project go in this file. The format follows
   internal module, `_transport.py`.
 - `timeout` accepts a float or a `Timeout`. The default is `Timeout(30, connect=5)`.
 - `DefaultHttpClient` and `DefaultAsyncHttpClient` for proxy, CA bundle or certificate changes.
+- Typed response model: frozen, slotted dataclasses nested at every level (`hit.court`,
+  `finding.verdict`, `finding.matched_decision.ecli`) instead of dicts. Unknown keys land in
+  `extra` at every depth. A wrong-typed value never raises. `Model.from_dict` is the decoder.
+- `ResponseShapeError` for a body that lacks an identity key (`id`, `reference`, `field`).
+- `credits` is always a `Credits`. `Decision.ecli` and `Decision.document_type` read from
+  `metadata`. `Finding.excerpt(text)` and `CitationCheck.by_verdict()`.
+- Open enums are `Literal[...] | str`: `Verdict`, `RunStatus`, `DocumentStatus`,
+  `DocumentErrorCode`, `DocumentType`, `Confidence`, `Lifecycle`, `Jurisdiction`, `SearchMode`,
+  `Branch`.

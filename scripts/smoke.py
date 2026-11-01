@@ -18,9 +18,10 @@ def main() -> int:
         return 2
     with client:
         coverage = client.corpus.coverage(top=3)
+        total = coverage.total_decisions.value if coverage.total_decisions else None
         print(
             f"coverage ok: status={coverage.meta.status} api_release={coverage.meta.api_release} "
-            f"decisions={coverage.total_decisions} duration={coverage.meta.request_duration:.2f}s"
+            f"decisions={total} duration={coverage.meta.request_duration:.2f}s"
         )
         facets = client.corpus.facets("court_name", prefix="BGH")
         print(f"facets ok: {facets.field} total_values={facets.total_values}")

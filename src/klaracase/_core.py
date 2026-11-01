@@ -25,6 +25,7 @@ from .errors import (
     KlaracaseError,
     KlaracaseTimeoutError,
     RateLimitError,
+    ResponseShapeError,
     TransportError,
     ValidationError,
     error_class_for_status,
@@ -271,7 +272,12 @@ class Core:
         meta = ResponseMeta(
             status=response.status_code, api_release=release, request_duration=duration
         )
-        return operation.response_cls.from_body(body, meta)
+        try:
+            return operation.response_cls.from_body(body, meta)
+        except ResponseShapeError as error:
+            error.status = response.status_code
+            error.api_release = release
+            raise
 
     def error_from_response(self, response: transport.HttpResponse) -> KlaracaseError:
         """Build the error class that the HTTP status decides."""

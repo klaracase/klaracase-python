@@ -69,8 +69,8 @@ def test_response_is_frozen_and_keeps_unknown_keys() -> None:
     run = client_for(server).citation_checks.get("r1")
     assert run.status == "a_future_status"
     assert run.extra == {"future": {"x": 1}}
-    assert run.credits is None
-    assert run.findings is None
+    assert run.credits == klaracase.Credits()
+    assert run.findings == []
     assert run.meta.api_release is None
     with pytest.raises(dataclasses.FrozenInstanceError):
         run.id = "other"  # type: ignore[misc]
@@ -83,9 +83,8 @@ def test_to_dict_is_a_copy_of_the_body() -> None:
     assert run.to_dict() == body
     run.to_dict()["findings"].clear()
     assert run.to_dict() == body
-    assert run.credits is not None
     assert (run.credits.metered, run.credits.cost, run.credits.credits_remaining) == (True, 0, 18)
-    assert run.findings[0]["verdict"] == "verified_corpus"
+    assert run.findings[0].verdict == "verified_corpus"
 
 
 def test_api_key_arguments_must_be_lists() -> None:

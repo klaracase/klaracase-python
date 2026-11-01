@@ -32,6 +32,7 @@ __all__ = [
     "KlaracaseTimeoutError",
     "NotFoundError",
     "RateLimitError",
+    "ResponseShapeError",
     "ServiceUnavailableError",
     "TransportError",
     "ValidationError",
@@ -213,6 +214,27 @@ class DocumentTimeoutError(KlaracaseError):
         super().__init__(detail=detail, code="wait_timeout")
         self.document = document
         self.timeout = timeout
+
+
+class ResponseShapeError(KlaracaseError):
+    """The answer is a JSON object that lacks an identity key (``id``, ``reference`` or ``field``).
+
+    ``path`` names the missing key, for example ``findings[0].id``. This is not a mistake in your
+    code: the API sent a body this SDK version cannot use. ``status`` is the HTTP status.
+    """
+
+    def __init__(
+        self,
+        message: str,
+        *,
+        path: str | None = None,
+        status: int | None = None,
+        api_release: str | None = None,
+    ) -> None:
+        super().__init__(
+            message, code="response_shape", detail=message, status=status, api_release=api_release
+        )
+        self.path = path
 
 
 _BY_STATUS: dict[int, type[KlaracaseError]] = {
