@@ -336,7 +336,10 @@ class Core:
                 api_release=release,
             )
         meta = ResponseMeta(
-            status=response.status_code, api_release=release, request_duration=duration
+            status=response.status_code,
+            api_release=release,
+            request_duration=duration,
+            headers=lower_headers(response),
         )
         try:
             return operation.response_cls.from_body(body, meta)
@@ -366,6 +369,8 @@ class Core:
                 "status": status,
                 "api_release": release,
                 "extra": {k: v for k, v in body.items() if k not in standard},
+                "body": body,
+                "response_headers": lower_headers(response),
             }
             if cls is RateLimitError:
                 kwargs["retry_after_seconds"] = _number(
@@ -378,6 +383,8 @@ class Core:
             "code": UNKNOWN_CODE,
             "status": status,
             "api_release": release,
+            "body": body if isinstance(body, dict) else None,
+            "response_headers": lower_headers(response),
         }
         if cls is RateLimitError:
             kwargs["retry_after_seconds"] = header_wait
@@ -419,6 +426,11 @@ class Core:
                 url=self.base_url + operation.path,
             )
         )
+
+
+def lower_headers(response: transport.HttpResponse) -> dict[str, str]:
+    """The response headers as a plain dict with lower-case names."""
+    return {name.lower(): value for name, value in response.headers.items()}
 
 
 def _merge_headers(base: dict[str, str], *overrides: Mapping[str, str] | None) -> dict[str, str]:

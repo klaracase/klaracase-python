@@ -14,8 +14,6 @@ The rules, which hold at every depth:
 * A field name that ends in ``_`` (``from_``) is the wire key without the underscore (``from``).
 """
 
-from __future__ import annotations
-
 import types
 import typing
 from collections.abc import Mapping

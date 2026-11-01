@@ -24,15 +24,18 @@ from .errors import (
     ConflictError,
     DocumentFailedError,
     DocumentTimeoutError,
+    ErrorCode,
     ForbiddenError,
     InsufficientCreditsError,
     KlaracaseError,
     KlaracaseTimeoutError,
+    KnownErrorCode,
     NotFoundError,
     RateLimitError,
     ResponseShapeError,
     ServiceUnavailableError,
     TransportError,
+    UnprocessableEntityError,
     ValidationError,
 )
 from .types import (
@@ -150,6 +153,7 @@ __all__ = [
     "DocumentTimeoutError",
     "DocumentType",
     "EdgeAccounting",
+    "ErrorCode",
     "Evidence",
     "Extraction",
     "FacetField",
@@ -162,6 +166,7 @@ __all__ = [
     "Klaracase",
     "KlaracaseError",
     "KlaracaseTimeoutError",
+    "KnownErrorCode",
     "LawCoverage",
     "Lifecycle",
     "MatchedDecision",
@@ -195,8 +200,20 @@ __all__ = [
     "ToolCall",
     "TransportError",
     "UniqueCitation",
+    "UnprocessableEntityError",
     "ValidationError",
     "Verdict",
     "__version__",
     "reset_deprecation_warnings",
 ]
+
+
+def _present_public_classes_as_top_level() -> None:
+    """Show ``klaracase.Name`` in reprs, tracebacks and docs instead of the private module."""
+    for name in __all__:
+        obj = globals()[name]
+        if isinstance(obj, type):
+            obj.__module__ = __name__
+
+
+_present_public_classes_as_top_level()

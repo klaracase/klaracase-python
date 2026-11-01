@@ -14,7 +14,7 @@ client.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Literal
 
 if TYPE_CHECKING:
     from .types import CitationCheckDocument
@@ -26,18 +26,80 @@ __all__ = [
     "ConflictError",
     "DocumentFailedError",
     "DocumentTimeoutError",
+    "ErrorCode",
     "ForbiddenError",
     "InsufficientCreditsError",
     "KlaracaseError",
     "KlaracaseTimeoutError",
+    "KnownErrorCode",
     "NotFoundError",
     "RateLimitError",
     "ResponseShapeError",
     "ServiceUnavailableError",
     "TransportError",
+    "UnprocessableEntityError",
     "ValidationError",
     "error_class_for_status",
 ]
+
+
+KnownErrorCode = Literal[
+    # Middleware and framework
+    "unauthenticated",
+    "personal_access_token_required",
+    "token_org_missing",
+    "token_org_membership_lost",
+    "pseudonymizer_token_refused",
+    "two_factor_required",
+    "token_ability_missing",
+    "validation_failed",
+    "rate_limited",
+    "insufficient_credits",
+    "volume_cap",
+    "backend_unavailable",
+    "service_unavailable",
+    "internal_error",
+    "bad_request",
+    "forbidden",
+    "not_found",
+    "method_not_allowed",
+    "conflict",
+    "payload_too_large",
+    "unsupported_media_type",
+    "client_error",
+    # Operations
+    "not_found_under_filter",
+    "statute_superseded",
+    "section_not_in_current_text",
+    "document_unavailable",
+    "search_timeout",
+    "index_unavailable",
+    "norm_family_unavailable",
+    "ambiguous_aktenzeichen",
+    "ids_unresolved",
+    "page_undefined_at_this_depth",
+    "text_too_long",
+    "not_german_legal_text",
+    "unrecognisable_norm_token",
+    "invalid_reference",
+    "range_not_supported",
+    "historical_version_unavailable",
+    "ambiguous",
+    "sections_unavailable",
+    "section_not_found",
+    "rn_range_not_found",
+    "official_headnote_not_located",
+    "document_leitsatz_not_located",
+    # Raised by this SDK
+    "unknown",
+    "client_validation",
+    "wait_timeout",
+    "response_shape",
+]
+"""The closed vocabulary of ``error.code`` that this SDK version knows."""
+
+ErrorCode = KnownErrorCode | str
+"""``error.code``: a known code, or a plain string for a code the API adds later."""
 
 
 class ConfigurationError(Exception):
@@ -58,6 +120,9 @@ class KlaracaseError(Exception):
         code: The machine-readable problem ``code``, for example ``insufficient_credits``.
         api_release: The ``X-Klaracase-Api-Release`` header of the answer, if there was one.
         extra: Every other member of the problem body, unchanged.
+        body: The whole problem body as a dict, or ``None`` when the answer was not JSON.
+        response_headers: The response headers, names in lower case. Empty without an answer.
+        status_code: The same as ``status``.
     """
 
     def __init__(
@@ -68,9 +133,11 @@ class KlaracaseError(Exception):
         title: str | None = None,
         status: int | None = None,
         detail: str | None = None,
-        code: str | None = None,
+        code: ErrorCode | None = None,
         api_release: str | None = None,
         extra: dict[str, Any] | None = None,
+        body: dict[str, Any] | None = None,
+        response_headers: dict[str, str] | None = None,
     ) -> None:
         text = message or detail or title or code or type_name(self)
         super().__init__(text)
@@ -82,6 +149,28 @@ class KlaracaseError(Exception):
         self.code = code
         self.api_release = api_release
         self.extra: dict[str, Any] = dict(extra) if extra else {}
+        self.body = body
+        self.response_headers: dict[str, str] = dict(response_headers) if response_headers else {}
+
+    @property
+    def status_code(self) -> int | None:
+        """The HTTP status, an alias of ``status``."""
+        return self.status
+
+    @property
+    def retryable(self) -> bool:
+        """Whether sending the same request again later can succeed.
+
+        True for a 429 (except the daily ``volume_cap``), a 503 and a transport error. The client
+        already retried up to ``max_retries`` times before it raised.
+        """
+        if self.code == "volume_cap":
+            return False
+        return self.status in {429, 503} or isinstance(self, TransportError)
+
+    def __repr__(self) -> str:
+        parts = [f"status={self.status!r}", f"code={self.code!r}", f"detail={self.detail!r}"]
+        return f"{type(self).__name__}({', '.join(parts)})"
 
     def __str__(self) -> str:
         prefix = f"[{self.status}] " if self.status is not None else ""
@@ -236,6 +325,9 @@ class ResponseShapeError(KlaracaseError):
         )
         self.path = path
 
+
+UnprocessableEntityError = ValidationError
+"""Another name for :class:`ValidationError` (HTTP 422), for readers who expect it."""
 
 _BY_STATUS: dict[int, type[KlaracaseError]] = {
     401: AuthenticationError,

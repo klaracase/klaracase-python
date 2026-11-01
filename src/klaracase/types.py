@@ -17,8 +17,6 @@ duration), ``raw`` (the parsed body, as received), ``credits`` (always a :class:
 ``to_dict()`` (a deep copy of the body). Nothing is renamed, reordered, cleaned or translated.
 """
 
-from __future__ import annotations
-
 import copy
 from collections.abc import Mapping
 from dataclasses import dataclass
@@ -178,11 +176,13 @@ class ResponseMeta:
         status: The HTTP status (200 or 202). It is 0 on an object built with ``from_dict``.
         api_release: The ``X-Klaracase-Api-Release`` header, or ``None`` if it was absent.
         request_duration: Seconds spent on the HTTP exchange that produced this answer.
+        headers: The response headers, names in lower case.
     """
 
     status: int = 0
     api_release: str | None = None
     request_duration: float = 0.0
+    headers: dict[str, str] = _field(default_factory=dict[str, str], repr=False)
 
 
 @dataclass(frozen=True, slots=True, kw_only=True)

@@ -41,3 +41,9 @@ All notable changes to this project go in this file. The format follows
 - Date arguments accept `str | datetime.date`. `cited_statutes` accepts `CitedStatute | str`.
 - Uploads accept `Path | str | bytes | BinaryIO`. The file name and the content type are inferred.
 - Google-style `Args:` docstrings on all 12 methods.
+- `ResponseMeta.headers` (lower-case names). Errors carry `response_headers`, `body` (the raw
+  problem dict), `status_code` (an alias of `status`) and a `retryable` property, and have a
+  readable `repr`.
+- `UnprocessableEntityError` is another name for `ValidationError`.
+- `ErrorCode` and `KnownErrorCode`: `error.code` is typed from the closed vocabulary, plus `str`.
+- `repr` of the clients never shows the token. Public classes present as `klaracase.Name`.
