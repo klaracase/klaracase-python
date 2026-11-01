@@ -69,3 +69,6 @@ All notable changes to this project go in this file. The format follows
   mock and need no token. A test runs them.
 - README: token, async, uploads, pagination, errors, retries, request options, logging, agents,
   credits, response objects, a pydantic `TypeAdapter` note, versioning and privacy.
+- Correction: paging the same query within a credit period costs no extra credits (the API leaves
+  `page` and `limit` out of the charge). A changed query, filter or mode is a new charge. The
+  iterator docstrings and the README now say so. `max_pages` stays required as a runaway guard.

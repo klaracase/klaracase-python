@@ -189,10 +189,10 @@ for graph in client.decisions.iter_citation_pages("1 StR 185/01", max_pages=2):
 `max_pages` is required. There is no default, so a loop cannot run away. The iterators stop at an
 empty page, and at 10 pages (search) or 20 pages (citation graph), which is all the API serves.
 
-Credit warning: a search costs 1 credit for each distinct query and filter set per month. Pages of
-the same search cost nothing more, but each page is a request. It counts against your rate limit
-and your daily row cap. A changed filter is a new search and costs 1 credit again. The citation
-graph costs 2 credits for each decision, direction and depth per month.
+Credits: paging the same query within a credit period costs no extra credits. A changed query,
+filter or mode is a new charge. Check `credits` on each response. Each page is still one request,
+so it counts against your rate limit and your daily row cap. The citation graph costs 2 credits
+for each decision, direction and depth, and its pages cost nothing more.
 
 ## Errors
 

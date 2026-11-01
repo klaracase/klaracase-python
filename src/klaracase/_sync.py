@@ -458,8 +458,10 @@ class Decisions:
     ) -> Iterator[DecisionSearch]:
         """Yield the pages of one search, one request per page, until a page is empty.
 
-        Paging is free by the price list, but each page is one request. It counts against your
-        rate limit and your daily row cap. That is why ``max_pages`` has no default.
+        Paging the same query within a credit period costs no extra credits. A changed query,
+        filter or mode is a new charge. Check ``credits`` on each response. Each page is still one
+        request, so it counts against your rate limit and your daily row cap. That is why
+        ``max_pages`` has no default.
 
         Args:
             query: As in :meth:`search`.
@@ -487,6 +489,9 @@ class Decisions:
 
         It also stops after a page whose ``pagination`` says there is nothing more. A page past
         the first is refused with ``page_undefined_at_this_depth`` at depth 2.
+
+        Paging the same decision, direction and depth within a credit period costs no extra credits.
+        Check ``credits`` on each response.
 
         Args:
             id: As in :meth:`citations`.
