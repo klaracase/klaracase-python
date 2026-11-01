@@ -1,6 +1,9 @@
 # Klaracase SDK conformance pack
 
-Language-neutral test cases for the five SDKs (TypeScript, Python, PHP, Go, Rust). Each SDK test
+Language-neutral test cases for the five SDKs (TypeScript, Python, PHP, Go, Rust), 106 cases in
+all (102 for API 0.95.0, four added for 0.96.0: `meta.credits_api_budget`,
+`errors.insufficient_credits_api_budget_empty`, `errors.insufficient_credits_api_budget_not_available`
+and `errors.token_limit_reached`). Each SDK test
 suite loads these files, runs a local mock HTTP server, and checks that the SDK sends the right
 request and returns or raises the right thing. The design is `../../DESIGN.md` (sections 2 and 3);
 the API is `../CONTRACT.md`.
@@ -186,6 +189,10 @@ Special roots:
   where its unknown keys live (a map `extra`, an index into the raw JSON, `serde_json::Value`, ...)
   and the runner adapter maps `extra.` to that place. Known keys are not required to appear there.
 - `credits.metered`, `credits.cost`, `credits.credits_remaining`: first-class field `credits`.
+- `credits.api_budget.cents`, `credits.api_budget.rate_cents_per_credit`,
+  `credits.api_budget.credits_at_rate` (0.96.0): the optional prepaid-budget object. When the
+  server omits it, the SDK's field is absent or unset, never an invented zero (every older case has
+  no `api_budget` and must still pass).
 
 A value is a literal (string, number, boolean, `null`) compared by equality, or a matcher object
 whose keys all start with `$`:
@@ -275,8 +282,14 @@ member of the body except those five. Typed fields such as `cost` are therefore 
 `extra`. In `fields`, a bare name such as `cost` means the typed field when the SDK has one and
 `extra.<name>` otherwise. The SDK needs typed fields only for the five of DESIGN.md 3.4
 (`required_ability`, `errors`, `cost`, `balance`, `retry_after_seconds`); `unit`, `cap`, `resets_at`,
-`candidates` and `successor` are read from `extra`. A body member the SDK does not know stays
+`candidates` and `successor` are read from `extra`, and so are the 0.96.0 members `reason`,
+`top_up_url`, `spent` and `settings_url`. A body member the SDK does not know stays
 readable in `extra`.
+
+**402 without `cost`.** `token_limit_reached` (0.96.0) is a 402, so it is an `InsufficientCreditsError`
+by status, but its body carries no `cost` and no `balance`. The typed fields are then absent
+(`null`, `None`, `nil`), and `insufficient_credits` is the only 402 that always has them. The SDK
+never opens `top_up_url` or `settings_url`: they are for a human organization admin.
 
 **Not a problem body.** A body is a problem when it is a JSON object with a string `code`. Any other
 body on an error status (HTML from nginx, `{"message": "Server Error"}`, an empty body) becomes the

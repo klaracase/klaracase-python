@@ -1,0 +1,10 @@
+{
+  "type": "https://klaracase.de/docs/api/errors#insufficient_credits",
+  "title": "Payment Required",
+  "status": 402,
+  "detail": "The plan credits for this billing period are used up. An API budget for the API and MCP needs the Professional plan: https://klaracase.de/preise.",
+  "code": "insufficient_credits",
+  "cost": 1,
+  "balance": 0,
+  "reason": "api_budget_not_available"
+}

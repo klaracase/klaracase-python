@@ -1,0 +1,12 @@
+{
+  "type": "https://klaracase.de/docs/api/errors#token_limit_reached",
+  "title": "Payment Required",
+  "status": 402,
+  "detail": "This API token reached its limit: 500 of 500 credits this billing period, so this call did not run and nothing was charged. An organization admin can change the limit at https://klaracase.de/org/api-keys; the limit resets 2026-12-01T00:00:00+00:00 (UTC).",
+  "code": "token_limit_reached",
+  "unit": "credits",
+  "cap": 500,
+  "spent": 500,
+  "resets_at": "2026-12-01T00:00:00+00:00",
+  "settings_url": "https://klaracase.de/org/api-keys"
+}

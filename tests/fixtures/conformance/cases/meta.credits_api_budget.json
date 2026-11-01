@@ -1,0 +1,50 @@
+{
+  "name": "meta.credits_api_budget",
+  "description": "credits.api_budget is a first-class optional member of credits (0.96.0): cost counts plan and budget credits, credits_remaining stays the plan credits, and the whole body round-trips. Other cases carry no api_budget key, so the SDK must treat it as absent, not as null.",
+  "sdk": {
+    "group": "decisions",
+    "method": "search",
+    "args": {
+      "query": "Untreue"
+    }
+  },
+  "expect": {
+    "request": {
+      "method": "GET",
+      "path": "/decisions/search",
+      "query": {
+        "query": "Untreue"
+      },
+      "headers": {
+        "authorization": "Bearer test_token_123",
+        "accept": "application/json",
+        "user-agent": "klaracase-"
+      }
+    },
+    "request_count": 1
+  },
+  "responses": [
+    {
+      "status": 200,
+      "headers": {
+        "content-type": "application/json",
+        "x-klaracase-api-release": "0.96.0"
+      },
+      "body_file": "../bodies/decisions.search.api_budget.json"
+    }
+  ],
+  "expect_result": {
+    "kind": "success",
+    "assert": {
+      "meta.status": 200,
+      "meta.api_release": "0.96.0",
+      "credits.metered": true,
+      "credits.cost": 1,
+      "credits.credits_remaining": 0,
+      "credits.api_budget.cents": 4991,
+      "credits.api_budget.rate_cents_per_credit": 9,
+      "credits.api_budget.credits_at_rate": 554
+    },
+    "body_roundtrip": true
+  }
+}

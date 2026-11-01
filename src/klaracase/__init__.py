@@ -28,6 +28,7 @@ from .errors import (
     ErrorCode,
     ForbiddenError,
     InsufficientCreditsError,
+    InsufficientCreditsReason,
     KlaracaseError,
     KlaracaseTimeoutError,
     KnownErrorCode,
@@ -35,11 +36,13 @@ from .errors import (
     RateLimitError,
     ResponseShapeError,
     ServiceUnavailableError,
+    TokenLimitReachedError,
     TransportError,
     UnprocessableEntityError,
     ValidationError,
 )
 from .types import (
+    ApiBudget,
     AvailableRange,
     Branch,
     BranchCoverage,
@@ -114,6 +117,7 @@ from .types import (
 
 __all__ = [
     "DEFAULT_TIMEOUT",
+    "ApiBudget",
     "ApiError",
     "AsyncKlaracase",
     "AuthenticationError",
@@ -167,6 +171,7 @@ __all__ = [
     "ForbiddenError",
     "InstanceMix",
     "InsufficientCreditsError",
+    "InsufficientCreditsReason",
     "Jurisdiction",
     "Klaracase",
     "KlaracaseError",
@@ -202,6 +207,7 @@ __all__ = [
     "ServiceUnavailableError",
     "Snippet",
     "Timeout",
+    "TokenLimitReachedError",
     "ToolCall",
     "TransportError",
     "UniqueCitation",

@@ -45,6 +45,7 @@ EXAMPLE_CLASSES: dict[str, type[Response]] = {
 BODY_CLASSES: dict[str, type[Response]] = {
     "corpus.coverage.not_metered.json": klaracase.CorpusCoverage,
     "corpus.facets.cited_norms.json": klaracase.CorpusFacets,
+    "decisions.search.api_budget.json": klaracase.DecisionSearch,
     "documents.extracting.json": klaracase.CitationCheckDocument,
     "documents.failed.encrypted_pdf.json": klaracase.CitationCheckDocument,
     "documents.ocr_pending.json": klaracase.CitationCheckDocument,
@@ -203,6 +204,15 @@ def test_the_deliberate_future_key_body_is_reported() -> None:
     assert found == [
         "<root>: ['another_future_key', 'future_key']",
         "results[0]: ['future_result_key']",
+    ]
+
+
+def test_the_walker_reports_a_key_inside_api_budget() -> None:
+    body = read(BODIES / "decisions.search.api_budget.json")
+    assert unmodelled(klaracase.DecisionSearch.from_dict(body)) == []
+    body["credits"]["api_budget"]["a_key_from_the_future"] = 1
+    assert unmodelled(klaracase.DecisionSearch.from_dict(body)) == [
+        "credits.api_budget: ['a_key_from_the_future']"
     ]
 
 

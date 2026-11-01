@@ -409,9 +409,10 @@ class Core:
         """Build the error class that the HTTP status decides."""
         status = response.status_code
         release = response.headers.get("x-klaracase-api-release")
-        cls = error_class_for_status(status)
         text = response.text
         body = json_object(response)
+        code = body.get("code") if body is not None else None
+        cls = error_class_for_status(status, code if isinstance(code, str) else None)
         header_wait = _header_seconds(response.headers.get("retry-after"))
         if body is not None and isinstance(body.get("code"), str):
             standard = {"type", "title", "detail", "status", "code"}

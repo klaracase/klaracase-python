@@ -14,6 +14,7 @@ client.
 
 from __future__ import annotations
 
+import datetime
 from typing import TYPE_CHECKING, Any, Literal, cast
 
 if TYPE_CHECKING:
@@ -29,6 +30,7 @@ __all__ = [
     "ErrorCode",
     "ForbiddenError",
     "InsufficientCreditsError",
+    "InsufficientCreditsReason",
     "KlaracaseError",
     "KlaracaseTimeoutError",
     "KnownErrorCode",
@@ -36,6 +38,7 @@ __all__ = [
     "RateLimitError",
     "ResponseShapeError",
     "ServiceUnavailableError",
+    "TokenLimitReachedError",
     "TransportError",
     "UnprocessableEntityError",
     "ValidationError",
@@ -55,6 +58,7 @@ KnownErrorCode = Literal[
     "validation_failed",
     "rate_limited",
     "insufficient_credits",
+    "token_limit_reached",
     "volume_cap",
     "backend_unavailable",
     "service_unavailable",
@@ -97,6 +101,11 @@ KnownErrorCode = Literal[
     "response_shape",
 ]
 """The closed vocabulary of ``error.code`` that this SDK version knows."""
+
+InsufficientCreditsReason = (
+    Literal["api_budget_empty", "api_budget_not_available", "plan_credits_exhausted"] | str
+)
+"""``InsufficientCreditsError.reason``: a known value, or a plain string the API adds later."""
 
 ErrorCode = KnownErrorCode | str
 """``error.code``: a known code, or a plain string for a code the API adds later."""
@@ -230,17 +239,102 @@ class ValidationError(KlaracaseError):
 
 
 class InsufficientCreditsError(KlaracaseError):
-    """HTTP 402: the organization has too few credits. It is never retried."""
+    """HTTP 402: the call was refused for credits or for a limit. It is never retried.
+
+    Nothing ran and nothing was charged. The code says which refusal it is. For
+    ``insufficient_credits`` the organization has too few credits, and ``cost`` and ``balance``
+    are set. For ``token_limit_reached`` the API key reached its own limit, and the error is the
+    subclass :class:`TokenLimitReachedError`. That 402 has no ``cost`` and no ``balance``, so both
+    read ``None``.
+
+    For ``insufficient_credits``, ``reason`` says why the call could not be paid (API release
+    0.96.0): ``api_budget_empty``, ``api_budget_not_available`` or a value this SDK does not know
+    yet. Treat an unknown value like ``api_budget_not_available``. ``plan_credits_exhausted`` is
+    reserved.
+
+    ``top_up_url`` is a page for a human organization admin. This client never opens it. A program
+    or an AI agent must not open it or follow it. Show it to your user.
+    """
 
     @property
     def cost(self) -> int | None:
-        value = self.extra.get("cost")
-        return value if isinstance(value, int) and not isinstance(value, bool) else None
+        return _int_member(self.extra, "cost")
 
     @property
     def balance(self) -> int | None:
-        value = self.extra.get("balance")
-        return value if isinstance(value, int) and not isinstance(value, bool) else None
+        return _int_member(self.extra, "balance")
+
+    @property
+    def reason(self) -> InsufficientCreditsReason | None:
+        """Why the call could not be paid, or ``None`` when the problem has no ``reason``."""
+        return _str_member(self.extra, "reason")
+
+    @property
+    def top_up_url(self) -> str | None:
+        """Where an organization admin loads the API budget. For a human. Never open it."""
+        return _str_member(self.extra, "top_up_url")
+
+
+class TokenLimitReachedError(InsufficientCreditsError):
+    """HTTP 402 ``token_limit_reached``: this API key used up its own credit limit.
+
+    An organization admin set the limit for the key. Nothing ran and nothing was charged. Do not
+    retry: the call fails until the limit resets at ``resets_at`` or an admin changes the limit.
+    Stop, and report the refusal to your user.
+
+    It is a subclass of :class:`InsufficientCreditsError`, because the HTTP status is 402. The
+    body has no ``cost`` and no ``balance``, so both read ``None``.
+
+    Attributes:
+        unit: Always ``credits`` today.
+        cap: The credit limit of this key for the period.
+        spent: The credits this key used in the period, plan credits and API budget together.
+        resets_at: When the credit period of the key ends and its count starts again, as an
+            aware ``datetime``. ``None`` when the member is absent or not an ISO 8601 date-time.
+        resets_at_raw: The same member as the string the API sent.
+        settings_url: The page where an organization admin changes the limit. For a human. Never
+            open it.
+    """
+
+    @property
+    def unit(self) -> str | None:
+        return _str_member(self.extra, "unit")
+
+    @property
+    def cap(self) -> int | None:
+        return _int_member(self.extra, "cap")
+
+    @property
+    def spent(self) -> int | None:
+        return _int_member(self.extra, "spent")
+
+    @property
+    def resets_at_raw(self) -> str | None:
+        return _str_member(self.extra, "resets_at")
+
+    @property
+    def resets_at(self) -> datetime.datetime | None:
+        raw = self.resets_at_raw
+        if raw is None:
+            return None
+        try:
+            return datetime.datetime.fromisoformat(raw)
+        except ValueError:
+            return None
+
+    @property
+    def settings_url(self) -> str | None:
+        return _str_member(self.extra, "settings_url")
+
+
+def _int_member(extra: dict[str, Any], key: str) -> int | None:
+    value = extra.get(key)
+    return value if isinstance(value, int) and not isinstance(value, bool) else None
+
+
+def _str_member(extra: dict[str, Any], key: str) -> str | None:
+    value = extra.get(key)
+    return value if isinstance(value, str) else None
 
 
 class RateLimitError(KlaracaseError):
@@ -341,6 +435,11 @@ _BY_STATUS: dict[int, type[KlaracaseError]] = {
 }
 
 
-def error_class_for_status(status: int) -> type[KlaracaseError]:
-    """Return the error class the HTTP status decides."""
+def error_class_for_status(status: int, code: str | None = None) -> type[KlaracaseError]:
+    """Return the error class the HTTP status decides.
+
+    A 402 with the code ``token_limit_reached`` is a :class:`TokenLimitReachedError`.
+    """
+    if status == 402 and code == "token_limit_reached":
+        return TokenLimitReachedError
     return _BY_STATUS.get(status, ApiError)

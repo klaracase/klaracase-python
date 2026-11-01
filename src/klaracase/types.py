@@ -28,6 +28,7 @@ from ._model import Model, decode_model
 from ._transport import Timeout
 
 __all__ = [
+    "ApiBudget",
     "AvailableRange",
     "Branch",
     "BranchCoverage",
@@ -239,16 +240,44 @@ class Count(Model):
 
 
 @dataclass(frozen=True, slots=True, kw_only=True)
+class ApiBudget(Model):
+    """The prepaid API budget of the organization after a call (API release 0.96.0).
+
+    The budget pays for API and MCP calls once the plan credits are used up. It does not expire.
+    The web app never draws on it.
+
+    Attributes:
+        cents: The budget in euro cents. It can be negative after a payment was lost.
+        rate_cents_per_credit: What one credit costs from the budget, in whole euro cents.
+        credits_at_rate: How many further credits the spendable part of the budget pays for at
+            that rate. 0 when the budget is empty or on hold.
+    """
+
+    cents: int | None = None
+    rate_cents_per_credit: int | None = None
+    credits_at_rate: int | None = None
+
+
+@dataclass(frozen=True, slots=True, kw_only=True)
 class Credits(Model):
     """The ``credits`` object of an answer.
 
     A superadmin answer has ``metered=False`` and ``None`` for the other two. A body without
     ``credits`` gives an empty ``Credits``, so ``response.credits.cost`` always type-checks.
+
+    ``cost`` counts plan credits and API budget together. ``credits_remaining`` is the plan
+    credits left in the credit period and never counts the API budget.
+
+    ``api_budget`` is absent (``None``) when the body has no ``api_budget`` key. The API leaves
+    the key out when the organization has no budget and may not load one. When the key is
+    present, ``api_budget`` is an :class:`ApiBudget`, never ``None``. The SDK does not invent a
+    zero budget.
     """
 
     metered: bool | None = None
     cost: int | None = None
     credits_remaining: int | None = None
+    api_budget: ApiBudget | None = None
 
 
 @dataclass(frozen=True, slots=True, kw_only=True)

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import datetime
 import json
 import pickle
 import typing
@@ -150,3 +151,82 @@ def test_public_objects_still_pickle_and_resolve_type_hints() -> None:
     assert "metadata" in hints
     error = pickle.loads(pickle.dumps(klaracase.NotFoundError(code="not_found", status=404)))
     assert isinstance(error, klaracase.NotFoundError)
+
+
+def refusal(name: str, **kwargs: Any) -> klaracase.InsufficientCreditsError:
+    server = serve(problem(402, name))
+    server.repeat_last = True
+    with pytest.raises(klaracase.InsufficientCreditsError) as caught:
+        client_for(server, **kwargs).norms.get("§ 1 BGB")
+    assert len(server.requests) == 1
+    return caught.value
+
+
+def test_insufficient_credits_exposes_reason_and_top_up_url() -> None:
+    error = refusal("insufficient_credits.api_budget_empty", max_retries=2)
+    assert type(error) is klaracase.InsufficientCreditsError
+    assert error.code == "insufficient_credits"
+    assert (error.cost, error.balance) == (1, 0)
+    assert error.reason == "api_budget_empty"
+    assert error.top_up_url == "https://klaracase.de/org/billing/api-budget"
+    assert error.retryable is False
+
+
+def test_insufficient_credits_without_top_up_url_or_reason() -> None:
+    not_available = refusal("insufficient_credits.api_budget_not_available")
+    assert not_available.reason == "api_budget_not_available"
+    assert not_available.top_up_url is None
+    plain = refusal("insufficient_credits")
+    assert plain.reason is None
+    assert plain.top_up_url is None
+
+
+def test_an_unknown_reason_and_a_wrong_typed_member_are_kept_safely() -> None:
+    error = klaracase.InsufficientCreditsError(
+        code="insufficient_credits",
+        status=402,
+        extra={"cost": 1, "balance": 0, "reason": "a_future_reason", "top_up_url": 5},
+    )
+    assert error.reason == "a_future_reason"
+    assert error.top_up_url is None
+
+
+def test_token_limit_reached_is_its_own_class_without_cost_and_balance() -> None:
+    error = refusal("token_limit_reached", max_retries=2)
+    assert isinstance(error, klaracase.TokenLimitReachedError)
+    assert isinstance(error, klaracase.InsufficientCreditsError)
+    assert error.code == "token_limit_reached"
+    assert error.status == 402
+    assert (error.unit, error.cap, error.spent) == ("credits", 500, 500)
+    assert error.resets_at_raw == "2026-12-01T00:00:00+00:00"
+    assert error.resets_at == datetime.datetime(2026, 12, 1, tzinfo=datetime.UTC)
+    assert error.settings_url == "https://klaracase.de/org/api-keys"
+    assert error.cost is None
+    assert error.balance is None
+    assert error.reason is None
+    assert error.retryable is False
+
+
+def test_token_limit_reached_resets_at_tolerates_a_missing_or_odd_value() -> None:
+    bare = klaracase.TokenLimitReachedError(code="token_limit_reached", status=402)
+    assert (bare.unit, bare.cap, bare.spent, bare.resets_at, bare.settings_url) == (None,) * 5
+    odd = klaracase.TokenLimitReachedError(
+        code="token_limit_reached", status=402, extra={"resets_at": "next month"}
+    )
+    assert odd.resets_at is None
+    assert odd.resets_at_raw == "next month"
+
+
+def test_a_402_with_another_code_stays_the_base_class() -> None:
+    server = serve({"status": 402, "headers": {}, "body": {"code": "something_new"}})
+    with pytest.raises(klaracase.InsufficientCreditsError) as caught:
+        client_for(server).norms.get("§ 1 BGB")
+    assert type(caught.value) is klaracase.InsufficientCreditsError
+    assert caught.value.cost is None
+
+
+def test_token_limit_reached_survives_pickle() -> None:
+    error = refusal("token_limit_reached")
+    clone = pickle.loads(pickle.dumps(error))
+    assert type(clone) is klaracase.TokenLimitReachedError
+    assert clone.resets_at == error.resets_at

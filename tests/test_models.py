@@ -189,3 +189,41 @@ def test_open_enums_keep_values_the_sdk_does_not_know() -> None:
     assert run.status == "brand_new"
     finding = Finding.from_dict({"id": "f", "verdict": "brand_new_verdict"})
     assert finding.verdict == "brand_new_verdict"
+
+
+def test_credits_api_budget_is_a_model_and_unknown_keys_stay() -> None:
+    body = json.loads(
+        (
+            Path(__file__).parent
+            / "fixtures"
+            / "conformance"
+            / "bodies"
+            / "decisions.search.api_budget.json"
+        ).read_text(encoding="utf-8")
+    )
+    body["credits"]["api_budget"]["on_hold"] = True
+    credits = DecisionSearch.from_dict(body).credits
+    assert isinstance(credits.api_budget, klaracase.ApiBudget)
+    assert (credits.cost, credits.credits_remaining) == (1, 0)
+    assert credits.api_budget.cents == 4991
+    assert credits.api_budget.rate_cents_per_credit == 9
+    assert credits.api_budget.credits_at_rate == 554
+    assert credits.api_budget.extra == {"on_hold": True}
+
+
+def test_credits_api_budget_is_absent_not_null_when_the_key_is_missing() -> None:
+    credits = DecisionSearch.from_dict(load("decisions.search.json")).credits
+    assert "api_budget" not in load("decisions.search.json")["credits"]
+    assert credits.api_budget is None
+    assert Credits().api_budget is None
+    assert DecisionSearch.from_dict({}).credits.api_budget is None
+    negative = Credits.from_dict(
+        {
+            "metered": True,
+            "cost": 1,
+            "api_budget": {"cents": -40, "rate_cents_per_credit": 9, "credits_at_rate": 0},
+        }
+    )
+    assert negative.api_budget is not None
+    assert negative.api_budget.cents == -40
+    assert negative.api_budget.credits_at_rate == 0

@@ -1,0 +1,53 @@
+{
+  "name": "errors.token_limit_reached",
+  "description": "402 token_limit_reached is an InsufficientCreditsError by status, but its body has no cost and no balance: those typed fields are absent (null), and cap, spent, unit, resets_at and settings_url are read from extra. Not retried.",
+  "sdk": {
+    "group": "decisions",
+    "method": "search",
+    "args": {
+      "query": "Untreue"
+    },
+    "options": {
+      "max_retries": 2
+    }
+  },
+  "expect": {
+    "request": {
+      "method": "GET",
+      "path": "/decisions/search",
+      "query": {
+        "query": "Untreue"
+      },
+      "headers": {
+        "authorization": "Bearer test_token_123",
+        "accept": "application/json",
+        "user-agent": "klaracase-"
+      }
+    },
+    "request_count": 1,
+    "sleeps": []
+  },
+  "responses": [
+    {
+      "status": 402,
+      "headers": {
+        "content-type": "application/problem+json",
+        "x-klaracase-api-release": "0.96.0"
+      },
+      "body_file": "../problems/token_limit_reached.json"
+    }
+  ],
+  "expect_result": {
+    "kind": "error",
+    "class": "InsufficientCreditsError",
+    "code": "token_limit_reached",
+    "status": 402,
+    "fields": {
+      "unit": "credits",
+      "cap": 500,
+      "spent": 500,
+      "resets_at": "2026-12-01T00:00:00+00:00",
+      "settings_url": "https://klaracase.de/org/api-keys"
+    }
+  }
+}

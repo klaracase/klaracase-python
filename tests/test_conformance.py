@@ -18,5 +18,5 @@ def test_conformance_case(path: Any, mode: str, monkeypatch: pytest.MonkeyPatch)
     run_case(case, mode, monkeypatch)
 
 
-def test_pack_has_102_cases() -> None:
-    assert len(CASES) == 102
+def test_pack_has_106_cases() -> None:
+    assert len(CASES) == 106

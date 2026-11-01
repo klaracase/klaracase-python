@@ -1,0 +1,11 @@
+{
+  "type": "https://klaracase.de/docs/api/errors#insufficient_credits",
+  "title": "Payment Required",
+  "status": 402,
+  "detail": "The plan credits for this billing period are used up and the API budget does not cover this call, so it did not run and nothing was charged. An organization admin can top up the API budget at https://klaracase.de/org/billing/api-budget. The web app stays within the plan credits.",
+  "code": "insufficient_credits",
+  "cost": 1,
+  "balance": 0,
+  "reason": "api_budget_empty",
+  "top_up_url": "https://klaracase.de/org/billing/api-budget"
+}

@@ -26,6 +26,10 @@ CLASS_ALIASES = {
     "TimeoutError": "KlaracaseTimeoutError",
 }
 
+# The pack reads these members as the raw JSON value from ``extra``. The SDK also types them
+# (``resets_at`` is a datetime on TokenLimitReachedError), so they bypass the typed attribute.
+RAW_MEMBERS = {"resets_at"}
+
 _TOKEN = re.compile(r'\.?([A-Za-z_][A-Za-z0-9_]*)|\[(\d+)\]|\["((?:[^"\\]|\\.)*)"\]')
 
 
@@ -57,7 +61,7 @@ def resolve(root: Any, path: str, *, error_root: bool = False) -> Any:
     first, rest = tokens[0], tokens[1:]
     if error_root and first == "message" and not hasattr(root, "extra"):
         node = str(root)
-    elif error_root and not hasattr(root, str(first)):
+    elif error_root and (first in RAW_MEMBERS or not hasattr(root, str(first))):
         node = _step(root.extra, first)
     else:
         node = _step(root, first)
