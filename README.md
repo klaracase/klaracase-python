@@ -276,7 +276,7 @@ client = Klaracase()
 def check_citations(text: str) -> dict:
     """Check the court-decision and statute citations in a German legal text against the
     Klaracase corpus. Returns one verdict per citation. `not_found` means the citation was not
-    found in the corpus. It does not mean the citation is fabricated."""
+    found in the corpus. It does not mean the citation is invented."""
     run = client.citation_checks.create(text=text)
     return {
         "verdict_counts": run.verdict_counts,
@@ -293,6 +293,17 @@ def check_citations(text: str) -> dict:
 ```
 
 An agent should cite only what a tool returned.
+
+## Stability and privacy
+
+This SDK is 0.x and tracks API release 0.95.0. Minor versions may change the public surface until
+1.0. Every change is listed in [CHANGELOG.md](CHANGELOG.md). All Klaracase SDKs bump together when
+the API contract changes.
+
+The SDK sends no telemetry. The only thing it adds to a request is the User-Agent header
+`klaracase-python/<version> python/<version>`, for example `klaracase-python/0.1.0 python/3.12.4`.
+
+Klaracase is not affiliated with any court or with the federal government.
 
 ## Development
 
