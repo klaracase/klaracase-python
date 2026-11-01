@@ -107,7 +107,7 @@ a legal claim is correct.
 
 The text must be 50 to 20,000 characters. The check runs in one request and the answer is the
 finished run. It costs `max(2, ceil(characters / 5000))` credits. Checking the same text again in
-the same month costs 0. Offsets are Unicode code point offsets into the exact string you sent.
+the same credit period costs 0. Offsets are Unicode code point offsets into the exact string you sent.
 `finding.excerpt(text)` slices them for you.
 
 ## Uploads and polling
@@ -260,7 +260,7 @@ The client retries at most `max_retries` times (default 2).
 - It never retries a 402 or another 4xx, and it does not retry a 500 or a 502.
 - A transport error (connection refused, DNS, TLS, timeout) is retried on GET only. A POST whose
   connection dropped after the request was sent is not retried, because the request may have run.
-  A repeat of the same check text in the same month costs 0.
+  A repeat of the same check text in the same credit period costs 0.
 
 ```python
 fast = Klaracase(max_retries=0, timeout=10.0)  # fail fast
@@ -325,6 +325,8 @@ package costs 5. A citation check costs from 2 credits, by length. Corpus calls,
 of a stored run are free. Every answer has `credits` with `metered`, `cost` and
 `credits_remaining`. `credits` is always an object, so `result.credits.cost` is safe to read; its
 fields are `None` when the account is not metered.
+
+Credits renew per credit period: the UTC calendar month for free organizations, the paid billing period for subscribers. Unused credits do not roll over.
 
 ## Response objects
 

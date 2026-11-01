@@ -323,7 +323,7 @@ class Decisions:
     ) -> DecisionSearch:
         """Search decisions (``GET /decisions/search``). Costs 1 credit.
 
-        Paging and the same search again this month cost nothing more.
+        Paging and the same search again in the same credit period cost nothing more.
 
         Args:
             query: German legal-concept phrasing, for example ``Widerrufsrecht
@@ -380,7 +380,9 @@ class Decisions:
         extra_headers: Mapping[str, str] | None = None,
         extra_query: Mapping[str, str | int | bool] | None = None,
     ) -> Decision:
-        """Read one decision (``GET /decisions/{id}``). Costs 1 credit per decision per month.
+        """Read one decision (``GET /decisions/{id}``).
+
+        Costs 1 credit per decision per credit period.
 
         Reading it again, in any slice, costs nothing more. The SDK encodes ``id`` as one path
         segment.
@@ -430,7 +432,7 @@ class Decisions:
     ) -> DecisionCitations:
         """Follow the citations of one decision (``GET /decisions/{id}/citations``).
 
-        Costs 2 credits per decision, direction and depth per month. Paging is free.
+        Costs 2 credits per decision, direction and depth per credit period. Paging is free.
 
         Args:
             id: A UUID, an Aktenzeichen or an ECLI.
@@ -535,7 +537,7 @@ class Norms:
         extra_headers: Mapping[str, str] | None = None,
         extra_query: Mapping[str, str | int | bool] | None = None,
     ) -> Norm:
-        """Read one norm (``GET /norms/{reference}``). Costs 1 credit per norm per month.
+        """Read one norm (``GET /norms/{reference}``). Costs 1 credit per norm per credit period.
 
         Args:
             reference: The citation, for example ``§ 535 BGB`` or ``Art. 6 DSGVO``.
@@ -634,7 +636,7 @@ class CitationChecks:
 
         The answer is the finished run. Check ``status`` before you trust ``findings``: a run
         can end ``rejected`` or ``failed``. The price is by length, from 2 credits; the same
-        text again this month costs nothing more.
+        text again in the same credit period costs nothing more.
 
         Args:
             text: The German legal text, 50 to 20000 characters. It must show at least two of five

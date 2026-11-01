@@ -72,3 +72,7 @@ All notable changes to this project go in this file. The format follows
 - Correction: paging the same query within a credit period costs no extra credits (the API leaves
   `page` and `limit` out of the charge). A changed query, filter or mode is a new charge. The
   iterator docstrings and the README now say so. `max_pages` stays required as a runaway guard.
+
+### Docs
+
+- Docs: credit period wording. Credits renew per credit period: the UTC calendar month for free organizations, the paid billing period for subscribers. Unused credits do not roll over. The docs said "calendar month" for every organization.
