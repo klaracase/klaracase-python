@@ -31,3 +31,13 @@ All notable changes to this project go in this file. The format follows
   `Branch`.
 - Drift guards in the tests: a walker fails when any `extra` is non-empty at any depth for every
   example, conformance body and contract example, and a seen-to-fail test proves the walker works.
+- Keyword-only `timeout`, `extra_headers` and `extra_query` on all 12 methods, sync and async.
+- `client.with_options(timeout=, max_retries=, extra_headers=)` returns a new client that shares
+  the connection pool.
+- `client.get(path, params)` and `client.post(path, json)` escape hatches, with retries, that
+  return a `Response`.
+- `citation_checks.create` has two overloads, so a type checker rejects `text` and `document_id`
+  together.
+- Date arguments accept `str | datetime.date`. `cited_statutes` accepts `CitedStatute | str`.
+- Uploads accept `Path | str | bytes | BinaryIO`. The file name and the content type are inferred.
+- Google-style `Args:` docstrings on all 12 methods.

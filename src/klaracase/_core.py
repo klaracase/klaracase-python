@@ -13,7 +13,7 @@ import threading
 import time
 import warnings
 from collections.abc import Callable, Mapping, Sequence
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from typing import Any, Generic, TypeVar
 from urllib.parse import quote, urlsplit
 
@@ -50,6 +50,28 @@ DeprecationHook = Callable[[DeprecationNotice], None]
 
 
 @dataclass(slots=True, frozen=True)
+class RequestOptions:
+    """Per-call overrides: a timeout, extra headers and extra query parameters."""
+
+    timeout: float | transport.Timeout | None = None
+    extra_headers: Mapping[str, str] | None = None
+    extra_query: Mapping[str, str | int | bool] | None = None
+
+
+def request_options(
+    timeout: float | transport.Timeout | None,
+    extra_headers: Mapping[str, str] | None,
+    extra_query: Mapping[str, str | int | bool] | None,
+) -> RequestOptions | None:
+    """Validate the per-call options. Return ``None`` when the caller set none."""
+    if timeout is None and not extra_headers and not extra_query:
+        return None
+    if timeout is not None:
+        check_timeout(timeout)
+    return RequestOptions(timeout, extra_headers, extra_query)
+
+
+@dataclass(slots=True, frozen=True)
 class Operation(Generic[T]):
     """One API call, fully described and already validated.
 
@@ -63,6 +85,12 @@ class Operation(Generic[T]):
     query: Sequence[tuple[str, str]] = ()
     json_body: Mapping[str, Any] | None = None
     files: Mapping[str, tuple[str, bytes, str]] | None = None
+    options: RequestOptions | None = None
+
+
+def replace_options(operation: Operation[T], options: RequestOptions) -> Operation[T]:
+    """Return ``operation`` with per-call options attached."""
+    return replace(operation, options=options)
 
 
 def quote_segment(value: str) -> str:
@@ -95,6 +123,19 @@ def _scalar(value: Any) -> str:
     if isinstance(value, bool):
         return "true" if value else "false"
     return str(value)
+
+
+def check_timeout(timeout: object) -> None:
+    """Raise ``ConfigurationError`` unless ``timeout`` is seconds above 0 or a ``Timeout``."""
+    if isinstance(timeout, transport.Timeout):
+        return
+    if isinstance(timeout, bool) or not isinstance(timeout, (int, float)) or timeout <= 0:
+        raise ConfigurationError("timeout must be a number of seconds above 0 or a Timeout.")
+
+
+def check_max_retries(max_retries: object) -> None:
+    if isinstance(max_retries, bool) or not isinstance(max_retries, int) or max_retries < 0:
+        raise ConfigurationError("max_retries must be an integer of 0 or more.")
 
 
 def client_validation_error(message: str) -> ValidationError:
@@ -142,7 +183,7 @@ class Retry:
 class Core:
     """Configuration plus the pure parts of a request cycle."""
 
-    token: str
+    token: str = field(repr=False)
     base_url: str
     timeout: float | transport.Timeout
     max_retries: int
@@ -150,6 +191,28 @@ class Core:
     on_deprecation: DeprecationHook
     monotonic: Callable[[], float]
     uniform: Callable[[float, float], float] = field(default=random.uniform)
+    extra_headers: Mapping[str, str] = field(default_factory=dict[str, str])
+
+    def with_options(
+        self,
+        *,
+        timeout: float | transport.Timeout | None,
+        max_retries: int | None,
+        extra_headers: Mapping[str, str] | None,
+    ) -> Core:
+        """Return a copy with some settings replaced. ``None`` keeps the current value."""
+        changes: dict[str, Any] = {}
+        if timeout is not None:
+            check_timeout(timeout)
+            changes["timeout"] = (
+                timeout if isinstance(timeout, transport.Timeout) else float(timeout)
+            )
+        if max_retries is not None:
+            check_max_retries(max_retries)
+            changes["max_retries"] = max_retries
+        if extra_headers:
+            changes["extra_headers"] = {**self.extra_headers, **extra_headers}
+        return replace(self, **changes)
 
     @classmethod
     def create(
@@ -174,12 +237,8 @@ class Core:
             raise ConfigurationError(
                 f"Invalid base_url {base_url!r}: it needs an http or https scheme and a host."
             )
-        if isinstance(max_retries, bool) or not isinstance(max_retries, int) or max_retries < 0:
-            raise ConfigurationError("max_retries must be an integer of 0 or more.")
-        if not isinstance(timeout, transport.Timeout) and (
-            isinstance(timeout, bool) or not isinstance(timeout, (int, float)) or timeout <= 0
-        ):
-            raise ConfigurationError("timeout must be a number of seconds above 0 or a Timeout.")
+        check_max_retries(max_retries)
+        check_timeout(timeout)
         user_agent = f"klaracase-python/{__version__} python/{platform.python_version()}"
         if user_agent_suffix:
             user_agent = f"{user_agent} {user_agent_suffix}"
@@ -195,19 +254,26 @@ class Core:
 
     def request_kwargs(self, operation: Operation[Any]) -> dict[str, Any]:
         """Arguments for the ``build_request`` method of the HTTP client."""
-        headers = {
-            "Authorization": f"Bearer {self.token}",
-            "Accept": "application/json",
-            "User-Agent": self.user_agent,
-        }
+        options = operation.options
+        headers = _merge_headers(
+            {
+                "Authorization": f"Bearer {self.token}",
+                "Accept": "application/json",
+                "User-Agent": self.user_agent,
+            },
+            self.extra_headers,
+            options.extra_headers if options else None,
+        )
+        timeout = options.timeout if options and options.timeout is not None else self.timeout
         kwargs: dict[str, Any] = {
             "method": operation.method,
             "url": self.base_url + operation.path,
             "headers": headers,
-            "timeout": self.timeout,
+            "timeout": timeout,
         }
-        if operation.query:
-            kwargs["params"] = list(operation.query)
+        query = _merge_query(operation.query, options.extra_query if options else None)
+        if query:
+            kwargs["params"] = query
         if operation.json_body is not None:
             kwargs["json"] = operation.json_body
         if operation.files is not None:
@@ -353,6 +419,28 @@ class Core:
                 url=self.base_url + operation.path,
             )
         )
+
+
+def _merge_headers(base: dict[str, str], *overrides: Mapping[str, str] | None) -> dict[str, str]:
+    """Overlay header mappings on ``base``. Names match case-insensitively; the last one wins."""
+    merged = dict(base)
+    for override in overrides:
+        for name, value in (override or {}).items():
+            for existing in [key for key in merged if key.lower() == name.lower()]:
+                del merged[existing]
+            merged[name] = value
+    return merged
+
+
+def _merge_query(
+    query: Sequence[tuple[str, str]], extra: Mapping[str, str | int | bool] | None
+) -> list[tuple[str, str]]:
+    """Add ``extra`` query parameters. An extra parameter replaces a built one of the same name."""
+    if not extra:
+        return list(query)
+    names = set(extra) | {f"{name}[]" for name in extra}
+    kept = [pair for pair in query if pair[0] not in names]
+    return kept + [(name, _scalar(value)) for name, value in extra.items()]
 
 
 def _optional_str(value: Any) -> str | None:
