@@ -78,6 +78,8 @@ All notable changes to this project go in this file. The format follows
 - `InsufficientCreditsError.reason` (`api_budget_empty`, `api_budget_not_available`, or a value the
   API adds later) and `InsufficientCreditsError.top_up_url`. The client never opens the URL. A
   program or an AI agent must not either.
+- `InsufficientCreditsError.api_budget`, an `ApiBudget` read from the optional `api_budget` member
+  of the 402 problem, or `None` when the problem has none.
 - `TokenLimitReachedError` for a 402 `token_limit_reached`, a subclass of
   `InsufficientCreditsError`, with `unit`, `cap`, `spent`, `resets_at` (a `datetime`),
   `resets_at_raw` and `settings_url`. `cost` and `balance` read `None`. It is never retried.

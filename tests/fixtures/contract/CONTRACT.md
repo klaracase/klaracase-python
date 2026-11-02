@@ -1,4 +1,4 @@
-# Klaracase REST API v1 contract (generated from openapi-v1.json, version 0.95.0)
+# Klaracase REST API v1 contract (generated from openapi-v1.json, version 0.96.0)
 
 Base URL: https://klaracase.de/api/v1
 
@@ -43,7 +43,7 @@ Content-Type: `application/json`
   "unique_citations_total": 2
  },
  "verdict_counts": {
-  "verified": 1,
+  "verified_corpus": 1,
   "not_found": 1
  },
  "partial": false,
@@ -63,7 +63,7 @@ Content-Type: `application/json`
     "BGH, Urt. v. 15.11.2001 – 1 StR 185/01"
    ],
    "occurrences": 1,
-   "verdict": "verified",
+   "verdict": "verified_corpus",
    "reference_type": "case"
   },
   {
@@ -104,7 +104,7 @@ Content-Type: `application/json`
    "canonical": "BGH 1 StR 185/01",
    "type": "case",
    "role": null,
-   "verdict": "verified",
+   "verdict": "verified_corpus",
    "external_status": "skipped",
    "start_offset": 118,
    "end_offset": 157,
@@ -139,7 +139,7 @@ Content-Type: `application/json`
  "completed_at": "2026-10-01T10:00:00+00:00",
  "created_at": "2026-10-01T10:00:00+00:00",
  "payload_truncated": false,
- "api_version": "0.95.0",
+ "api_version": "0.96.0",
  "changelog_url": "https://klaracase.de/docs/mcp/changelog",
  "credits": {
   "metered": true,
@@ -166,7 +166,7 @@ Content-Type: `application/json`
  "type": "https://klaracase.de/docs/api/errors#insufficient_credits",
  "title": "Payment Required",
  "status": 402,
- "detail": "Insufficient credits: this call costs 2 credit(s), but organization \"Kanzlei Beispiel\" has 0 remaining this month. Credits renew automatically at the start of each calendar month (UTC). Ask your organization admin to raise the allotment, or retry next month.",
+ "detail": "Insufficient credits: this call costs 2 credit(s), but organization \"Kanzlei Beispiel\" has 0 remaining in the current period. The plan credits for this billing period are used up. An organization admin can change the plan at https://klaracase.de/org/billing/plans. For questions about credits, write to us through https://klaracase.de/support. Credits renew automatically at the start of each calendar month (UTC).",
  "code": "insufficient_credits",
  "cost": 2,
  "balance": 0
@@ -257,7 +257,7 @@ A run made through the API by your organization, read back by its id. Free.
   "unique_citations_total": 2
  },
  "verdict_counts": {
-  "verified": 1,
+  "verified_corpus": 1,
   "not_found": 1
  },
  "partial": false,
@@ -277,7 +277,7 @@ A run made through the API by your organization, read back by its id. Free.
     "BGH, Urt. v. 15.11.2001 – 1 StR 185/01"
    ],
    "occurrences": 1,
-   "verdict": "verified",
+   "verdict": "verified_corpus",
    "reference_type": "case"
   },
   {
@@ -318,7 +318,7 @@ A run made through the API by your organization, read back by its id. Free.
    "canonical": "BGH 1 StR 185/01",
    "type": "case",
    "role": null,
-   "verdict": "verified",
+   "verdict": "verified_corpus",
    "external_status": "skipped",
    "start_offset": 118,
    "end_offset": 157,
@@ -353,7 +353,7 @@ A run made through the API by your organization, read back by its id. Free.
  "completed_at": "2026-10-01T10:00:00+00:00",
  "created_at": "2026-10-01T10:00:00+00:00",
  "payload_truncated": false,
- "api_version": "0.95.0",
+ "api_version": "0.96.0",
  "changelog_url": "https://klaracase.de/docs/mcp/changelog",
  "credits": {
   "metered": true,
@@ -470,7 +470,7 @@ Content-Type: `multipart/form-data`
  "error_code": null,
  "expires_at": "2026-10-02T10:00:00+00:00",
  "created_at": "2026-10-01T10:00:00+00:00",
- "api_version": "0.95.0",
+ "api_version": "0.96.0",
  "changelog_url": "https://klaracase.de/docs/mcp/changelog",
  "credits": {
   "metered": true,
@@ -569,7 +569,7 @@ Free.
  "error_code": null,
  "expires_at": "2026-10-02T10:00:00+00:00",
  "created_at": "2026-10-01T10:00:00+00:00",
- "api_version": "0.95.0",
+ "api_version": "0.96.0",
  "changelog_url": "https://klaracase.de/docs/mcp/changelog",
  "credits": {
   "metered": true,
@@ -747,7 +747,7 @@ paging is free.
  },
  "fortgeltung_checked": false,
  "fortgeltung_note": "Rechtskraft/Fortgeltung (whether a decision is still good law) is NOT checked. A decision returned here may have been quashed or superseded on appeal, and the ABSENCE of any such note is not evidence that it still stands.",
- "api_version": "0.95.0",
+ "api_version": "0.96.0",
  "changelog_url": "https://klaracase.de/docs/mcp/changelog",
  "credits": {
   "metered": true,
@@ -774,7 +774,7 @@ paging is free.
  "type": "https://klaracase.de/docs/api/errors#insufficient_credits",
  "title": "Payment Required",
  "status": 402,
- "detail": "Insufficient credits: this call costs 2 credit(s), but organization \"Kanzlei Beispiel\" has 0 remaining this month. Credits renew automatically at the start of each calendar month (UTC). Ask your organization admin to raise the allotment, or retry next month.",
+ "detail": "Insufficient credits: this call costs 2 credit(s), but organization \"Kanzlei Beispiel\" has 0 remaining in the current period. The plan credits for this billing period are used up. An organization admin can change the plan at https://klaracase.de/org/billing/plans. For questions about credits, write to us through https://klaracase.de/support. Credits renew automatically at the start of each calendar month (UTC).",
  "code": "insufficient_credits",
  "cost": 2,
  "balance": 0
@@ -973,7 +973,7 @@ The figures in the example are illustrative.
    "EMRK"
   ]
  },
- "api_version": "0.95.0",
+ "api_version": "0.96.0",
  "changelog_url": "https://klaracase.de/docs/mcp/changelog",
  "credits": {
   "metered": true,
@@ -1098,7 +1098,7 @@ example are illustrative.
  "value_limit": 500,
  "count_basis": "indexed_passages",
  "as_of": "2026-10-01T09:40:00+00:00",
- "api_version": "0.95.0",
+ "api_version": "0.96.0",
  "changelog_url": "https://klaracase.de/docs/mcp/changelog",
  "credits": {
   "metered": true,
@@ -1264,7 +1264,7 @@ Content-Type: `application/json`
  "truncated": false,
  "payload_truncated": false,
  "assembled_at": "2026-10-01T10:00:00+00:00",
- "api_version": "0.95.0",
+ "api_version": "0.96.0",
  "changelog_url": "https://klaracase.de/docs/mcp/changelog",
  "credits": {
   "metered": true,
@@ -1291,7 +1291,7 @@ Content-Type: `application/json`
  "type": "https://klaracase.de/docs/api/errors#insufficient_credits",
  "title": "Payment Required",
  "status": 402,
- "detail": "Insufficient credits: this call costs 5 credit(s), but organization \"Kanzlei Beispiel\" has 0 remaining this month. Credits renew automatically at the start of each calendar month (UTC). Ask your organization admin to raise the allotment, or retry next month.",
+ "detail": "Insufficient credits: this call costs 5 credit(s), but organization \"Kanzlei Beispiel\" has 0 remaining in the current period. The plan credits for this billing period are used up. An organization admin can change the plan at https://klaracase.de/org/billing/plans. For questions about credits, write to us through https://klaracase.de/support. Credits renew automatically at the start of each calendar month (UTC).",
  "code": "insufficient_credits",
  "cost": 5,
  "balance": 0
@@ -1414,7 +1414,7 @@ reading it again, in any slice, costs nothing more.
  },
  "available_range_scope": "decision",
  "has_rn_anchors": true,
- "api_version": "0.95.0",
+ "api_version": "0.96.0",
  "changelog_url": "https://klaracase.de/docs/mcp/changelog",
  "credits": {
   "metered": true,
@@ -1441,7 +1441,7 @@ reading it again, in any slice, costs nothing more.
  "type": "https://klaracase.de/docs/api/errors#insufficient_credits",
  "title": "Payment Required",
  "status": 402,
- "detail": "Insufficient credits: this call costs 1 credit(s), but organization \"Kanzlei Beispiel\" has 0 remaining this month. Credits renew automatically at the start of each calendar month (UTC). Ask your organization admin to raise the allotment, or retry next month.",
+ "detail": "Insufficient credits: this call costs 1 credit(s), but organization \"Kanzlei Beispiel\" has 0 remaining in the current period. The plan credits for this billing period are used up. An organization admin can change the plan at https://klaracase.de/org/billing/plans. For questions about credits, write to us through https://klaracase.de/support. Credits renew automatically at the start of each calendar month (UTC).",
  "code": "insufficient_credits",
  "cost": 1,
  "balance": 0
@@ -1594,7 +1594,7 @@ tool `get_norm`. One credit per norm per month; reading it again costs nothing m
   "decisions_citing_url": "/api/v1/decisions/search?cited_norm=%C2%A7%20535%20BGB",
   "self_url": "/api/v1/norms/%C2%A7%20535%20BGB"
  },
- "api_version": "0.95.0",
+ "api_version": "0.96.0",
  "changelog_url": "https://klaracase.de/docs/mcp/changelog",
  "credits": {
   "metered": true,
@@ -1621,7 +1621,7 @@ tool `get_norm`. One credit per norm per month; reading it again costs nothing m
  "type": "https://klaracase.de/docs/api/errors#insufficient_credits",
  "title": "Payment Required",
  "status": 402,
- "detail": "Insufficient credits: this call costs 1 credit(s), but organization \"Kanzlei Beispiel\" has 0 remaining this month. Credits renew automatically at the start of each calendar month (UTC). Ask your organization admin to raise the allotment, or retry next month.",
+ "detail": "Insufficient credits: this call costs 1 credit(s), but organization \"Kanzlei Beispiel\" has 0 remaining in the current period. The plan credits for this billing period are used up. An organization admin can change the plan at https://klaracase.de/org/billing/plans. For questions about credits, write to us through https://klaracase.de/support. Credits renew automatically at the start of each calendar month (UTC).",
  "code": "insufficient_credits",
  "cost": 1,
  "balance": 0
@@ -1774,7 +1774,7 @@ nothing more.
   "reason": "no_lay_term",
   "note": "Nothing was added to your query: it was retrieved exactly as you typed it. …"
  },
- "api_version": "0.95.0",
+ "api_version": "0.96.0",
  "changelog_url": "https://klaracase.de/docs/mcp/changelog",
  "credits": {
   "metered": true,
@@ -1802,7 +1802,7 @@ nothing more.
  "type": "https://klaracase.de/docs/api/errors#insufficient_credits",
  "title": "Payment Required",
  "status": 402,
- "detail": "Insufficient credits: this call costs 1 credit(s), but organization \"Kanzlei Beispiel\" has 0 remaining this month. Credits renew automatically at the start of each calendar month (UTC). Ask your organization admin to raise the allotment, or retry next month.",
+ "detail": "Insufficient credits: this call costs 1 credit(s), but organization \"Kanzlei Beispiel\" has 0 remaining in the current period. The plan credits for this billing period are used up. An organization admin can change the plan at https://klaracase.de/org/billing/plans. For questions about credits, write to us through https://klaracase.de/support. Credits renew automatically at the start of each calendar month (UTC).",
  "code": "insufficient_credits",
  "cost": 1,
  "balance": 0
@@ -1990,7 +1990,7 @@ of the MCP tool `cross_type_search`. One credit per distinct query and filter se
  },
  "frequently_cited_by_results": [],
  "norms_cited_by_decision_results": [],
- "api_version": "0.95.0",
+ "api_version": "0.96.0",
  "changelog_url": "https://klaracase.de/docs/mcp/changelog",
  "credits": {
   "metered": true,
@@ -2018,7 +2018,7 @@ of the MCP tool `cross_type_search`. One credit per distinct query and filter se
  "type": "https://klaracase.de/docs/api/errors#insufficient_credits",
  "title": "Payment Required",
  "status": 402,
- "detail": "Insufficient credits: this call costs 1 credit(s), but organization \"Kanzlei Beispiel\" has 0 remaining this month. Credits renew automatically at the start of each calendar month (UTC). Ask your organization admin to raise the allotment, or retry next month.",
+ "detail": "Insufficient credits: this call costs 1 credit(s), but organization \"Kanzlei Beispiel\" has 0 remaining in the current period. The plan credits for this billing period are used up. An organization admin can change the plan at https://klaracase.de/org/billing/plans. For questions about credits, write to us through https://klaracase.de/support. Credits renew automatically at the start of each calendar month (UTC).",
  "code": "insufficient_credits",
  "cost": 1,
  "balance": 0
@@ -2128,15 +2128,36 @@ of the MCP tool `cross_type_search`. One credit per distinct query and filter se
     },
     "code": {
      "type": "string",
-     "description": "The machine-readable reason, the same vocabulary the MCP tools serve as `error_code`, e.g. `insufficient_credits`, `token_ability_missing`, `two_factor_required`, `validation_failed`, `rate_limited`, `volume_cap`, `not_found`, `backend_unavailable`."
+     "description": "The machine-readable reason, the same vocabulary the MCP tools serve as `error_code`, e.g. `insufficient_credits`, `token_limit_reached`, `token_ability_missing`, `two_factor_required`, `validation_failed`, `rate_limited`, `volume_cap`, `not_found`, `backend_unavailable`."
     },
     "cost": {
      "type": "integer",
-     "description": "On 402: what the call would have cost, in credits."
+     "description": "On 402 `insufficient_credits`: what the call would have cost, in credits."
     },
     "balance": {
      "type": "integer",
-     "description": "On 402: the organization's remaining credits this month."
+     "description": "On 402 `insufficient_credits`: the organization's remaining plan credits this period."
+    },
+    "reason": {
+     "type": "string",
+     "enum": [
+      "api_budget_empty",
+      "api_budget_not_available"
+     ],
+     "description": "On 402 `insufficient_credits`, only while the prepaid API budget is available: why the call could not be paid. `api_budget_empty`: the organization may load an API budget and what it holds does not cover this call. `api_budget_not_available`: the organization has no API budget to draw on, or its budget is on hold, and topping up is not possible from its plan. `plan_credits_exhausted` is reserved for a refusal where the API budget plays no part and is not served on this API today. A client must tolerate a value it does not know and treat it like `api_budget_not_available`. Nothing ran and nothing was charged in either case."
+    },
+    "top_up_url": {
+     "type": "string",
+     "format": "uri",
+     "description": "On 402 `insufficient_credits`: the page where an organization admin loads the API budget. Present only when the organization may load one. It is for a human admin: a program or an AI agent must not open it or follow it, only show it to its user."
+    },
+    "api_budget": {
+     "allOf": [
+      {
+       "$ref": "#/components/schemas/ApiBudget"
+      }
+     ],
+     "description": "On 402 `insufficient_credits`, only while the prepaid API budget is available and the organization holds a budget or may load one: the API budget as it stands, the same object as `credits.api_budget` on an answer. Nothing was taken from it. The key is absent otherwise, never null."
     },
     "required_ability": {
      "type": "string",
@@ -2158,16 +2179,83 @@ of the MCP tool `cross_type_search`. One credit per distinct query and filter se
     },
     "unit": {
      "type": "string",
-     "description": "On 429 `volume_cap`: the capped unit, `rows` or `documents`."
+     "description": "On 429 `volume_cap`: the capped unit, `rows` or `documents`. On 402 `token_limit_reached`: always `credits`."
     },
     "cap": {
      "type": "integer",
-     "description": "On 429 `volume_cap`: the organization's daily cap for that unit."
+     "description": "On 429 `volume_cap`: the organization's daily cap for that unit. On 402 `token_limit_reached`: the credit limit of this API key for the period."
+    },
+    "spent": {
+     "type": "integer",
+     "description": "On 402 `token_limit_reached`: the credits this API key has used in the period, plan credits and API budget together."
     },
     "resets_at": {
      "type": "string",
      "format": "date-time",
-     "description": "On 429 `volume_cap`: when the daily cap resets (midnight Europe/Berlin)."
+     "description": "On 429 `volume_cap`: when the daily cap resets (midnight Europe/Berlin). On 402 `token_limit_reached`: when the credit period of the key ends and its count starts again."
+    },
+    "settings_url": {
+     "type": "string",
+     "format": "uri",
+     "description": "On 402 `token_limit_reached`: the page where an organization admin changes the limit of the key. It is for a human admin: a program or an AI agent must not open it."
+    }
+   }
+  },
+  "Credits": {
+   "type": "object",
+   "description": "What this call cost and what is left. `metered` is false, with null numbers, for a caller who is never charged. Plan credits are spent first. While the prepaid API budget is available, a call the plan credits do not cover is paid from the API budget, in whole, never in part.",
+   "required": [
+    "metered",
+    "cost",
+    "credits_remaining"
+   ],
+   "properties": {
+    "metered": {
+     "type": "boolean",
+     "description": "Whether this call was charged against an organization."
+    },
+    "cost": {
+     "type": "integer",
+     "nullable": true,
+     "description": "The credits this call took, plan credits and API budget together; 0 for a repeat the API deduplicated. Null when `metered` is false."
+    },
+    "credits_remaining": {
+     "type": "integer",
+     "nullable": true,
+     "description": "The plan credits left in the current credit period after this call. It never counts the API budget. Null when `metered` is false."
+    },
+    "api_budget": {
+     "allOf": [
+      {
+       "$ref": "#/components/schemas/ApiBudget"
+      }
+     ],
+     "description": "Optional. Present only while the prepaid API budget is available and the organization holds a budget or may load one. The key is absent otherwise, never null."
+    }
+   }
+  },
+  "ApiBudget": {
+   "type": "object",
+   "description": "The prepaid API budget of the organization after this call. It pays for API and MCP calls once the plan credits are used up, and it does not expire. The web app never draws on it.",
+   "required": [
+    "cents",
+    "rate_cents_per_credit",
+    "credits_at_rate"
+   ],
+   "properties": {
+    "cents": {
+     "type": "integer",
+     "description": "The budget after this call, in euro cents. It can be negative after a payment was lost."
+    },
+    "rate_cents_per_credit": {
+     "type": "integer",
+     "minimum": 1,
+     "description": "What one credit costs from the budget, in whole euro cents. This is the rate for the organization, which a contract can set apart from the list rate."
+    },
+    "credits_at_rate": {
+     "type": "integer",
+     "minimum": 0,
+     "description": "How many further credits the spendable part of the budget pays for at that rate. 0 when the budget is empty or on hold."
     }
    }
   }

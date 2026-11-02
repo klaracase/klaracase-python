@@ -18,7 +18,7 @@ import datetime
 from typing import TYPE_CHECKING, Any, Literal, cast
 
 if TYPE_CHECKING:
-    from .types import CitationCheckDocument
+    from .types import ApiBudget, CitationCheckDocument
 
 __all__ = [
     "ApiError",
@@ -255,6 +255,10 @@ class InsufficientCreditsError(KlaracaseError):
 
     ``top_up_url`` is a page for a human organization admin. This client never opens it. A program
     or an AI agent must not open it or follow it. Show it to your user.
+
+    ``api_budget`` is the prepaid API budget as it stands, the same object as ``credits.api_budget``
+    on an answer. The API serves it only while the API budget is available and the organization
+    holds a budget or may load one.
     """
 
     @property
@@ -274,6 +278,16 @@ class InsufficientCreditsError(KlaracaseError):
     def top_up_url(self) -> str | None:
         """Where an organization admin loads the API budget. For a human. Never open it."""
         return _str_member(self.extra, "top_up_url")
+
+    @property
+    def api_budget(self) -> ApiBudget | None:
+        """The API budget as it stands, or ``None`` when the problem has no such object."""
+        value = self.extra.get("api_budget")
+        if not isinstance(value, dict):
+            return None
+        from .types import ApiBudget  # noqa: PLC0415
+
+        return ApiBudget.from_dict(cast("dict[str, Any]", value))
 
 
 class TokenLimitReachedError(InsufficientCreditsError):

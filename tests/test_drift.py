@@ -163,19 +163,11 @@ def test_to_dict_returns_the_body(label: str, cls: type[Response], body: dict[st
     assert cls.from_dict(copy.deepcopy(body)).to_dict() == body
 
 
-# CONTRACT.md still shows the retired verdict "verified" (the closed vocabulary says
-# "verified_corpus"; see facts.md, defects seen). Nothing else may be outside its Literal.
-STALE_CONTRACT_VERDICT = "'verified'"
-
-
 @pytest.mark.parametrize(("label", "cls", "body"), SOURCES, ids=IDS)
 def test_every_enum_value_is_a_member_of_its_literal(
     label: str, cls: type[Response], body: dict[str, Any]
 ) -> None:
-    violations = enum_violations(cls.from_dict(body))
-    if label.startswith("contract:"):
-        violations = [v for v in violations if not v.endswith(f"={STALE_CONTRACT_VERDICT}")]
-    assert violations == []
+    assert enum_violations(cls.from_dict(body)) == []
 
 
 def test_the_walker_reports_a_nested_unknown_key() -> None:

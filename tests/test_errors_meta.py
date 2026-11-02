@@ -181,6 +181,30 @@ def test_insufficient_credits_without_top_up_url_or_reason() -> None:
     assert plain.top_up_url is None
 
 
+def test_insufficient_credits_exposes_api_budget_when_the_problem_has_one() -> None:
+    error = klaracase.InsufficientCreditsError(
+        code="insufficient_credits",
+        status=402,
+        extra={
+            "cost": 1,
+            "balance": 0,
+            "reason": "api_budget_empty",
+            "api_budget": {"cents": 0, "rate_cents_per_credit": 25, "credits_at_rate": 0},
+        },
+    )
+    assert error.api_budget == klaracase.ApiBudget(
+        cents=0, rate_cents_per_credit=25, credits_at_rate=0
+    )
+
+
+def test_insufficient_credits_without_api_budget_reads_none() -> None:
+    assert refusal("insufficient_credits.api_budget_empty").api_budget is None
+    wrong = klaracase.InsufficientCreditsError(
+        code="insufficient_credits", status=402, extra={"api_budget": "free"}
+    )
+    assert wrong.api_budget is None
+
+
 def test_an_unknown_reason_and_a_wrong_typed_member_are_kept_safely() -> None:
     error = klaracase.InsufficientCreditsError(
         code="insufficient_credits",
